@@ -8,6 +8,10 @@ namespace Drape.Guard;
 /// </summary>
 public static class Program
 {
+    /// <summary>
+    /// Main application entry point.
+    /// </summary>
+    /// <param name="args">Command-line arguments.</param>
     public static async Task Main(string[] args)
     {
         try
