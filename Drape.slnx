@@ -1,0 +1,17 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Drape.Core/Drape.Core.csproj" />
+    <Project Path="src/Drape.Infrastructure/Drape.Infrastructure.csproj" />
+    <Project Path="src/Drape.Shell.Windows/Drape.Shell.Windows.csproj" />
+    <Project Path="src/Drape.UI/Drape.UI.csproj" />
+    <Project Path="src/Drape.App.Desktop/Drape.App.Desktop.csproj" />
+    <Project Path="src/Drape.Guard/Drape.Guard.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Drape.Core.Tests/Drape.Core.Tests.csproj" />
+    <Project Path="tests/Drape.Infrastructure.Tests/Drape.Infrastructure.Tests.csproj" />
+    <Project Path="tests/Drape.UI.Tests/Drape.UI.Tests.csproj" />
+    <Project Path="tests/Drape.E2E/Drape.E2E.csproj" />
+    <Project Path="tests/Drape.TestSupport/Drape.TestSupport.csproj" />
+  </Folder>
+</Solution>
