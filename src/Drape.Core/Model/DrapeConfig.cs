@@ -57,7 +57,7 @@ public sealed record DrapeConfig
     }
 
     /// <summary>The schema version of this document.</summary>
-    public int SchemaVersion { get; }
+    public int SchemaVersion { get; init; }
 
     /// <summary>Application settings.</summary>
     public DrapeSettings Settings { get; }

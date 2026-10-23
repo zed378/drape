@@ -41,8 +41,11 @@ public static class LayoutService
         double height,
         Rectangle workArea)
     {
-        var visibleX = Math.Min(MinimumVisibleExtent, width);
-        var visibleY = Math.Min(MinimumVisibleExtent, height);
+        // The sliver is also limited by the work area itself. Without the third term, a work area
+        // narrower than the sliver (a tiny virtual display) produces maxX below workArea.X and the
+        // Drape is clamped to a negative coordinate.
+        var visibleX = Math.Min(MinimumVisibleExtent, Math.Min(width, workArea.Width));
+        var visibleY = Math.Min(MinimumVisibleExtent, Math.Min(height, workArea.Height));
 
         // The Drape may hang off the left and top edges, but not so far that fewer than the visible
         // sliver remains on screen.
