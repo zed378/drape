@@ -1,4 +1,4 @@
-using Drape.Core.Model;
+﻿using Drape.Core.Model;
 using Shouldly;
 using Xunit;
 using DrapeEntity = Drape.Core.Model.Drape;
@@ -15,7 +15,7 @@ namespace Drape.Core.Tests;
 /// </remarks>
 public sealed class DrapeModelTests
 {
-    private static readonly Guid PageId = Guid.Parse("6f1c2b8e-0000-4000-8000-000000000001");
+    private static readonly Guid _pageId = Guid.Parse("6f1c2b8e-0000-4000-8000-000000000001");
 
     private static DrapeBounds Bounds() => new(
         monitorId: @"\\.\DISPLAY1",
@@ -43,14 +43,14 @@ public sealed class DrapeModelTests
     [InlineData("   ")]
     public void Drape_WithBlankTitle_Throws(string title)
     {
-        Should.Throw<ArgumentException>(() => new DrapeEntity(Guid.NewGuid(), PageId, title, Bounds()));
+        Should.Throw<ArgumentException>(() => new DrapeEntity(Guid.NewGuid(), _pageId, title, Bounds()));
     }
 
     /// <summary>A Drape with an empty id is rejected.</summary>
     [Fact]
     public void Drape_WithEmptyId_Throws()
     {
-        Should.Throw<ArgumentException>(() => new DrapeEntity(Guid.Empty, PageId, "Reports", Bounds()));
+        Should.Throw<ArgumentException>(() => new DrapeEntity(Guid.Empty, _pageId, "Reports", Bounds()));
     }
 
     /// <summary>A Drape whose page id is empty is rejected.</summary>
@@ -102,7 +102,7 @@ public sealed class DrapeModelTests
     public void Drape_WithDuplicateItemIds_Throws()
     {
         var sharedId = Guid.NewGuid();
-        var drape = new DrapeEntity(Guid.NewGuid(), PageId, "Reports", Bounds());
+        var drape = new DrapeEntity(Guid.NewGuid(), _pageId, "Reports", Bounds());
 
         Should.Throw<ArgumentException>(() => drape with
         {
@@ -114,7 +114,7 @@ public sealed class DrapeModelTests
     [Fact]
     public void Drape_WithDuplicatePaths_Throws()
     {
-        var drape = new DrapeEntity(Guid.NewGuid(), PageId, "Reports", Bounds());
+        var drape = new DrapeEntity(Guid.NewGuid(), _pageId, "Reports", Bounds());
 
         Should.Throw<ArgumentException>(() => drape with
         {
@@ -126,7 +126,7 @@ public sealed class DrapeModelTests
     [Fact]
     public void AddItem_AppendsAndAssignsOrder()
     {
-        var drape = new DrapeEntity(Guid.NewGuid(), PageId, "Reports", Bounds());
+        var drape = new DrapeEntity(Guid.NewGuid(), _pageId, "Reports", Bounds());
 
         var withItem = drape.AddItem(Item(@"C:\a.txt"));
 
@@ -138,7 +138,7 @@ public sealed class DrapeModelTests
     [Fact]
     public void AddItem_WithDuplicatePath_Throws()
     {
-        var drape = new DrapeEntity(Guid.NewGuid(), PageId, "Reports", Bounds()).AddItem(Item(@"C:\a.txt"));
+        var drape = new DrapeEntity(Guid.NewGuid(), _pageId, "Reports", Bounds()).AddItem(Item(@"C:\a.txt"));
 
         Should.Throw<InvalidOperationException>(() => drape.AddItem(Item(@"C:\A.TXT")));
     }
@@ -150,7 +150,7 @@ public sealed class DrapeModelTests
         var first = Item(@"C:\a.txt");
         var second = Item(@"C:\b.txt", 1);
         var third = Item(@"C:\c.txt", 2);
-        var drape = new DrapeEntity(Guid.NewGuid(), PageId, "Reports", Bounds())
+        var drape = new DrapeEntity(Guid.NewGuid(), _pageId, "Reports", Bounds())
         {
             Items = [first, second, third],
         };
@@ -168,7 +168,7 @@ public sealed class DrapeModelTests
     public void Items_ExposesReadOnlyView()
     {
         var source = new List<DrapeItem> { Item(@"C:\a.txt") };
-        var drape = new DrapeEntity(Guid.NewGuid(), PageId, "Reports", Bounds()) { Items = source };
+        var drape = new DrapeEntity(Guid.NewGuid(), _pageId, "Reports", Bounds()) { Items = source };
 
         source.Add(Item(@"C:\b.txt", 1));
 
@@ -214,7 +214,7 @@ public sealed class DrapeModelTests
     [Fact]
     public void Config_WithDuplicatePageIds_Throws()
     {
-        var page = new Page(PageId, "Main", 0);
+        var page = new Page(_pageId, "Main", 0);
 
         Should.Throw<ArgumentException>(() => new DrapeConfig(1, [page, page]));
     }
@@ -225,16 +225,16 @@ public sealed class DrapeModelTests
     {
         var drape = new DrapeEntity(Guid.NewGuid(), Guid.NewGuid(), "Reports", Bounds());
 
-        Should.Throw<ArgumentException>(() => new DrapeConfig(1, [new Page(PageId, "Main", 0)], [drape]));
+        Should.Throw<ArgumentException>(() => new DrapeConfig(1, [new Page(_pageId, "Main", 0)], [drape]));
     }
 
     /// <summary>ADR-011: the same path in two Drapes is rejected.</summary>
     [Fact]
     public void Config_WithItemInTwoDrapes_Throws()
     {
-        var page = new Page(PageId, "Main", 0);
-        var first = new DrapeEntity(Guid.NewGuid(), PageId, "A", Bounds()) { Items = [Item(@"C:\a.txt")] };
-        var second = new DrapeEntity(Guid.NewGuid(), PageId, "B", Bounds()) { Items = [Item(@"C:\a.txt")] };
+        var page = new Page(_pageId, "Main", 0);
+        var first = new DrapeEntity(Guid.NewGuid(), _pageId, "A", Bounds()) { Items = [Item(@"C:\a.txt")] };
+        var second = new DrapeEntity(Guid.NewGuid(), _pageId, "B", Bounds()) { Items = [Item(@"C:\a.txt")] };
 
         var error = Should.Throw<ArgumentException>(() => new DrapeConfig(1, [page], [first, second]));
         error.Message.ShouldContain("ADR-011");
@@ -247,16 +247,16 @@ public sealed class DrapeModelTests
     [InlineData(-1)]
     public void Config_WithNonPositiveSchemaVersion_Throws(int version)
     {
-        Should.Throw<ArgumentOutOfRangeException>(() => new DrapeConfig(version, [new Page(PageId, "Main", 0)]));
+        Should.Throw<ArgumentOutOfRangeException>(() => new DrapeConfig(version, [new Page(_pageId, "Main", 0)]));
     }
 
     /// <summary>Removing a Drape removes only that Drape.</summary>
     [Fact]
     public void RemoveDrape_RemovesOnlyTheDrape()
     {
-        var page = new Page(PageId, "Main", 0);
-        var keep = new DrapeEntity(Guid.NewGuid(), PageId, "Keep", Bounds());
-        var remove = new DrapeEntity(Guid.NewGuid(), PageId, "Remove", Bounds()) { Items = [Item(@"C:\a.txt")] };
+        var page = new Page(_pageId, "Main", 0);
+        var keep = new DrapeEntity(Guid.NewGuid(), _pageId, "Keep", Bounds());
+        var remove = new DrapeEntity(Guid.NewGuid(), _pageId, "Remove", Bounds()) { Items = [Item(@"C:\a.txt")] };
         var config = new DrapeConfig(1, [page], [keep, remove]);
 
         var after = config.RemoveDrape(remove.Id);
@@ -269,8 +269,8 @@ public sealed class DrapeModelTests
     [Fact]
     public void ReplaceDrape_WithUnknownId_Throws()
     {
-        var config = new DrapeConfig(1, [new Page(PageId, "Main", 0)]);
-        var unknown = new DrapeEntity(Guid.NewGuid(), PageId, "X", Bounds());
+        var config = new DrapeConfig(1, [new Page(_pageId, "Main", 0)]);
+        var unknown = new DrapeEntity(Guid.NewGuid(), _pageId, "X", Bounds());
 
         Should.Throw<InvalidOperationException>(() => config.ReplaceDrape(unknown));
     }

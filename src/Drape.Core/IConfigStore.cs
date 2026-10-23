@@ -1,4 +1,4 @@
-namespace Drape.Core;
+﻿namespace Drape.Core;
 
 /// <summary>
 /// How a config load ended. Callers must be able to tell "loaded", "recovered from a backup" and

@@ -1,4 +1,4 @@
-using Drape.Core.Model;
+﻿using Drape.Core.Model;
 using DrapeEntity = Drape.Core.Model.Drape;
 
 namespace Drape.Infrastructure.Configuration;

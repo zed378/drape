@@ -1,4 +1,4 @@
-using Drape.Core.Model;
+﻿using Drape.Core.Model;
 
 namespace Drape.Core;
 

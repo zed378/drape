@@ -1,4 +1,4 @@
-namespace Drape.Core.Model;
+﻿namespace Drape.Core.Model;
 
 /// <summary>What kind of Drape this is.</summary>
 public enum DrapeKind

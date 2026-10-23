@@ -1,4 +1,4 @@
-namespace Drape.Core.Model;
+﻿namespace Drape.Core.Model;
 
 /// <summary>The transient state of a Drape: rolled up, locked, how its items are sorted.</summary>
 public sealed record DrapeState

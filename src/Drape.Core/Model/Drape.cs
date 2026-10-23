@@ -1,4 +1,4 @@
-namespace Drape.Core.Model;
+﻿namespace Drape.Core.Model;
 
 /// <summary>
 /// A panel on the desktop holding a set of item references.

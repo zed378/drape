@@ -1,4 +1,4 @@
-using Drape.Core;
+﻿using Drape.Core;
 using Drape.Core.Model;
 using Drape.Infrastructure.Configuration;
 using Drape.TestSupport;
@@ -17,17 +17,17 @@ public sealed class FileConfigStoreTests
     private const string Root = @"C:\Users\test\AppData\Local\Drape";
     private const string ConfigPath = Root + @"\config.json";
 
-    private static readonly Guid PageId = Guid.Parse("6f1c2b8e-0000-4000-8000-000000000001");
+    private static readonly Guid _pageId = Guid.Parse("6f1c2b8e-0000-4000-8000-000000000001");
 
     private static DrapeConfig ConfigWithOneDrape(string title = "Reports")
     {
         var drape = new DrapeEntity(
             Guid.Parse("6f1c2b8e-0000-4000-8000-000000000010"),
-            PageId,
+            _pageId,
             title,
             new DrapeBounds(@"\\.\DISPLAY1", 40, 60, 320, 240, 96, 0.02, 0.05, 0.16, 0.22));
 
-        return new DrapeConfig(1, [new Page(PageId, "Main", 0)], [drape]);
+        return new DrapeConfig(1, [new Page(_pageId, "Main", 0)], [drape]);
     }
 
     private static (FileConfigStore Store, FakeFileSystem FileSystem, FakeClock Clock) CreateStore()
@@ -177,7 +177,7 @@ public sealed class FileConfigStoreTests
               "drapes": [
                 {
                   "id": "6f1c2b8e-0000-4000-8000-000000000010",
-                  "pageId": "6f1c2b8e-0000-4000-8000-000000000001",
+                  "_pageId": "6f1c2b8e-0000-4000-8000-000000000001",
                   "title": "Too small",
                   "bounds": { "monitorId": "\\\\.\\DISPLAY1", "x": 0, "y": 0, "width": 10, "height": 10, "dpi": 96, "fx": 0, "fy": 0, "fw": 0.1, "fh": 0.1 }
                 }

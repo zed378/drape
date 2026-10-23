@@ -1,4 +1,4 @@
-namespace Drape.Core.Model;
+﻿namespace Drape.Core.Model;
 
 /// <summary>How labels under an item are shown.</summary>
 public enum LabelMode

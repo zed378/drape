@@ -1,4 +1,4 @@
-namespace Drape.Core;
+﻿namespace Drape.Core;
 
 /// <summary>
 /// The file-system operations Core is allowed to perform (CS-17).

@@ -1,4 +1,4 @@
-namespace Drape.Core.Model;
+﻿namespace Drape.Core.Model;
 
 /// <summary>
 /// One item inside a Drape: a reference to a file, folder or shortcut on disk.

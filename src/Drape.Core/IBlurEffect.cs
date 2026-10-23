@@ -1,4 +1,4 @@
-namespace Drape.Core;
+﻿namespace Drape.Core;
 
 /// <summary>The blur kinds Drape can request, in order of preference.</summary>
 public enum BlurKind

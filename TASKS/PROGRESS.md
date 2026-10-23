@@ -13,7 +13,14 @@ reference, and a Windows `IPlatformCapabilities` implementation with a fake. P0-
 
 ## Current Focus
 
-**Phase 0 — Foundation and spikes.** Goal: solution + CI running, every Windows spike written up, ADR-007 (host) and ADR-006 (icons) finalised.
+**Phase 1 — Core Drape, Core-only cards.** P1-01, P1-02, P1-06 and P1-11 are `DONE`; P1-03 is
+`WIP` (missing spec and performance number). The window and shell cards (P1-04, P1-05, P1-07 … P1-10)
+are blocked on ADR-007, which needs spike P0-03 — that needs Windows 10 and 11 VMs and mixed-DPI
+hardware, so it is owner work, not agent work.
+
+**Phase 0 spikes are still `TODO`.** No spike can be completed without the hardware matrix the cards
+require; claiming otherwise would violate the "name the test" rule.
+
 Owner decisions taken on 2026-10-10: MIT/free (Q-02), name Drape (Q-03), Windows first (Q-15), mobile scope delegated (Q-16, ADR-021), everything called Drape (Q-17). All other open questions (Q-04 … Q-13, Q-18) were answered on 2026-10-10 with research (ADR-022); none is open. See [`BACKLOG.md`](./BACKLOG.md).
 
 ## In Progress (WIP ≤ 3)
@@ -21,6 +28,7 @@ Owner decisions taken on 2026-10-10: MIT/free (Q-02), name Drape (Q-03), Windows
 | ID | Title | Role | Started |
 |---|---|---|---|
 | P0-01 | Scaffold repo and solution | architect | 2026-10-23 |
+| P1-03 | ConfigStore: atomic save, backup, quarantine, migration | core-engineer | 2026-10-23 |
 
 > P0-01 remains `WIP`: the solution, layering test and `IPlatformCapabilities` skeleton are in place,
 > but the whole-solution test run, the `dotnet format` check and the NuGet version re-check are not
@@ -46,8 +54,8 @@ Owner decisions taken on 2026-10-10: MIT/free (Q-02), name Drape (Q-03), Windows
 
 | Phase | Theme | Cards | Done | Status |
 |---|---|---|---|---|
-| 0 | Foundation and spikes | 10 | 0 | Ready to start |
-| 1 | Core Drape | 12 | 0 | Waiting for Phase 0 |
+| 0 | Foundation and spikes | 10 | 0 | P0-01 `WIP`; spikes blocked on hardware |
+| 1 | Core Drape | 12 | 4 | Core-only cards done; window/shell cards blocked on ADR-007 |
 | 2 | Desktop integration (MVP) | 13 | 0 | Waiting for Phase 1 |
 | 3 | Customisation and UX | 10 | 0 | Waiting for Phase 2 |
 | 4 | Advanced features | 9 | 0 | Waiting for Phase 3 |
@@ -58,6 +66,10 @@ Owner decisions taken on 2026-10-10: MIT/free (Q-02), name Drape (Q-03), Windows
 
 | ID | Title | Date | Record |
 |---|---|---|---|
+| P1-01 | Core domain model (records, validation, one item per Drape) | 2026-10-23 | [record](../MEMORY/records/2026-10-23-P1-core-domain-config-layout.md) |
+| P1-02 | Interface contracts in Core, with a fake for each | 2026-10-23 | [record](../MEMORY/records/2026-10-23-P1-core-domain-config-layout.md) |
+| P1-06 | Layout maths (`LayoutService`) in Core | 2026-10-23 | [record](../MEMORY/records/2026-10-23-P1-core-domain-config-layout.md) |
+| P1-11 | Debounced persistence with a shutdown flush | 2026-10-23 | [record](../MEMORY/records/2026-10-23-P1-core-domain-config-layout.md) |
 | SETUP-01 | Project structure: `docs/`, `MEMORY/`, `TASKS/`, `CLAUDE.md`, `AGENTS.md` | 2026-10-09 | [project setup](../MEMORY/records/2026-10-09-project-setup.md) |
 | DEC-03 | Windows 10 22H2 minimum (owner); other platforms' minimums and channels (ADR-023) | 2026-10-10 | [record](../MEMORY/records/2026-10-10-windows-10-minimum-and-platform-minimums.md) |
 | DEC-02 | Remaining open questions answered with research (ADR-022); root README and LICENSE | 2026-10-10 | [record](../MEMORY/records/2026-10-10-remaining-questions-readme-licence.md) |

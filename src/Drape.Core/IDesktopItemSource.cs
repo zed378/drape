@@ -1,4 +1,4 @@
-namespace Drape.Core;
+﻿namespace Drape.Core;
 
 /// <summary>An item found on the desktop, before it becomes a <see cref="Model.DrapeItem"/>.</summary>
 /// <param name="Path">Normalised path.</param>

@@ -10,6 +10,7 @@ Current status is in [`../TASKS/PROGRESS.md`](../TASKS/PROGRESS.md), not here.
 
 | Date | Task | Record | Hook |
 |---|---|---|---|
+| 2026-10-23 | P1-01/02/03/06/11 | [Core domain, contracts, ConfigStore, layout, persistence](./records/2026-10-23-P1-core-domain-config-layout.md) | `public Drape(...)` does not compile: the type name resolves to the root namespace in a constructor declaration, so the record needed a primary constructor. The same trap then hit every test file. |
 | 2026-10-23 | P0-01 | [Solution scaffold: layering test, platform capabilities, shell skeleton](./records/2026-10-23-P0-01-solution-scaffold-and-platform-capabilities.md) | `Drape.UI` legitimately depends on Avalonia, so a blanket "no UI package" rule fails on the project that exists to be a UI; the rule had to be split into shell-free (all) and UI-free (Core, Infrastructure). |
 | 2026-10-10 | — | [Windows 10 minimum; other platforms' minimums and channels](./records/2026-10-10-windows-10-minimum-and-platform-minimums.md) | Windows 10 becomes a release gate and a two-path visual problem while its Microsoft support ends 2027; my edit script broke two lines and was caught by re-reading. Documents only. |
 | 2026-10-10 | — | [Remaining questions answered; root README and LICENSE](./records/2026-10-10-remaining-questions-readme-licence.md) | Windows 10 is still ~28% of desktops with ESU to Oct 2027; MSIX redirects HKCU writes so the Run-key autostart would break; Store policy on hooks unknown. Documents only. |

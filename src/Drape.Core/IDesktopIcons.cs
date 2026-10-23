@@ -1,4 +1,4 @@
-namespace Drape.Core;
+﻿namespace Drape.Core;
 
 /// <summary>
 /// Hides and restores the native desktop icons.

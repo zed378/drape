@@ -1,4 +1,4 @@
-namespace Drape.Core.Model;
+﻿namespace Drape.Core.Model;
 
 /// <summary>A page groups Drapes so the user can switch between layouts.</summary>
 public sealed record Page
