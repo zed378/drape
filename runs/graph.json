@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "last_updated": "2026-10-22T11:13:59.576Z",
+  "last_updated": "2026-10-23T13:05:39.033Z",
   "sources": [
     "README.md",
     "TASKS\\README.md",
@@ -50,7 +50,17 @@
     "tests\\Drape.Infrastructure.Tests\\bin\\Release\\net10.0\\EmptyFiles\\slide\\empty.pptx",
     "tests\\Drape.E2E\\bin\\Release\\net10.0-windows10.0.19041.0\\EmptyFiles\\document\\empty.docx",
     "tests\\Drape.E2E\\bin\\Release\\net10.0-windows10.0.19041.0\\EmptyFiles\\document\\empty.pdf",
-    "tests\\Drape.E2E\\bin\\Release\\net10.0-windows10.0.19041.0\\EmptyFiles\\slide\\empty.pptx"
+    "tests\\Drape.E2E\\bin\\Release\\net10.0-windows10.0.19041.0\\EmptyFiles\\slide\\empty.pptx",
+    "src\\Drape.Shell.Windows\\NativeMethods.txt",
+    "tests\\Drape.Arch.Tests\\obj\\Release\\net10.0-windows10.0.19041.0\\Drape.Arch.Tests.csproj.FileListAbsolute.txt",
+    "tests\\Drape.Arch.Tests\\bin\\Release\\net10.0-windows10.0.19041.0\\EmptyFiles\\document\\empty.docx",
+    "tests\\Drape.Arch.Tests\\bin\\Release\\net10.0-windows10.0.19041.0\\EmptyFiles\\document\\empty.pdf",
+    "tests\\Drape.Arch.Tests\\bin\\Release\\net10.0-windows10.0.19041.0\\EmptyFiles\\slide\\empty.pptx",
+    "MEMORY\\DECISIONS.md",
+    "MEMORY\\MEMORY-INDEX.md",
+    "MEMORY\\records\\2026-10-23-P0-01-solution-scaffold-and-platform-capabilities.md",
+    "TASKS\\PROGRESS.md",
+    "TASKS\\PHASE-0-FOUNDATION.md"
   ],
   "entities": [
     {
@@ -3994,6 +4004,753 @@
       "source": "docs\\SECURITY\\00-SECURITY-AND-PRIVACY.md",
       "line": 68,
       "evidence": "## Security Release Checklist"
+    },
+    {
+      "id": "sec_cswin32_inputs_for_drape_shell_windows_",
+      "name": "CsWin32 inputs for Drape.Shell.Windows.",
+      "type": "Section/Module",
+      "description": "Specification section from src\\Drape.Shell.Windows\\NativeMethods.txt",
+      "source": "src\\Drape.Shell.Windows\\NativeMethods.txt",
+      "line": 1,
+      "evidence": "# CsWin32 inputs for Drape.Shell.Windows."
+    },
+    {
+      "id": "sec_per_cs_18_all_win32_interop_is_generated_through_cswin32_no_manual_dllimport_",
+      "name": "Per CS-18, all Win32 interop is generated through CsWin32 (no manual DllImport).",
+      "type": "Section/Module",
+      "description": "Specification section from src\\Drape.Shell.Windows\\NativeMethods.txt",
+      "source": "src\\Drape.Shell.Windows\\NativeMethods.txt",
+      "line": 2,
+      "evidence": "# Per CS-18, all Win32 interop is generated through CsWin32 (no manual DllImport)."
+    },
+    {
+      "id": "sec_architectural_decision_records_adrs_",
+      "name": "Architectural Decision Records (ADRs)",
+      "type": "Section/Module",
+      "description": "Specification section from MEMORY\\DECISIONS.md",
+      "source": "MEMORY\\DECISIONS.md",
+      "line": 1,
+      "evidence": "# Architectural Decision Records (ADRs)"
+    },
+    {
+      "id": "sec_format",
+      "name": "Format",
+      "type": "Section/Module",
+      "description": "Specification section from MEMORY\\DECISIONS.md",
+      "source": "MEMORY\\DECISIONS.md",
+      "line": 5,
+      "evidence": "## Format"
+    },
+    {
+      "id": "ent_decision",
+      "name": "Decision",
+      "type": "Component/Requirement",
+      "description": "— what was decided",
+      "source": "MEMORY\\DECISIONS.md",
+      "line": 9,
+      "evidence": "- **Decision** — what was decided"
+    },
+    {
+      "id": "ent_rationale",
+      "name": "Rationale",
+      "type": "Component/Requirement",
+      "description": "— why this choice",
+      "source": "MEMORY\\DECISIONS.md",
+      "line": 10,
+      "evidence": "- **Rationale** — why this choice"
+    },
+    {
+      "id": "ent_implications",
+      "name": "Implications",
+      "type": "Component/Requirement",
+      "description": "— consequences and trade-offs, **including the bad ones**",
+      "source": "MEMORY\\DECISIONS.md",
+      "line": 12,
+      "evidence": "- **Implications** — consequences and trade-offs, **including the bad ones**"
+    },
+    {
+      "id": "ent_status",
+      "name": "Status",
+      "type": "Component/Requirement",
+      "description": "— Accepted | Proposed | Superseded by ADR-nnn | Deprecated",
+      "source": "MEMORY\\DECISIONS.md",
+      "line": 13,
+      "evidence": "- **Status** — Accepted | Proposed | Superseded by ADR-nnn | Deprecated"
+    },
+    {
+      "id": "sec_how_to_add_an_adr",
+      "name": "How to Add an ADR",
+      "type": "Section/Module",
+      "description": "Specification section from MEMORY\\DECISIONS.md",
+      "source": "MEMORY\\DECISIONS.md",
+      "line": 17,
+      "evidence": "## How to Add an ADR"
+    },
+    {
+      "id": "sec_part_i_planning_phase_decisions_2026_10_09_",
+      "name": "Part I — Planning-Phase Decisions (2026-10-09)",
+      "type": "Section/Module",
+      "description": "Specification section from MEMORY\\DECISIONS.md",
+      "source": "MEMORY\\DECISIONS.md",
+      "line": 30,
+      "evidence": "# Part I — Planning-Phase Decisions (2026-10-09)"
+    },
+    {
+      "id": "sec_adr_001_working_product_name_drape_",
+      "name": "ADR-001: Working Product Name \"Drape\"",
+      "type": "Section/Module",
+      "description": "Specification section from MEMORY\\DECISIONS.md",
+      "source": "MEMORY\\DECISIONS.md",
+      "line": 36,
+      "evidence": "## ADR-001: Working Product Name \"Drape\""
+    },
+    {
+      "id": "ent_the_original_rationale_was_wrong_",
+      "name": "The original rationale was wrong.",
+      "type": "Component/Requirement",
+      "description": "It said \"Drape = fence in Bahasa Indonesia\". \"Drape\" is an English word, not the Indonesian word for fence. The name appears to have replaced an earlier working name, \"Pagar\" (Indonesian for fence), w",
+      "source": "MEMORY\\DECISIONS.md",
+      "line": 44,
+      "evidence": "- **The original rationale was wrong.** It said \"Drape = fence in Bahasa Indonesia\". \"Drape\" is an English word, not the Indonesian word for fence. The name app"
+    },
+    {
+      "id": "sec_adr_002_project_working_structure",
+      "name": "ADR-002: Project Working Structure",
+      "type": "Section/Module",
+      "description": "Specification section from MEMORY\\DECISIONS.md",
+      "source": "MEMORY\\DECISIONS.md",
+      "line": 59,
+      "evidence": "## ADR-002: Project Working Structure"
+    },
+    {
+      "id": "sec_adr_003_documentation_in_indonesian_code_in_english",
+      "name": "ADR-003: Documentation in Indonesian, Code in English",
+      "type": "Section/Module",
+      "description": "Specification section from MEMORY\\DECISIONS.md",
+      "source": "MEMORY\\DECISIONS.md",
+      "line": 78,
+      "evidence": "## ADR-003: Documentation in Indonesian, Code in English"
+    },
+    {
+      "id": "sec_adr_004_stack_c_net_lts_wpf_cswin32",
+      "name": "ADR-004: Stack C / .NET LTS / WPF / CsWin32",
+      "type": "Section/Module",
+      "description": "Specification section from MEMORY\\DECISIONS.md",
+      "source": "MEMORY\\DECISIONS.md",
+      "line": 96,
+      "evidence": "## ADR-004: Stack C# / .NET LTS / WPF / CsWin32"
+    },
+    {
+      "id": "sec_adr_005_config_storage_one_atomic_json_file",
+      "name": "ADR-005: Config Storage — One Atomic JSON File",
+      "type": "Section/Module",
+      "description": "Specification section from MEMORY\\DECISIONS.md",
+      "source": "MEMORY\\DECISIONS.md",
+      "line": 117,
+      "evidence": "## ADR-005: Config Storage — One Atomic JSON File"
+    },
+    {
+      "id": "sec_adr_006_desktop_icon_strategy_non_destructive",
+      "name": "ADR-006: Desktop Icon Strategy — Non-Destructive",
+      "type": "Section/Module",
+      "description": "Specification section from MEMORY\\DECISIONS.md",
+      "source": "MEMORY\\DECISIONS.md",
+      "line": 140,
+      "evidence": "## ADR-006: Desktop Icon Strategy — Non-Destructive"
+    },
+    {
+      "id": "sec_adr_007_one_window_per_drape_and_host_layer_strategy",
+      "name": "ADR-007: One Window per Drape and Host-Layer Strategy",
+      "type": "Section/Module",
+      "description": "Specification section from MEMORY\\DECISIONS.md",
+      "source": "MEMORY\\DECISIONS.md",
+      "line": 168,
+      "evidence": "## ADR-007: One Window per Drape and Host-Layer Strategy"
+    },
+    {
+      "id": "ent_a",
+      "name": "A",
+      "type": "Component/Requirement",
+      "description": "— make the window a child of `Progman`/`WorkerW`.",
+      "source": "MEMORY\\DECISIONS.md",
+      "line": 175,
+      "evidence": "- **A** — make the window a child of `Progman`/`WorkerW`."
+    },
+    {
+      "id": "ent_b",
+      "name": "B",
+      "type": "Component/Requirement",
+      "description": "— top-level window at the bottom of the z-order (`HWND_BOTTOM`, `WS_EX_TOOLWINDOW`, not activated).",
+      "source": "MEMORY\\DECISIONS.md",
+      "line": 176,
+      "evidence": "- **B** — top-level window at the bottom of the z-order (`HWND_BOTTOM`, `WS_EX_TOOLWINDOW`, not activated)."
+    },
+    {
+      "id": "ent_c",
+      "name": "C",
+      "type": "Component/Requirement",
+      "description": "— hybrid: try A, fall back to B when verification fails. Provisional recommendation.",
+      "source": "MEMORY\\DECISIONS.md",
+      "line": 177,
+      "evidence": "- **C** — hybrid: try A, fall back to B when verification fails. Provisional recommendation."
+    },
+    {
+      "id": "sec_adr_008_single_non_elevated_process_plus_guard",
+      "name": "ADR-008: Single Non-Elevated Process plus Guard",
+      "type": "Section/Module",
+      "description": "Specification section from MEMORY\\DECISIONS.md",
+      "source": "MEMORY\\DECISIONS.md",
+      "line": 203,
+      "evidence": "## ADR-008: Single Non-Elevated Process plus Guard"
+    },
+    {
+      "id": "sec_adr_009_windows_11_primary_windows_10_best_effort",
+      "name": "ADR-009: Windows 11 Primary, Windows 10 Best Effort",
+      "type": "Section/Module",
+      "description": "Specification section from MEMORY\\DECISIONS.md",
+      "source": "MEMORY\\DECISIONS.md",
+      "line": 225,
+      "evidence": "## ADR-009: Windows 11 Primary, Windows 10 Best Effort"
+    },
+    {
+      "id": "sec_adr_010_no_telemetry_and_no_network_by_default",
+      "name": "ADR-010: No Telemetry and No Network by Default",
+      "type": "Section/Module",
+      "description": "Specification section from MEMORY\\DECISIONS.md",
+      "source": "MEMORY\\DECISIONS.md",
+      "line": 245,
+      "evidence": "## ADR-010: No Telemetry and No Network by Default"
+    },
+    {
+      "id": "sec_adr_011_one_item_belongs_to_exactly_one_drape_in_v1",
+      "name": "ADR-011: One Item Belongs to Exactly One Drape in v1",
+      "type": "Section/Module",
+      "description": "Specification section from MEMORY\\DECISIONS.md",
+      "source": "MEMORY\\DECISIONS.md",
+      "line": 264,
+      "evidence": "## ADR-011: One Item Belongs to Exactly One Drape in v1"
+    },
+    {
+      "id": "sec_part_ii_what_changed_or_was_added_2026_10_10_",
+      "name": "Part II — What Changed or Was Added (2026-10-10)",
+      "type": "Section/Module",
+      "description": "Specification section from MEMORY\\DECISIONS.md",
+      "source": "MEMORY\\DECISIONS.md",
+      "line": 283,
+      "evidence": "# Part II — What Changed or Was Added (2026-10-10)"
+    },
+    {
+      "id": "sec_adr_012_stack_c_net_10_lts_avalonia_ui_cross_platform",
+      "name": "ADR-012: Stack C / .NET 10 LTS / Avalonia UI, Cross-Platform",
+      "type": "Section/Module",
+      "description": "Specification section from MEMORY\\DECISIONS.md",
+      "source": "MEMORY\\DECISIONS.md",
+      "line": 289,
+      "evidence": "## ADR-012: Stack C# / .NET 10 LTS / Avalonia UI, Cross-Platform"
+    },
+    {
+      "id": "sec_adr_013_english_documentation_code_and_commits",
+      "name": "ADR-013: English Documentation, Code and Commits",
+      "type": "Section/Module",
+      "description": "Specification section from MEMORY\\DECISIONS.md",
+      "source": "MEMORY\\DECISIONS.md",
+      "line": 313,
+      "evidence": "## ADR-013: English Documentation, Code and Commits"
+    },
+    {
+      "id": "sec_adr_014_v1_0_ships_windows_only",
+      "name": "ADR-014: v1.0 Ships Windows Only",
+      "type": "Section/Module",
+      "description": "Specification section from MEMORY\\DECISIONS.md",
+      "source": "MEMORY\\DECISIONS.md",
+      "line": 333,
+      "evidence": "## ADR-014: v1.0 Ships Windows Only"
+    },
+    {
+      "id": "sec_adr_015_platform_seams",
+      "name": "ADR-015: Platform Seams",
+      "type": "Section/Module",
+      "description": "Specification section from MEMORY\\DECISIONS.md",
+      "source": "MEMORY\\DECISIONS.md",
+      "line": 353,
+      "evidence": "## ADR-015: Platform Seams"
+    },
+    {
+      "id": "sec_adr_016_terminology_drape_in_the_product_fence_in_code",
+      "name": "ADR-016: Terminology — \"Drape\" in the Product, Fence in Code",
+      "type": "Section/Module",
+      "description": "Specification section from MEMORY\\DECISIONS.md",
+      "source": "MEMORY\\DECISIONS.md",
+      "line": 378,
+      "evidence": "## ADR-016: Terminology — \"Drape\" in the Product, `Fence` in Code"
+    },
+    {
+      "id": "sec_adr_017_update_checks_are_opt_in",
+      "name": "ADR-017: Update Checks Are Opt-In",
+      "type": "Section/Module",
+      "description": "Specification section from MEMORY\\DECISIONS.md",
+      "source": "MEMORY\\DECISIONS.md",
+      "line": 396,
+      "evidence": "## ADR-017: Update Checks Are Opt-In"
+    },
+    {
+      "id": "sec_adr_018_documentation_layout_adopted_from_the_reference_repository",
+      "name": "ADR-018: Documentation Layout Adopted from the Reference Repository",
+      "type": "Section/Module",
+      "description": "Specification section from MEMORY\\DECISIONS.md",
+      "source": "MEMORY\\DECISIONS.md",
+      "line": 416,
+      "evidence": "## ADR-018: Documentation Layout Adopted from the Reference Repository"
+    },
+    {
+      "id": "sec_adr_019_licence_mit_and_final_name_drape_",
+      "name": "ADR-019: Licence MIT and Final Name \"Drape\"",
+      "type": "Section/Module",
+      "description": "Specification section from MEMORY\\DECISIONS.md",
+      "source": "MEMORY\\DECISIONS.md",
+      "line": 443,
+      "evidence": "## ADR-019: Licence MIT and Final Name \"Drape\""
+    },
+    {
+      "id": "sec_adr_020_rename_fence_to_drape_in_all_identifiers",
+      "name": "ADR-020: Rename Fence to Drape in All Identifiers",
+      "type": "Section/Module",
+      "description": "Specification section from MEMORY\\DECISIONS.md",
+      "source": "MEMORY\\DECISIONS.md",
+      "line": 466,
+      "evidence": "## ADR-020: Rename `Fence` to `Drape` in All Identifiers"
+    },
+    {
+      "id": "sec_adr_021_mobile_scope_companion_shortcut_groups_last_in_the_queue",
+      "name": "ADR-021: Mobile Scope — Companion Shortcut Groups, Last in the Queue",
+      "type": "Section/Module",
+      "description": "Specification section from MEMORY\\DECISIONS.md",
+      "source": "MEMORY\\DECISIONS.md",
+      "line": 487,
+      "evidence": "## ADR-021: Mobile Scope — Companion Shortcut Groups, Last in the Queue"
+    },
+    {
+      "id": "ent_android_",
+      "name": "Android:",
+      "type": "Component/Requirement",
+      "description": "an app the user picks (launch intent), a URL, or a file/folder picked through the system document picker (persisted URI permission).",
+      "source": "MEMORY\\DECISIONS.md",
+      "line": 492,
+      "evidence": "- **Android:** an app the user picks (launch intent), a URL, or a file/folder picked through the system document picker (persisted URI permission)."
+    },
+    {
+      "id": "ent_ios_",
+      "name": "iOS:",
+      "type": "Component/Requirement",
+      "description": "a URL or URL-scheme link, a Shortcuts shortcut by name, or a file the user picks (security-scoped bookmark). iOS does not allow listing installed apps, so there is no app item.",
+      "source": "MEMORY\\DECISIONS.md",
+      "line": 493,
+      "evidence": "- **iOS:** a URL or URL-scheme link, a Shortcuts shortcut by name, or a file the user picks (security-scoped bookmark). iOS does not allow listing installed app"
+    },
+    {
+      "id": "sec_adr_022_answers_to_the_remaining_open_questions_q_04_q_13_q_18_",
+      "name": "ADR-022: Answers to the Remaining Open Questions (Q-04 … Q-13, Q-18)",
+      "type": "Section/Module",
+      "description": "Specification section from MEMORY\\DECISIONS.md",
+      "source": "MEMORY\\DECISIONS.md",
+      "line": 512,
+      "evidence": "## ADR-022: Answers to the Remaining Open Questions (Q-04 … Q-13, Q-18)"
+    },
+    {
+      "id": "sec_adr_023_windows_10_22h2_is_the_minimum_supported_os_minimums_and_channels_for_other_platforms",
+      "name": "ADR-023: Windows 10 22H2 Is the Minimum Supported OS; Minimums and Channels for Other Platforms",
+      "type": "Section/Module",
+      "description": "Specification section from MEMORY\\DECISIONS.md",
+      "source": "MEMORY\\DECISIONS.md",
+      "line": 562,
+      "evidence": "## ADR-023: Windows 10 22H2 Is the Minimum Supported OS; Minimums and Channels for Other Platforms"
+    },
+    {
+      "id": "ent_windows_",
+      "name": "Windows:",
+      "type": "Component/Requirement",
+      "description": "the minimum supported OS is **Windows 10 22H2 (build 19045), x64**. It is fully supported: it is in the manual matrix and the release gate, and its defects are fixed. Windows 11 (24H2) remains the pri",
+      "source": "MEMORY\\DECISIONS.md",
+      "line": 567,
+      "evidence": "- **Windows:** the minimum supported OS is **Windows 10 22H2 (build 19045), x64**. It is fully supported: it is in the manual matrix and the release gate, and i"
+    },
+    {
+      "id": "ent_other_platforms_assistant_s_decision_",
+      "name": "Other platforms (assistant's decision):",
+      "type": "Component/Requirement",
+      "description": "the minimum is the oldest version Avalonia lists at Tier 2 or better — macOS 14 Sonoma; Ubuntu 22.04 LTS and Debian 12 families on x64 with X11 guaranteed and Wayland by capability; Android 12 (API 31",
+      "source": "MEMORY\\DECISIONS.md",
+      "line": 568,
+      "evidence": "- **Other platforms (assistant's decision):** the minimum is the oldest version Avalonia lists at Tier 2 or better — macOS 14 Sonoma; Ubuntu 22.04 LTS and Debia"
+    },
+    {
+      "id": "sec_adr_024_the_desktop_app_references_the_platform_shell_directly_one_thin_head_per_os_",
+      "name": "ADR-024: The Desktop App References the Platform Shell Directly (One Thin Head per OS)",
+      "type": "Section/Module",
+      "description": "Specification section from MEMORY\\DECISIONS.md",
+      "source": "MEMORY\\DECISIONS.md",
+      "line": 588,
+      "evidence": "## ADR-024: The Desktop App References the Platform Shell Directly (One Thin Head per OS)"
+    },
+    {
+      "id": "ent__a_multi_target_the_app",
+      "name": "(a) Multi-target the app",
+      "type": "Component/Requirement",
+      "description": "(`net10.0-windows`, `net10.0-macos`) with conditional `ProjectReference` items selected by TFM. Rejected: the app's `Main`, manifest, installer and packaging differ per platform far more than the TFM ",
+      "source": "MEMORY\\DECISIONS.md",
+      "line": 597,
+      "evidence": "- **(a) Multi-target the app** (`net10.0-windows`, `net10.0-macos`) with conditional `ProjectReference` items selected by TFM. Rejected: the app's `Main`, manif"
+    },
+    {
+      "id": "ent__b_conditional_projectreference_selected_by_os_or_a_property_",
+      "name": "(b) Conditional `ProjectReference` selected by `$(OS)` or a property.",
+      "type": "Component/Requirement",
+      "description": "Rejected: it makes the build machine's OS part of the build definition, which breaks cross-compilation and reproducible builds from a tag, and it hides the dependency from static inspection.",
+      "source": "MEMORY\\DECISIONS.md",
+      "line": 598,
+      "evidence": "- **(b) Conditional `ProjectReference` selected by `$(OS)` or a property.** Rejected: it makes the build machine's OS part of the build definition, which breaks"
+    },
+    {
+      "id": "ent__c_thin_head_per_os_",
+      "name": "(c) Thin head per OS.",
+      "type": "Component/Requirement",
+      "description": "Chosen.",
+      "source": "MEMORY\\DECISIONS.md",
+      "line": 599,
+      "evidence": "- **(c) Thin head per OS.** Chosen."
+    },
+    {
+      "id": "sec_memory_index",
+      "name": "Memory Index",
+      "type": "Section/Module",
+      "description": "Specification section from MEMORY\\MEMORY-INDEX.md",
+      "source": "MEMORY\\MEMORY-INDEX.md",
+      "line": 1,
+      "evidence": "# Memory Index"
+    },
+    {
+      "id": "sec_records",
+      "name": "Records",
+      "type": "Section/Module",
+      "description": "Specification section from MEMORY\\MEMORY-INDEX.md",
+      "source": "MEMORY\\MEMORY-INDEX.md",
+      "line": 9,
+      "evidence": "## Records"
+    },
+    {
+      "id": "sec_decisions",
+      "name": "Decisions",
+      "type": "Section/Module",
+      "description": "Specification section from MEMORY\\MEMORY-INDEX.md",
+      "source": "MEMORY\\MEMORY-INDEX.md",
+      "line": 20,
+      "evidence": "## Decisions"
+    },
+    {
+      "id": "sec_specs",
+      "name": "Specs",
+      "type": "Section/Module",
+      "description": "Specification section from MEMORY\\MEMORY-INDEX.md",
+      "source": "MEMORY\\MEMORY-INDEX.md",
+      "line": 51,
+      "evidence": "## Specs"
+    },
+    {
+      "id": "sec_p0_01_solution_scaffold_layering_test_and_platform_capabilities",
+      "name": "P0-01 — Solution Scaffold, Layering Test and Platform Capabilities",
+      "type": "Section/Module",
+      "description": "Specification section from MEMORY\\records\\2026-10-23-P0-01-solution-scaffold-and-platform-capabilities.md",
+      "source": "MEMORY\\records\\2026-10-23-P0-01-solution-scaffold-and-platform-capabilities.md",
+      "line": 1,
+      "evidence": "# P0-01 — Solution Scaffold, Layering Test and Platform Capabilities"
+    },
+    {
+      "id": "ent_architecture_test_by_reflection_over_loaded_assemblies_",
+      "name": "Architecture test by reflection over loaded assemblies.",
+      "type": "Component/Requirement",
+      "description": "Rejected: it asserts that the",
+      "source": "MEMORY\\records\\2026-10-23-P0-01-solution-scaffold-and-platform-capabilities.md",
+      "line": 52,
+      "evidence": "- **Architecture test by reflection over loaded assemblies.** Rejected: it asserts that the"
+    },
+    {
+      "id": "ent_one_blanket_package_rule_for_core_ui_and_infrastructure_",
+      "name": "One blanket package rule for Core, UI and Infrastructure.",
+      "type": "Component/Requirement",
+      "description": "Rejected: fails on `Drape.UI`, see",
+      "source": "MEMORY\\records\\2026-10-23-P0-01-solution-scaffold-and-platform-capabilities.md",
+      "line": 55,
+      "evidence": "- **One blanket package rule for Core, UI and Infrastructure.** Rejected: fails on `Drape.UI`, see"
+    },
+    {
+      "id": "ent_calling_ifileopendialog_directly_on_the_avalonia_ui_thread_",
+      "name": "Calling `IFileOpenDialog` directly on the Avalonia UI thread.",
+      "type": "Component/Requirement",
+      "description": "Rejected: the common item",
+      "source": "MEMORY\\records\\2026-10-23-P0-01-solution-scaffold-and-platform-capabilities.md",
+      "line": 57,
+      "evidence": "- **Calling `IFileOpenDialog` directly on the Avalonia UI thread.** Rejected: the common item"
+    },
+    {
+      "id": "ent_returning_monitor_rectangles_in_logical_pixels_",
+      "name": "Returning monitor rectangles in logical pixels.",
+      "type": "Component/Requirement",
+      "description": "Rejected: `docs/PLATFORM/00-WINDOWS-INTEGRATION.md`",
+      "source": "MEMORY\\records\\2026-10-23-P0-01-solution-scaffold-and-platform-capabilities.md",
+      "line": 60,
+      "evidence": "- **Returning monitor rectangles in logical pixels.** Rejected: `docs/PLATFORM/00-WINDOWS-INTEGRATION.md`"
+    },
+    {
+      "id": "ent_desktop_safety_test_",
+      "name": "Desktop-safety test:",
+      "type": "Component/Requirement",
+      "description": "not applicable — nothing in this change hides icons, hosts a window or",
+      "source": "MEMORY\\records\\2026-10-23-P0-01-solution-scaffold-and-platform-capabilities.md",
+      "line": 98,
+      "evidence": "- **Desktop-safety test:** not applicable — nothing in this change hides icons, hosts a window or"
+    },
+    {
+      "id": "ent_mutation_check_",
+      "name": "Mutation check:",
+      "type": "Component/Requirement",
+      "description": "added `<PackageReference Include=\"Avalonia\" />` to `Drape.Core.csproj` and",
+      "source": "MEMORY\\records\\2026-10-23-P0-01-solution-scaffold-and-platform-capabilities.md",
+      "line": 100,
+      "evidence": "- **Mutation check:** added `<PackageReference Include=\"Avalonia\" />` to `Drape.Core.csproj` and"
+    },
+    {
+      "id": "ent_icon_hide_path_",
+      "name": "Icon hide path:",
+      "type": "Component/Requirement",
+      "description": "none. `WindowsPlatformCapabilities.CanHideDesktopIcons` returns `true` but no",
+      "source": "MEMORY\\records\\2026-10-23-P0-01-solution-scaffold-and-platform-capabilities.md",
+      "line": 136,
+      "evidence": "- **Icon hide path:** none. `WindowsPlatformCapabilities.CanHideDesktopIcons` returns `true` but no"
+    },
+    {
+      "id": "ent_restore_paths_exercised_",
+      "name": "Restore paths exercised:",
+      "type": "Component/Requirement",
+      "description": "none — no hide exists to restore.",
+      "source": "MEMORY\\records\\2026-10-23-P0-01-solution-scaffold-and-platform-capabilities.md",
+      "line": 139,
+      "evidence": "- **Restore paths exercised:** none — no hide exists to restore."
+    },
+    {
+      "id": "ent_handles_",
+      "name": "Handles:",
+      "type": "Component/Requirement",
+      "description": "`HMONITOR` values are used transiently inside the enumeration callback and never",
+      "source": "MEMORY\\records\\2026-10-23-P0-01-solution-scaffold-and-platform-capabilities.md",
+      "line": 140,
+      "evidence": "- **Handles:** `HMONITOR` values are used transiently inside the enumeration callback and never"
+    },
+    {
+      "id": "ent_hook_callback_",
+      "name": "Hook callback:",
+      "type": "Component/Requirement",
+      "description": "none installed.",
+      "source": "MEMORY\\records\\2026-10-23-P0-01-solution-scaffold-and-platform-capabilities.md",
+      "line": 143,
+      "evidence": "- **Hook callback:** none installed."
+    },
+    {
+      "id": "ent_capability_gating_",
+      "name": "Capability gating:",
+      "type": "Component/Requirement",
+      "description": "`SupportsDesktopLevelWindow` deliberately returns `false` because ADR-007 is",
+      "source": "MEMORY\\records\\2026-10-23-P0-01-solution-scaffold-and-platform-capabilities.md",
+      "line": 144,
+      "evidence": "- **Capability gating:** `SupportsDesktopLevelWindow` deliberately returns `false` because ADR-007 is"
+    },
+    {
+      "id": "ent_config_",
+      "name": "Config:",
+      "type": "Component/Requirement",
+      "description": "no schema change.",
+      "source": "MEMORY\\records\\2026-10-23-P0-01-solution-scaffold-and-platform-capabilities.md",
+      "line": 146,
+      "evidence": "- **Config:** no schema change."
+    },
+    {
+      "id": "ent_privacy_",
+      "name": "Privacy:",
+      "type": "Component/Requirement",
+      "description": "no network call, no data collected. The dialogs return paths to the caller; nothing",
+      "source": "MEMORY\\records\\2026-10-23-P0-01-solution-scaffold-and-platform-capabilities.md",
+      "line": 147,
+      "evidence": "- **Privacy:** no network call, no data collected. The dialogs return paths to the caller; nothing"
+    },
+    {
+      "id": "sec_progress",
+      "name": "Progress",
+      "type": "Section/Module",
+      "description": "Specification section from TASKS\\PROGRESS.md",
+      "source": "TASKS\\PROGRESS.md",
+      "line": 1,
+      "evidence": "# Progress"
+    },
+    {
+      "id": "sec_where_this_project_actually_is",
+      "name": "Where This Project Actually Is",
+      "type": "Section/Module",
+      "description": "Specification section from TASKS\\PROGRESS.md",
+      "source": "TASKS\\PROGRESS.md",
+      "line": 7,
+      "evidence": "## Where This Project Actually Is"
+    },
+    {
+      "id": "sec_current_focus",
+      "name": "Current Focus",
+      "type": "Section/Module",
+      "description": "Specification section from TASKS\\PROGRESS.md",
+      "source": "TASKS\\PROGRESS.md",
+      "line": 14,
+      "evidence": "## Current Focus"
+    },
+    {
+      "id": "sec_in_progress_wip_3_",
+      "name": "In Progress (WIP ≤ 3)",
+      "type": "Section/Module",
+      "description": "Specification section from TASKS\\PROGRESS.md",
+      "source": "TASKS\\PROGRESS.md",
+      "line": 19,
+      "evidence": "## In Progress (WIP ≤ 3)"
+    },
+    {
+      "id": "sec_ready_priority_order_",
+      "name": "Ready (priority order)",
+      "type": "Section/Module",
+      "description": "Specification section from TASKS\\PROGRESS.md",
+      "source": "TASKS\\PROGRESS.md",
+      "line": 27,
+      "evidence": "## Ready (priority order)"
+    },
+    {
+      "id": "sec_blocked",
+      "name": "Blocked",
+      "type": "Section/Module",
+      "description": "Specification section from TASKS\\PROGRESS.md",
+      "source": "TASKS\\PROGRESS.md",
+      "line": 35,
+      "evidence": "## Blocked"
+    },
+    {
+      "id": "sec_phase_summary",
+      "name": "Phase Summary",
+      "type": "Section/Module",
+      "description": "Specification section from TASKS\\PROGRESS.md",
+      "source": "TASKS\\PROGRESS.md",
+      "line": 43,
+      "evidence": "## Phase Summary"
+    },
+    {
+      "id": "sec_done",
+      "name": "Done",
+      "type": "Section/Module",
+      "description": "Specification section from TASKS\\PROGRESS.md",
+      "source": "TASKS\\PROGRESS.md",
+      "line": 55,
+      "evidence": "## Done"
+    },
+    {
+      "id": "sec_how_to_update_this_board",
+      "name": "How to Update This Board",
+      "type": "Section/Module",
+      "description": "Specification section from TASKS\\PROGRESS.md",
+      "source": "TASKS\\PROGRESS.md",
+      "line": 65,
+      "evidence": "## How to Update This Board"
+    },
+    {
+      "id": "sec_p0_01_scaffold_repo_and_avalonia_solution",
+      "name": "P0-01 — Scaffold repo and Avalonia solution",
+      "type": "Section/Module",
+      "description": "Specification section from TASKS\\PHASE-0-FOUNDATION.md",
+      "source": "TASKS\\PHASE-0-FOUNDATION.md",
+      "line": 13,
+      "evidence": "### P0-01 — Scaffold repo and Avalonia solution"
+    },
+    {
+      "id": "sec_p0_02_ci_on_github_actions",
+      "name": "P0-02 — CI on GitHub Actions",
+      "type": "Section/Module",
+      "description": "Specification section from TASKS\\PHASE-0-FOUNDATION.md",
+      "source": "TASKS\\PHASE-0-FOUNDATION.md",
+      "line": 48,
+      "evidence": "### P0-02 — CI on GitHub Actions"
+    },
+    {
+      "id": "sec_p0_03_spike_window_host_in_the_desktop_layer",
+      "name": "P0-03 — Spike: window host in the desktop layer",
+      "type": "Section/Module",
+      "description": "Specification section from TASKS\\PHASE-0-FOUNDATION.md",
+      "source": "TASKS\\PHASE-0-FOUNDATION.md",
+      "line": 76,
+      "evidence": "### P0-03 — Spike: window host in the desktop layer"
+    },
+    {
+      "id": "sec_p0_04_spike_hide_show_native_icons_and_recovery",
+      "name": "P0-04 — Spike: hide/show native icons and recovery",
+      "type": "Section/Module",
+      "description": "Specification section from TASKS\\PHASE-0-FOUNDATION.md",
+      "source": "TASKS\\PHASE-0-FOUNDATION.md",
+      "line": 105,
+      "evidence": "### P0-04 — Spike: hide/show native icons and recovery"
+    },
+    {
+      "id": "sec_p0_05_spike_enumerate_items_and_icons_via_the_shell",
+      "name": "P0-05 — Spike: enumerate items and icons via the shell",
+      "type": "Section/Module",
+      "description": "Specification section from TASKS\\PHASE-0-FOUNDATION.md",
+      "source": "TASKS\\PHASE-0-FOUNDATION.md",
+      "line": 134,
+      "evidence": "### P0-05 — Spike: enumerate items and icons via the shell"
+    },
+    {
+      "id": "sec_p0_06_spike_transparency_and_blur_on_avalonia",
+      "name": "P0-06 — Spike: transparency and blur on Avalonia",
+      "type": "Section/Module",
+      "description": "Specification section from TASKS\\PHASE-0-FOUNDATION.md",
+      "source": "TASKS\\PHASE-0-FOUNDATION.md",
+      "line": 163,
+      "evidence": "### P0-06 — Spike: transparency and blur on Avalonia"
+    },
+    {
+      "id": "sec_p0_07_spike_mouse_hook_desktop_double_click_and_right_drag_",
+      "name": "P0-07 — Spike: mouse hook (desktop double-click and right-drag)",
+      "type": "Section/Module",
+      "description": "Specification section from TASKS\\PHASE-0-FOUNDATION.md",
+      "source": "TASKS\\PHASE-0-FOUNDATION.md",
+      "line": 191,
+      "evidence": "### P0-07 — Spike: mouse hook (desktop double-click and right-drag)"
+    },
+    {
+      "id": "sec_p0_08_app_skeleton_composition_root_di_logging_single_instance_tray",
+      "name": "P0-08 — App skeleton: composition root, DI, logging, single instance, tray",
+      "type": "Section/Module",
+      "description": "Specification section from TASKS\\PHASE-0-FOUNDATION.md",
+      "source": "TASKS\\PHASE-0-FOUNDATION.md",
+      "line": 220,
+      "evidence": "### P0-08 — App skeleton: composition root, DI, logging, single instance, tray"
+    },
+    {
+      "id": "sec_p0_09_record_spike_results_as_adrs_and_update_documents",
+      "name": "P0-09 — Record spike results as ADRs and update documents",
+      "type": "Section/Module",
+      "description": "Specification section from TASKS\\PHASE-0-FOUNDATION.md",
+      "source": "TASKS\\PHASE-0-FOUNDATION.md",
+      "line": 250,
+      "evidence": "### P0-09 — Record spike results as ADRs and update documents"
+    },
+    {
+      "id": "sec_p0_10_custom_subagent_definitions_optional_",
+      "name": "P0-10 — Custom subagent definitions (optional)",
+      "type": "Section/Module",
+      "description": "Specification section from TASKS\\PHASE-0-FOUNDATION.md",
+      "source": "TASKS\\PHASE-0-FOUNDATION.md",
+      "line": 279,
+      "evidence": "### P0-10 — Custom subagent definitions (optional)"
     }
   ],
   "relations": [
@@ -5060,12 +5817,244 @@
       "evidence": "- **Mobile.** Starts only after the Windows v1.0 ships ([ADR-014](../../MEMORY/DECISIONS.md)).",
       "source_file": "docs\\ARCHITECTURE\\01-TECH-STACK.md",
       "line": 73
+    },
+    {
+      "source": "sec_format",
+      "relation": "DEFINES_REQUIREMENT",
+      "target": "ent_decision",
+      "evidence": "- **Decision** — what was decided",
+      "source_file": "MEMORY\\DECISIONS.md",
+      "line": 9
+    },
+    {
+      "source": "sec_format",
+      "relation": "DEFINES_REQUIREMENT",
+      "target": "ent_rationale",
+      "evidence": "- **Rationale** — why this choice",
+      "source_file": "MEMORY\\DECISIONS.md",
+      "line": 10
+    },
+    {
+      "source": "sec_format",
+      "relation": "DEFINES_REQUIREMENT",
+      "target": "ent_alternatives_considered",
+      "evidence": "- **Alternatives Considered** — what was rejected and why",
+      "source_file": "MEMORY\\DECISIONS.md",
+      "line": 11
+    },
+    {
+      "source": "sec_format",
+      "relation": "DEFINES_REQUIREMENT",
+      "target": "ent_implications",
+      "evidence": "- **Implications** — consequences and trade-offs, **including the bad ones**",
+      "source_file": "MEMORY\\DECISIONS.md",
+      "line": 12
+    },
+    {
+      "source": "sec_format",
+      "relation": "DEFINES_REQUIREMENT",
+      "target": "ent_status",
+      "evidence": "- **Status** — Accepted | Proposed | Superseded by ADR-nnn | Deprecated",
+      "source_file": "MEMORY\\DECISIONS.md",
+      "line": 13
+    },
+    {
+      "source": "sec_adr_001_working_product_name_drape_",
+      "relation": "DEFINES_REQUIREMENT",
+      "target": "ent_the_original_rationale_was_wrong_",
+      "evidence": "- **The original rationale was wrong.** It said \"Drape = fence in Bahasa Indonesia\". \"Drape\" is an English word, not the Indonesian word for fence. The name app",
+      "source_file": "MEMORY\\DECISIONS.md",
+      "line": 44
+    },
+    {
+      "source": "sec_adr_007_one_window_per_drape_and_host_layer_strategy",
+      "relation": "DEFINES_REQUIREMENT",
+      "target": "ent_a",
+      "evidence": "- **A** — make the window a child of `Progman`/`WorkerW`.",
+      "source_file": "MEMORY\\DECISIONS.md",
+      "line": 175
+    },
+    {
+      "source": "sec_adr_007_one_window_per_drape_and_host_layer_strategy",
+      "relation": "DEFINES_REQUIREMENT",
+      "target": "ent_b",
+      "evidence": "- **B** — top-level window at the bottom of the z-order (`HWND_BOTTOM`, `WS_EX_TOOLWINDOW`, not activated).",
+      "source_file": "MEMORY\\DECISIONS.md",
+      "line": 176
+    },
+    {
+      "source": "sec_adr_007_one_window_per_drape_and_host_layer_strategy",
+      "relation": "DEFINES_REQUIREMENT",
+      "target": "ent_c",
+      "evidence": "- **C** — hybrid: try A, fall back to B when verification fails. Provisional recommendation.",
+      "source_file": "MEMORY\\DECISIONS.md",
+      "line": 177
+    },
+    {
+      "source": "sec_adr_021_mobile_scope_companion_shortcut_groups_last_in_the_queue",
+      "relation": "DEFINES_REQUIREMENT",
+      "target": "ent_android_",
+      "evidence": "- **Android:** an app the user picks (launch intent), a URL, or a file/folder picked through the system document picker (persisted URI permission).",
+      "source_file": "MEMORY\\DECISIONS.md",
+      "line": 492
+    },
+    {
+      "source": "sec_adr_021_mobile_scope_companion_shortcut_groups_last_in_the_queue",
+      "relation": "DEFINES_REQUIREMENT",
+      "target": "ent_ios_",
+      "evidence": "- **iOS:** a URL or URL-scheme link, a Shortcuts shortcut by name, or a file the user picks (security-scoped bookmark). iOS does not allow listing installed app",
+      "source_file": "MEMORY\\DECISIONS.md",
+      "line": 493
+    },
+    {
+      "source": "sec_adr_023_windows_10_22h2_is_the_minimum_supported_os_minimums_and_channels_for_other_platforms",
+      "relation": "DEFINES_REQUIREMENT",
+      "target": "ent_windows_",
+      "evidence": "- **Windows:** the minimum supported OS is **Windows 10 22H2 (build 19045), x64**. It is fully supported: it is in the manual matrix and the release gate, and i",
+      "source_file": "MEMORY\\DECISIONS.md",
+      "line": 567
+    },
+    {
+      "source": "sec_adr_023_windows_10_22h2_is_the_minimum_supported_os_minimums_and_channels_for_other_platforms",
+      "relation": "DEFINES_REQUIREMENT",
+      "target": "ent_other_platforms_assistant_s_decision_",
+      "evidence": "- **Other platforms (assistant's decision):** the minimum is the oldest version Avalonia lists at Tier 2 or better — macOS 14 Sonoma; Ubuntu 22.04 LTS and Debia",
+      "source_file": "MEMORY\\DECISIONS.md",
+      "line": 568
+    },
+    {
+      "source": "sec_adr_024_the_desktop_app_references_the_platform_shell_directly_one_thin_head_per_os_",
+      "relation": "DEFINES_REQUIREMENT",
+      "target": "ent__a_multi_target_the_app",
+      "evidence": "- **(a) Multi-target the app** (`net10.0-windows`, `net10.0-macos`) with conditional `ProjectReference` items selected by TFM. Rejected: the app's `Main`, manif",
+      "source_file": "MEMORY\\DECISIONS.md",
+      "line": 597
+    },
+    {
+      "source": "sec_adr_024_the_desktop_app_references_the_platform_shell_directly_one_thin_head_per_os_",
+      "relation": "DEFINES_REQUIREMENT",
+      "target": "ent__b_conditional_projectreference_selected_by_os_or_a_property_",
+      "evidence": "- **(b) Conditional `ProjectReference` selected by `$(OS)` or a property.** Rejected: it makes the build machine's OS part of the build definition, which breaks",
+      "source_file": "MEMORY\\DECISIONS.md",
+      "line": 598
+    },
+    {
+      "source": "sec_adr_024_the_desktop_app_references_the_platform_shell_directly_one_thin_head_per_os_",
+      "relation": "DEFINES_REQUIREMENT",
+      "target": "ent__c_thin_head_per_os_",
+      "evidence": "- **(c) Thin head per OS.** Chosen.",
+      "source_file": "MEMORY\\DECISIONS.md",
+      "line": 599
+    },
+    {
+      "source": "sec_alternatives_considered",
+      "relation": "DEFINES_REQUIREMENT",
+      "target": "ent_architecture_test_by_reflection_over_loaded_assemblies_",
+      "evidence": "- **Architecture test by reflection over loaded assemblies.** Rejected: it asserts that the",
+      "source_file": "MEMORY\\records\\2026-10-23-P0-01-solution-scaffold-and-platform-capabilities.md",
+      "line": 52
+    },
+    {
+      "source": "sec_alternatives_considered",
+      "relation": "DEFINES_REQUIREMENT",
+      "target": "ent_one_blanket_package_rule_for_core_ui_and_infrastructure_",
+      "evidence": "- **One blanket package rule for Core, UI and Infrastructure.** Rejected: fails on `Drape.UI`, see",
+      "source_file": "MEMORY\\records\\2026-10-23-P0-01-solution-scaffold-and-platform-capabilities.md",
+      "line": 55
+    },
+    {
+      "source": "sec_alternatives_considered",
+      "relation": "DEFINES_REQUIREMENT",
+      "target": "ent_calling_ifileopendialog_directly_on_the_avalonia_ui_thread_",
+      "evidence": "- **Calling `IFileOpenDialog` directly on the Avalonia UI thread.** Rejected: the common item",
+      "source_file": "MEMORY\\records\\2026-10-23-P0-01-solution-scaffold-and-platform-capabilities.md",
+      "line": 57
+    },
+    {
+      "source": "sec_alternatives_considered",
+      "relation": "DEFINES_REQUIREMENT",
+      "target": "ent_returning_monitor_rectangles_in_logical_pixels_",
+      "evidence": "- **Returning monitor rectangles in logical pixels.** Rejected: `docs/PLATFORM/00-WINDOWS-INTEGRATION.md`",
+      "source_file": "MEMORY\\records\\2026-10-23-P0-01-solution-scaffold-and-platform-capabilities.md",
+      "line": 60
+    },
+    {
+      "source": "sec_tests",
+      "relation": "DEFINES_REQUIREMENT",
+      "target": "ent_desktop_safety_test_",
+      "evidence": "- **Desktop-safety test:** not applicable — nothing in this change hides icons, hosts a window or",
+      "source_file": "MEMORY\\records\\2026-10-23-P0-01-solution-scaffold-and-platform-capabilities.md",
+      "line": 98
+    },
+    {
+      "source": "sec_tests",
+      "relation": "DEFINES_REQUIREMENT",
+      "target": "ent_mutation_check_",
+      "evidence": "- **Mutation check:** added `<PackageReference Include=\"Avalonia\" />` to `Drape.Core.csproj` and",
+      "source_file": "MEMORY\\records\\2026-10-23-P0-01-solution-scaffold-and-platform-capabilities.md",
+      "line": 100
+    },
+    {
+      "source": "sec_desktop_safety",
+      "relation": "DEFINES_REQUIREMENT",
+      "target": "ent_icon_hide_path_",
+      "evidence": "- **Icon hide path:** none. `WindowsPlatformCapabilities.CanHideDesktopIcons` returns `true` but no",
+      "source_file": "MEMORY\\records\\2026-10-23-P0-01-solution-scaffold-and-platform-capabilities.md",
+      "line": 136
+    },
+    {
+      "source": "sec_desktop_safety",
+      "relation": "DEFINES_REQUIREMENT",
+      "target": "ent_restore_paths_exercised_",
+      "evidence": "- **Restore paths exercised:** none — no hide exists to restore.",
+      "source_file": "MEMORY\\records\\2026-10-23-P0-01-solution-scaffold-and-platform-capabilities.md",
+      "line": 139
+    },
+    {
+      "source": "sec_desktop_safety",
+      "relation": "DEFINES_REQUIREMENT",
+      "target": "ent_handles_",
+      "evidence": "- **Handles:** `HMONITOR` values are used transiently inside the enumeration callback and never",
+      "source_file": "MEMORY\\records\\2026-10-23-P0-01-solution-scaffold-and-platform-capabilities.md",
+      "line": 140
+    },
+    {
+      "source": "sec_desktop_safety",
+      "relation": "DEFINES_REQUIREMENT",
+      "target": "ent_hook_callback_",
+      "evidence": "- **Hook callback:** none installed.",
+      "source_file": "MEMORY\\records\\2026-10-23-P0-01-solution-scaffold-and-platform-capabilities.md",
+      "line": 143
+    },
+    {
+      "source": "sec_desktop_safety",
+      "relation": "DEFINES_REQUIREMENT",
+      "target": "ent_capability_gating_",
+      "evidence": "- **Capability gating:** `SupportsDesktopLevelWindow` deliberately returns `false` because ADR-007 is",
+      "source_file": "MEMORY\\records\\2026-10-23-P0-01-solution-scaffold-and-platform-capabilities.md",
+      "line": 144
+    },
+    {
+      "source": "sec_desktop_safety",
+      "relation": "DEFINES_REQUIREMENT",
+      "target": "ent_config_",
+      "evidence": "- **Config:** no schema change.",
+      "source_file": "MEMORY\\records\\2026-10-23-P0-01-solution-scaffold-and-platform-capabilities.md",
+      "line": 146
+    },
+    {
+      "source": "sec_desktop_safety",
+      "relation": "DEFINES_REQUIREMENT",
+      "target": "ent_privacy_",
+      "evidence": "- **Privacy:** no network call, no data collected. The dialogs return paths to the caller; nothing",
+      "source_file": "MEMORY\\records\\2026-10-23-P0-01-solution-scaffold-and-platform-capabilities.md",
+      "line": 147
     }
   ],
   "stats": {
-    "total_sources": 49,
-    "total_entities": 438,
-    "total_relations": 133,
+    "total_sources": 59,
+    "total_entities": 521,
+    "total_relations": 162,
     "token_savings_estimate": "85-95%"
   }
 }
