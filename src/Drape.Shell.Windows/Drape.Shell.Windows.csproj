@@ -5,6 +5,14 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CsWin32DefaultVisibility>Public</CsWin32DefaultVisibility>
+    <CsWin32GeneratePrimitives>true</CsWin32GeneratePrimitives>
+    <!-- Materialize the CsWin32 source-generator output to disk so the generated
+         interop signatures can be inspected under obj\Generated while this
+         shell project is still in active development. -->
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)Generated</CompilerGeneratedFilesOutputPath>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,1 +1,1 @@
-// Drape.Infrastructure project root namespace.
+﻿// Drape.Infrastructure project root namespace.

@@ -8,6 +8,7 @@
     <Project Path="src/Drape.Guard/Drape.Guard.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/Drape.Arch.Tests/Drape.Arch.Tests.csproj" />
     <Project Path="tests/Drape.Core.Tests/Drape.Core.Tests.csproj" />
     <Project Path="tests/Drape.Infrastructure.Tests/Drape.Infrastructure.Tests.csproj" />
     <Project Path="tests/Drape.UI.Tests/Drape.UI.Tests.csproj" />
