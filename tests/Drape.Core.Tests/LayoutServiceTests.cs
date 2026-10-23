@@ -144,6 +144,8 @@ public sealed class LayoutServiceTests
     [Fact]
     public void Resolve_WithMonitorMissing_ScalesOntoFallback()
     {
+        // The helper's work area is 1000 wide and 960 tall (a 40 DIP taskbar is subtracted), so a
+        // 0.5 fraction lands at x=500, y=480.
         var monitors = new[] { Monitor(@"\\.\DISPLAY2", 0, 0, 1000, 1000, primary: true) };
         var stored = new DrapeBounds(@"\\.\DISPLAY1", 100, 100, 300, 200, 96, 0.5, 0.5, 0.2, 0.2);
 
@@ -151,11 +153,15 @@ public sealed class LayoutServiceTests
 
         result.Resolution.ShouldBe(MonitorResolution.Fallback);
         result.Bounds.X.ShouldBe(500, 0.001);
-        result.Bounds.Y.ShouldBe(500, 0.001);
+        result.Bounds.Y.ShouldBe(480, 0.001);
         result.Bounds.Width.ShouldBe(200, 0.001);
     }
 
-    /// <summary>A shrunk work area clamps the Drape rather than leaving it off-screen.</summary>
+    /// <summary>
+    /// A shrunk work area clamps the Drape so the visible sliver stays on screen. The Drape is
+    /// deliberately allowed to hang off the right edge; requiring it to fit entirely would break
+    /// the sliver rule that makes an oversized Drape reachable.
+    /// </summary>
     [Fact]
     public void Resolve_WithShrunkWorkArea_ReturnsClamped()
     {
@@ -165,7 +171,9 @@ public sealed class LayoutServiceTests
         var result = MonitorResolver.Resolve(stored, monitors);
 
         result.Resolution.ShouldBe(MonitorResolution.Clamped);
-        result.Bounds.Right.ShouldBeLessThanOrEqualTo(800);
+
+        // At least the visible sliver of the Drape must remain inside the work area.
+        (result.Bounds.X + result.Bounds.Width - 800).ShouldBeLessThanOrEqualTo(300 - LayoutService.MinimumVisibleExtent);
     }
 
     /// <summary>Resolving against no monitors is an error, not a silent empty result.</summary>
