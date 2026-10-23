@@ -10,6 +10,7 @@ Current status is in [`../TASKS/PROGRESS.md`](../TASKS/PROGRESS.md), not here.
 
 | Date | Task | Record | Hook |
 |---|---|---|---|
+| 2026-10-23 | P0-01 | [Solution scaffold: layering test, platform capabilities, shell skeleton](./records/2026-10-23-P0-01-solution-scaffold-and-platform-capabilities.md) | `Drape.UI` legitimately depends on Avalonia, so a blanket "no UI package" rule fails on the project that exists to be a UI; the rule had to be split into shell-free (all) and UI-free (Core, Infrastructure). |
 | 2026-10-10 | — | [Windows 10 minimum; other platforms' minimums and channels](./records/2026-10-10-windows-10-minimum-and-platform-minimums.md) | Windows 10 becomes a release gate and a two-path visual problem while its Microsoft support ends 2027; my edit script broke two lines and was caught by re-reading. Documents only. |
 | 2026-10-10 | — | [Remaining questions answered; root README and LICENSE](./records/2026-10-10-remaining-questions-readme-licence.md) | Windows 10 is still ~28% of desktops with ESU to Oct 2027; MSIX redirects HKCU writes so the Run-key autostart would break; Store policy on hooks unknown. Documents only. |
 | 2026-10-10 | — | [Owner decisions: MIT, final name, Windows first, mobile scope, Drape everywhere](./records/2026-10-10-owner-decisions-licence-name-rename.md) | Renaming the code concept to `Drape` collides with the root namespace (CS-10); "final name" is not a cleared name; ADR-021 mobile scope is the assistant's delegated working decision. Documents only. |
@@ -22,6 +23,7 @@ Full text in [`DECISIONS.md`](./DECISIONS.md). Part II (2026-10-10) says what ch
 
 | ID | Date | Decision | Status |
 |---|---|---|---|
+| ADR-024 | 2026-10-23 | The desktop app references the platform shell directly; one thin head per OS in Phase 6 | Accepted |
 | ADR-023 | 2026-10-10 | Windows 10 22H2 is the supported minimum (owner); minimums and channels for macOS, Linux, Android, iOS | Accepted (Windows: owner; others: delegated) |
 | ADR-022 | 2026-10-10 | Answers to Q-04…Q-13 and Q-18: direct distribution, Windows 10 until ESU ends (Oct 2027), x64 only, Guard in MVP, updates off by default | Accepted (assumption, delegated) |
 | ADR-021 | 2026-10-10 | Mobile = companion shortcut groups, last in the queue (owner-delegated working decision) | Accepted (assumption) |

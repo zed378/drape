@@ -582,3 +582,26 @@ Data stays local in the app sandbox. `Drape.Core`, `Drape.Infrastructure` and `D
 - Untested claim: Avalonia's tiering is read from its documentation, not exercised.
 
 **Status:** Accepted (Windows part: owner decision; other platforms: assumption, owner-delegated)
+
+---
+
+## ADR-024: The Desktop App References the Platform Shell Directly (One Thin Head per OS)
+
+**Date:** 2026-10-23 | **Task:** P0-01 | **Related:** ADR-012, ADR-015, ADR-023
+
+**Decision:** `Drape.App.Desktop` holds an unconditional `ProjectReference` to `Drape.Shell.Windows`. When Phase 6 adds macOS and Linux, each gets its own app head (`Drape.App.Mac`, `Drape.App.Linux`) with the same shape: a composition root that references exactly one `Drape.Shell.<Platform>` project and registers its implementations of the Core interfaces.
+
+**Rationale:** The composition root is the only place allowed to know which platform it is on (CS-21). A thin head per OS keeps that knowledge in one file per platform, keeps `Drape.UI` and `Drape.Core` provably free of shell references, and makes the architecture test (`LayeringTests.AppDesktop_IsTheOnlyProjectReferencingTheWindowsShell`) express the rule directly rather than approximately.
+
+**Alternatives Considered:**
+- **(a) Multi-target the app** (`net10.0-windows`, `net10.0-macos`) with conditional `ProjectReference` items selected by TFM. Rejected: the app's `Main`, manifest, installer and packaging differ per platform far more than the TFM does; the conditionals would spread through the project file and the CI matrix, and a mistake would fail at runtime instead of at restore.
+- **(b) Conditional `ProjectReference` selected by `$(OS)` or a property.** Rejected: it makes the build machine's OS part of the build definition, which breaks cross-compilation and reproducible builds from a tag, and it hides the dependency from static inspection.
+- **(c) Thin head per OS.** Chosen.
+
+**Implications:**
+- Phase 6 adds two projects to the solution and two release pipelines; the shared code is `Drape.Core` + `Drape.Infrastructure` + `Drape.UI`, so the duplication is a composition root, not a UI.
+- `Drape.App.Desktop` cannot be built on macOS or Linux. That is intended: it is the Windows head.
+- The architecture test must be extended in Phase 6 to assert that each head references exactly one shell project; the rule is written down here so it is not reinvented.
+- Cost of changing later: medium. Moving to multi-targeting would touch the app project, CI and the packaging pipeline but not Core, UI or the shell projects.
+
+**Status:** Accepted

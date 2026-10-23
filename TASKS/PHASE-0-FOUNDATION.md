@@ -14,7 +14,7 @@ Conventions (card anatomy, statuses, global Definition of Done): [`00-TASK-CONVE
 
 | | |
 |---|---|
-| **Status** | TODO |
+| **Status** | WIP — solution, layering test and `IPlatformCapabilities` skeleton in place; whole-solution test run, `dotnet format` and NuGet version re-check outstanding ([record](../MEMORY/records/2026-10-23-P0-01-solution-scaffold-and-platform-capabilities.md)) |
 | **Priority** | P0 |
 | **Estimate** | 1 day |
 | **Role** | architect |

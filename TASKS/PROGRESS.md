@@ -2,11 +2,14 @@
 
 **The single status board.** History lives in [`../MEMORY/`](../MEMORY/README.md); this is state.
 
-Last updated: 2026-10-10 (documentation restructure, [record](../MEMORY/records/2026-10-10-docs-restructure-and-translation.md)). A count is a dated snapshot — re-count before quoting.
+Last updated: 2026-10-23 (P0-01 scaffold, [record](../MEMORY/records/2026-10-23-P0-01-solution-scaffold-and-platform-capabilities.md)). A count is a dated snapshot — re-count before quoting.
 
 ## Where This Project Actually Is
 
-Planning phase. Documentation, ADRs and task cards exist; **no code, no repository history, no solution.** Nothing in `DONE` below has been built.
+Scaffolding. Documentation, ADRs and task cards exist, and so does a solution: `Drape.slnx` with
+`src/` and `tests/` projects, a layering architecture test that is proven to fail on a forbidden
+reference, and a Windows `IPlatformCapabilities` implementation with a fake. P0-01 is `WIP`, not
+`DONE` — see its record for what is still unticked. No spike has started.
 
 ## Current Focus
 
@@ -15,19 +18,21 @@ Owner decisions taken on 2026-10-10: MIT/free (Q-02), name Drape (Q-03), Windows
 
 ## In Progress (WIP ≤ 3)
 
-_Empty._
-
 | ID | Title | Role | Started |
 |---|---|---|---|
-| — | — | — | — |
+| P0-01 | Scaffold repo and solution | architect | 2026-10-23 |
+
+> P0-01 remains `WIP`: the solution, layering test and `IPlatformCapabilities` skeleton are in place,
+> but the whole-solution test run, the `dotnet format` check and the NuGet version re-check are not
+> done. See [`../MEMORY/records/2026-10-23-P0-01-solution-scaffold-and-platform-capabilities.md`](../MEMORY/records/2026-10-23-P0-01-solution-scaffold-and-platform-capabilities.md).
 
 ## Ready (priority order)
 
 | # | ID | Title | Priority | Estimate | Role | Depends on |
 |---|---|---|---|---|---|---|
-| 1 | P0-01 | Scaffold repo and solution | P0 | 1 day | architect | — |
+| — | — | — | — | — | — | — |
 
-> Only P0-01 has no dependency. After it is `DONE`, P0-02 … P0-08 and P0-10 can run in parallel (different roles), within the WIP limit of 3.
+> After P0-01 is `DONE`, P0-02 … P0-08 and P0-10 can run in parallel (different roles), within the WIP limit of 3.
 
 ## Blocked
 

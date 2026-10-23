@@ -1,4 +1,4 @@
-namespace Drape.Core;
+﻿namespace Drape.Core;
 
 /// <summary>
 /// Capabilities that the platform (Windows/macOS/Linux) provides to the core application.
