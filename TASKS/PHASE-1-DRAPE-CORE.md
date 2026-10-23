@@ -1,4 +1,4 @@
-# Phase 1 — Core Drape
+﻿# Phase 1 — Core Drape
 
 **Status: TODO** — planning phase; no card in this file has started. The whole phase waits for P0-09 (ADR-007 final).
 
@@ -14,7 +14,7 @@ Conventions: [`00-TASK-CONVENTIONS.md`](./00-TASK-CONVENTIONS.md).
 
 | | |
 |---|---|
-| **Status** | TODO |
+| **Status** | DONE (2026-10-23) |
 | **Priority** | P0 |
 | **Estimate** | 2 days |
 | **Role** | core-engineer |
@@ -40,7 +40,7 @@ Conventions: [`00-TASK-CONVENTIONS.md`](./00-TASK-CONVENTIONS.md).
 
 | | |
 |---|---|
-| **Status** | TODO |
+| **Status** | DONE (2026-10-23) |
 | **Priority** | P0 |
 | **Estimate** | 1 day |
 | **Role** | architect |
@@ -68,7 +68,7 @@ Define `IConfigStore`, `IDesktopItemSource`, `IDesktopHost`, `IDesktopIcons`, `I
 
 | | |
 |---|---|
-| **Status** | TODO |
+| **Status** | WIP — implemented and tested; missing the feature spec and the 20 ms measurement |
 | **Priority** | P0 |
 | **Estimate** | 3 days |
 | **Role** | core-engineer |
@@ -156,7 +156,7 @@ Production version of the chosen strategy in `Drape.Shell.Windows`: `Attach`, `R
 
 | | |
 |---|---|
-| **Status** | TODO |
+| **Status** | DONE for the Core maths; the 144 Hz check needs a view (P1-04) |
 | **Priority** | P0 |
 | **Estimate** | 2 days |
 | **Role** | ui-engineer |
@@ -292,7 +292,7 @@ Accept `CF_HDROP` and Shell ID lists, reject duplicates, open with `ShellExecute
 
 | | |
 |---|---|
-| **Status** | TODO |
+| **Status** | DONE (2026-10-23) |
 | **Priority** | P0 |
 | **Estimate** | 2 days |
 | **Role** | core-engineer |

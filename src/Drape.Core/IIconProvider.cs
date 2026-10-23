@@ -1,4 +1,4 @@
-namespace Drape.Core;
+﻿namespace Drape.Core;
 
 /// <summary>
 /// Decoded icon pixels, free of any UI framework (CS-22).

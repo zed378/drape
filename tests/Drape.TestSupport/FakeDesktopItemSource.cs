@@ -1,4 +1,4 @@
-using Drape.Core;
+﻿using Drape.Core;
 
 namespace Drape.TestSupport;
 

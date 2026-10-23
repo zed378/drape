@@ -1,4 +1,4 @@
-using DrapeEntity = global::Drape.Core.Model.Drape;
+﻿using DrapeEntity = global::Drape.Core.Model.Drape;
 
 namespace Drape.Core.Model;
 

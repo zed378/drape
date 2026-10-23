@@ -1,4 +1,4 @@
-namespace Drape.Core;
+﻿namespace Drape.Core;
 
 /// <summary>Registers Drape to start with the user's session.</summary>
 /// <remarks>

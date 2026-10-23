@@ -1,4 +1,4 @@
-namespace Drape.Core.Model;
+﻿namespace Drape.Core.Model;
 
 /// <summary>
 /// Where a Drape sits and how big it is, stored relative to a monitor's work area

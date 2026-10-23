@@ -1,4 +1,4 @@
-namespace Drape.Core.Model;
+﻿namespace Drape.Core.Model;
 
 /// <summary>How often the app checks for updates (ADR-017).</summary>
 public enum UpdateCheckMode

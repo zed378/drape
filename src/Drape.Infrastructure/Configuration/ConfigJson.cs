@@ -1,4 +1,4 @@
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 using Drape.Core.Model;
 using DrapeEntity = Drape.Core.Model.Drape;

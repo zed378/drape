@@ -1,4 +1,4 @@
-using Drape.Core;
+﻿using Drape.Core;
 using Drape.Core.Layout;
 using Drape.Core.Model;
 using Shouldly;
@@ -12,13 +12,13 @@ namespace Drape.Core.Tests;
 /// </summary>
 public sealed class LayoutServiceTests
 {
-    private static readonly Rectangle WorkArea = new(0, 0, 1920, 1040);
+    private static readonly Rectangle _workArea = new(0, 0, 1920, 1040);
 
     /// <summary>A position well inside the work area is left alone.</summary>
     [Fact]
     public void ClampPosition_InsideWorkArea_IsUnchanged()
     {
-        var (x, y) = LayoutService.ClampPosition(100, 100, 300, 200, WorkArea);
+        var (x, y) = LayoutService.ClampPosition(100, 100, 300, 200, _workArea);
 
         x.ShouldBe(100);
         y.ShouldBe(100);
@@ -28,18 +28,18 @@ public sealed class LayoutServiceTests
     [Fact]
     public void ClampPosition_PastRightEdge_KeepsVisibleSliver()
     {
-        var (x, _) = LayoutService.ClampPosition(5000, 100, 300, 200, WorkArea);
+        var (x, _) = LayoutService.ClampPosition(5000, 100, 300, 200, _workArea);
 
-        x.ShouldBe(WorkArea.Right - LayoutService.MinimumVisibleExtent);
+        x.ShouldBe(_workArea.Right - LayoutService.MinimumVisibleExtent);
     }
 
     /// <summary>A Drape dragged past the bottom edge keeps the sliver visible.</summary>
     [Fact]
     public void ClampPosition_PastBottomEdge_KeepsVisibleSliver()
     {
-        var (_, y) = LayoutService.ClampPosition(100, 5000, 300, 200, WorkArea);
+        var (_, y) = LayoutService.ClampPosition(100, 5000, 300, 200, _workArea);
 
-        y.ShouldBe(WorkArea.Bottom - LayoutService.MinimumVisibleExtent);
+        y.ShouldBe(_workArea.Bottom - LayoutService.MinimumVisibleExtent);
     }
 
     /// <summary>
@@ -48,9 +48,9 @@ public sealed class LayoutServiceTests
     [Fact]
     public void ClampPosition_PastLeftEdge_KeepsVisibleSliver()
     {
-        var (x, _) = LayoutService.ClampPosition(-5000, 100, 300, 200, WorkArea);
+        var (x, _) = LayoutService.ClampPosition(-5000, 100, 300, 200, _workArea);
 
-        x.ShouldBe(WorkArea.X - 300 + LayoutService.MinimumVisibleExtent);
+        x.ShouldBe(_workArea.X - 300 + LayoutService.MinimumVisibleExtent);
     }
 
     /// <summary>
@@ -71,7 +71,7 @@ public sealed class LayoutServiceTests
     [Fact]
     public void ClampSize_BelowMinimum_RaisesToMinimum()
     {
-        var (width, height) = LayoutService.ClampSize(10, 10, WorkArea);
+        var (width, height) = LayoutService.ClampSize(10, 10, _workArea);
 
         width.ShouldBe(DrapeBounds.MinWidth);
         height.ShouldBe(DrapeBounds.MinHeight);
@@ -81,10 +81,10 @@ public sealed class LayoutServiceTests
     [Fact]
     public void ClampSize_LargerThanWorkArea_IsReducedToWorkArea()
     {
-        var (width, height) = LayoutService.ClampSize(5000, 5000, WorkArea);
+        var (width, height) = LayoutService.ClampSize(5000, 5000, _workArea);
 
-        width.ShouldBe(WorkArea.Width);
-        height.ShouldBe(WorkArea.Height);
+        width.ShouldBe(_workArea.Width);
+        height.ShouldBe(_workArea.Height);
     }
 
     /// <summary>Clamp applies the size first, so the position uses the final width.</summary>
@@ -93,18 +93,18 @@ public sealed class LayoutServiceTests
     {
         var bounds = new DrapeBounds(@"\\.\DISPLAY1", 1900, 1030, 5000, 5000, 96, 0.9, 0.9, 0.9, 0.9);
 
-        var clamped = LayoutService.Clamp(bounds, WorkArea);
+        var clamped = LayoutService.Clamp(bounds, _workArea);
 
-        clamped.Width.ShouldBe(WorkArea.Width);
-        clamped.Height.ShouldBe(WorkArea.Height);
-        clamped.X.ShouldBe(WorkArea.Right - LayoutService.MinimumVisibleExtent);
+        clamped.Width.ShouldBe(_workArea.Width);
+        clamped.Height.ShouldBe(_workArea.Height);
+        clamped.X.ShouldBe(_workArea.Right - LayoutService.MinimumVisibleExtent);
     }
 
     /// <summary>Fractions are derived from the work area and stay within 0..1.</summary>
     [Fact]
     public void ToFractions_ComputesProportions()
     {
-        var (fx, fy, fw, fh) = LayoutService.ToFractions(960, 520, 192, 104, WorkArea);
+        var (fx, fy, fw, fh) = LayoutService.ToFractions(960, 520, 192, 104, _workArea);
 
         fx.ShouldBe(0.5, 0.0001);
         fy.ShouldBe(0.5, 0.0001);
@@ -221,6 +221,6 @@ public sealed class LayoutServiceTests
     {
         var bounds = new DrapeBounds(@"\\.\DISPLAY1", 100, 100, 300, 200, 96, 0.05, 0.05, 0.15, 0.15);
 
-        Should.Throw<ArgumentOutOfRangeException>(() => MonitorResolver.Rescale(bounds, 0, WorkArea));
+        Should.Throw<ArgumentOutOfRangeException>(() => MonitorResolver.Rescale(bounds, 0, _workArea));
     }
 }

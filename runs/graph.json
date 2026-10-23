@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "last_updated": "2026-10-23T13:05:39.033Z",
+  "last_updated": "2026-10-23T13:49:48.976Z",
   "sources": [
     "README.md",
     "TASKS\\README.md",
@@ -60,7 +60,9 @@
     "MEMORY\\MEMORY-INDEX.md",
     "MEMORY\\records\\2026-10-23-P0-01-solution-scaffold-and-platform-capabilities.md",
     "TASKS\\PROGRESS.md",
-    "TASKS\\PHASE-0-FOUNDATION.md"
+    "TASKS\\PHASE-0-FOUNDATION.md",
+    "MEMORY\\records\\2026-10-23-P1-core-domain-config-layout.md",
+    "TASKS\\PHASE-1-DRAPE-CORE.md"
   ],
   "entities": [
     {
@@ -4751,6 +4753,177 @@
       "source": "TASKS\\PHASE-0-FOUNDATION.md",
       "line": 279,
       "evidence": "### P0-10 — Custom subagent definitions (optional)"
+    },
+    {
+      "id": "sec_p1_01_p1_02_p1_03_p1_06_p1_11_core_domain_contracts_configstore_layout_persistence",
+      "name": "P1-01, P1-02, P1-03, P1-06, P1-11 — Core Domain, Contracts, ConfigStore, Layout, Persistence",
+      "type": "Section/Module",
+      "description": "Specification section from MEMORY\\records\\2026-10-23-P1-core-domain-config-layout.md",
+      "source": "MEMORY\\records\\2026-10-23-P1-core-domain-config-layout.md",
+      "line": 1,
+      "evidence": "# P1-01, P1-02, P1-03, P1-06, P1-11 — Core Domain, Contracts, ConfigStore, Layout, Persistence"
+    },
+    {
+      "id": "ent_serialise_the_domain_records_directly_with_system_text_json_",
+      "name": "Serialise the domain records directly with `System.Text.Json`.",
+      "type": "Component/Requirement",
+      "description": "Rejected: constructor",
+      "source": "MEMORY\\records\\2026-10-23-P1-core-domain-config-layout.md",
+      "line": 66,
+      "evidence": "- **Serialise the domain records directly with `System.Text.Json`.** Rejected: constructor"
+    },
+    {
+      "id": "ent_a_timer_based_debounce_",
+      "name": "A `Timer`-based debounce.",
+      "type": "Component/Requirement",
+      "description": "Rejected: untestable without sleeping. `ConfigPersistence` exposes",
+      "source": "MEMORY\\records\\2026-10-23-P1-core-domain-config-layout.md",
+      "line": 68,
+      "evidence": "- **A `Timer`-based debounce.** Rejected: untestable without sleeping. `ConfigPersistence` exposes"
+    },
+    {
+      "id": "ent_clamp_the_position_before_the_size_",
+      "name": "Clamp the position before the size.",
+      "type": "Component/Requirement",
+      "description": "Rejected: the position clamp needs the final size to know",
+      "source": "MEMORY\\records\\2026-10-23-P1-core-domain-config-layout.md",
+      "line": 70,
+      "evidence": "- **Clamp the position before the size.** Rejected: the position clamp needs the final size to know"
+    },
+    {
+      "id": "ent_store_absolute_monitor_coordinates_",
+      "name": "Store absolute monitor coordinates.",
+      "type": "Component/Requirement",
+      "description": "Rejected by the data model: they are meaningless once the",
+      "source": "MEMORY\\records\\2026-10-23-P1-core-domain-config-layout.md",
+      "line": 72,
+      "evidence": "- **Store absolute monitor coordinates.** Rejected by the data model: they are meaningless once the"
+    },
+    {
+      "id": "ent_make_iconfigstore_saveasync_silently_skip_when_read_only_",
+      "name": "Make `IConfigStore.SaveAsync` silently skip when read-only.",
+      "type": "Component/Requirement",
+      "description": "Rejected: a caller that believes it",
+      "source": "MEMORY\\records\\2026-10-23-P1-core-domain-config-layout.md",
+      "line": 74,
+      "evidence": "- **Make `IConfigStore.SaveAsync` silently skip when read-only.** Rejected: a caller that believes it"
+    },
+    {
+      "id": "ent_mutation_checks_",
+      "name": "Mutation checks:",
+      "type": "Component/Requirement",
+      "description": "two, both observed to fail and then reverted.",
+      "source": "MEMORY\\records\\2026-10-23-P1-core-domain-config-layout.md",
+      "line": 138,
+      "evidence": "- **Mutation checks:** two, both observed to fail and then reverted."
+    },
+    {
+      "id": "sec_p1_01_core_domain_model",
+      "name": "P1-01 — Core domain model",
+      "type": "Section/Module",
+      "description": "Specification section from TASKS\\PHASE-1-DRAPE-CORE.md",
+      "source": "TASKS\\PHASE-1-DRAPE-CORE.md",
+      "line": 13,
+      "evidence": "### P1-01 — Core domain model"
+    },
+    {
+      "id": "sec_p1_02_interface_contracts_in_core",
+      "name": "P1-02 — Interface contracts in Core",
+      "type": "Section/Module",
+      "description": "Specification section from TASKS\\PHASE-1-DRAPE-CORE.md",
+      "source": "TASKS\\PHASE-1-DRAPE-CORE.md",
+      "line": 39,
+      "evidence": "### P1-02 — Interface contracts in Core"
+    },
+    {
+      "id": "sec_p1_03_configstore_atomic_save_backup_quarantine_migration",
+      "name": "P1-03 — ConfigStore: atomic save, backup, quarantine, migration",
+      "type": "Section/Module",
+      "description": "Specification section from TASKS\\PHASE-1-DRAPE-CORE.md",
+      "source": "TASKS\\PHASE-1-DRAPE-CORE.md",
+      "line": 67,
+      "evidence": "### P1-03 — ConfigStore: atomic save, backup, quarantine, migration"
+    },
+    {
+      "id": "sec_p1_04_drapewindow_basic_drape_window",
+      "name": "P1-04 — DrapeWindow: basic Drape window",
+      "type": "Section/Module",
+      "description": "Specification section from TASKS\\PHASE-1-DRAPE-CORE.md",
+      "source": "TASKS\\PHASE-1-DRAPE-CORE.md",
+      "line": 97,
+      "evidence": "### P1-04 — DrapeWindow: basic Drape window"
+    },
+    {
+      "id": "sec_p1_05_idesktophost_implementation_from_spike_p0_03_",
+      "name": "P1-05 — IDesktopHost implementation (from spike P0-03)",
+      "type": "Section/Module",
+      "description": "Specification section from TASKS\\PHASE-1-DRAPE-CORE.md",
+      "source": "TASKS\\PHASE-1-DRAPE-CORE.md",
+      "line": 126,
+      "evidence": "### P1-05 — `IDesktopHost` implementation (from spike P0-03)"
+    },
+    {
+      "id": "sec_p1_06_move_and_resize_a_drape",
+      "name": "P1-06 — Move and resize a Drape",
+      "type": "Section/Module",
+      "description": "Specification section from TASKS\\PHASE-1-DRAPE-CORE.md",
+      "source": "TASKS\\PHASE-1-DRAPE-CORE.md",
+      "line": 155,
+      "evidence": "### P1-06 — Move and resize a Drape"
+    },
+    {
+      "id": "sec_p1_07_create_rename_and_delete_a_drape",
+      "name": "P1-07 — Create, rename and delete a Drape",
+      "type": "Section/Module",
+      "description": "Specification section from TASKS\\PHASE-1-DRAPE-CORE.md",
+      "source": "TASKS\\PHASE-1-DRAPE-CORE.md",
+      "line": 181,
+      "evidence": "### P1-07 — Create, rename and delete a Drape"
+    },
+    {
+      "id": "sec_p1_08_item_display_grid_async_icons_labels",
+      "name": "P1-08 — Item display: grid, async icons, labels",
+      "type": "Section/Module",
+      "description": "Specification section from TASKS\\PHASE-1-DRAPE-CORE.md",
+      "source": "TASKS\\PHASE-1-DRAPE-CORE.md",
+      "line": 208,
+      "evidence": "### P1-08 — Item display: grid, async icons, labels"
+    },
+    {
+      "id": "sec_p1_09_drag_drop_to_add_items_open_and_remove_items",
+      "name": "P1-09 — Drag-drop to add items; open and remove items",
+      "type": "Section/Module",
+      "description": "Specification section from TASKS\\PHASE-1-DRAPE-CORE.md",
+      "source": "TASKS\\PHASE-1-DRAPE-CORE.md",
+      "line": 236,
+      "evidence": "### P1-09 — Drag-drop to add items; open and remove items"
+    },
+    {
+      "id": "sec_p1_10_multi_monitor_and_per_monitor_dpi",
+      "name": "P1-10 — Multi-monitor and per-monitor DPI",
+      "type": "Section/Module",
+      "description": "Specification section from TASKS\\PHASE-1-DRAPE-CORE.md",
+      "source": "TASKS\\PHASE-1-DRAPE-CORE.md",
+      "line": 264,
+      "evidence": "### P1-10 — Multi-monitor and per-monitor DPI"
+    },
+    {
+      "id": "sec_p1_11_end_to_end_persistence_and_startup_reconciliation",
+      "name": "P1-11 — End-to-end persistence and startup reconciliation",
+      "type": "Section/Module",
+      "description": "Specification section from TASKS\\PHASE-1-DRAPE-CORE.md",
+      "source": "TASKS\\PHASE-1-DRAPE-CORE.md",
+      "line": 291,
+      "evidence": "### P1-11 — End-to-end persistence and startup reconciliation"
+    },
+    {
+      "id": "sec_p1_12_phase_1_testing_unit_integration_manual_checklist_performance_baseline",
+      "name": "P1-12 — Phase 1 testing: unit, integration, manual checklist, performance baseline",
+      "type": "Section/Module",
+      "description": "Specification section from TASKS\\PHASE-1-DRAPE-CORE.md",
+      "source": "TASKS\\PHASE-1-DRAPE-CORE.md",
+      "line": 318,
+      "evidence": "### P1-12 — Phase 1 testing: unit, integration, manual checklist, performance baseline"
     }
   ],
   "relations": [
@@ -6049,12 +6222,60 @@
       "evidence": "- **Privacy:** no network call, no data collected. The dialogs return paths to the caller; nothing",
       "source_file": "MEMORY\\records\\2026-10-23-P0-01-solution-scaffold-and-platform-capabilities.md",
       "line": 147
+    },
+    {
+      "source": "sec_alternatives_considered",
+      "relation": "DEFINES_REQUIREMENT",
+      "target": "ent_serialise_the_domain_records_directly_with_system_text_json_",
+      "evidence": "- **Serialise the domain records directly with `System.Text.Json`.** Rejected: constructor",
+      "source_file": "MEMORY\\records\\2026-10-23-P1-core-domain-config-layout.md",
+      "line": 66
+    },
+    {
+      "source": "sec_alternatives_considered",
+      "relation": "DEFINES_REQUIREMENT",
+      "target": "ent_a_timer_based_debounce_",
+      "evidence": "- **A `Timer`-based debounce.** Rejected: untestable without sleeping. `ConfigPersistence` exposes",
+      "source_file": "MEMORY\\records\\2026-10-23-P1-core-domain-config-layout.md",
+      "line": 68
+    },
+    {
+      "source": "sec_alternatives_considered",
+      "relation": "DEFINES_REQUIREMENT",
+      "target": "ent_clamp_the_position_before_the_size_",
+      "evidence": "- **Clamp the position before the size.** Rejected: the position clamp needs the final size to know",
+      "source_file": "MEMORY\\records\\2026-10-23-P1-core-domain-config-layout.md",
+      "line": 70
+    },
+    {
+      "source": "sec_alternatives_considered",
+      "relation": "DEFINES_REQUIREMENT",
+      "target": "ent_store_absolute_monitor_coordinates_",
+      "evidence": "- **Store absolute monitor coordinates.** Rejected by the data model: they are meaningless once the",
+      "source_file": "MEMORY\\records\\2026-10-23-P1-core-domain-config-layout.md",
+      "line": 72
+    },
+    {
+      "source": "sec_alternatives_considered",
+      "relation": "DEFINES_REQUIREMENT",
+      "target": "ent_make_iconfigstore_saveasync_silently_skip_when_read_only_",
+      "evidence": "- **Make `IConfigStore.SaveAsync` silently skip when read-only.** Rejected: a caller that believes it",
+      "source_file": "MEMORY\\records\\2026-10-23-P1-core-domain-config-layout.md",
+      "line": 74
+    },
+    {
+      "source": "sec_tests",
+      "relation": "DEFINES_REQUIREMENT",
+      "target": "ent_mutation_checks_",
+      "evidence": "- **Mutation checks:** two, both observed to fail and then reverted.",
+      "source_file": "MEMORY\\records\\2026-10-23-P1-core-domain-config-layout.md",
+      "line": 138
     }
   ],
   "stats": {
-    "total_sources": 59,
-    "total_entities": 521,
-    "total_relations": 162,
+    "total_sources": 61,
+    "total_entities": 540,
+    "total_relations": 168,
     "token_savings_estimate": "85-95%"
   }
 }
