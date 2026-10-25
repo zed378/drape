@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "last_updated": "2026-10-25T07:03:28.218Z",
+  "last_updated": "2026-10-25T15:34:06.250Z",
   "sources": [
     "README.md",
     "TASKS\\README.md",
@@ -91,7 +91,17 @@
     "spikes\\p0-07-mouse-hook\\NativeMethods.txt",
     "spikes\\p0-07-mouse-hook\\obj\\Release\\net10.0-windows10.0.19041.0\\p0-07-mouse-hook.csproj.FileListAbsolute.txt",
     "spikes\\p0-07-mouse-hook\\RUNBOOK.md",
-    "MEMORY\\records\\2026-10-25-spike-harness-batch.md"
+    "MEMORY\\records\\2026-10-25-spike-harness-batch.md",
+    "spikes\\p0-03-desktop-host\\obj\\Release\\net10.0-windows10.0.19041.0\\win-x64\\p0-03-desktop-host.csproj.FileListAbsolute.txt",
+    "spikes\\p0-03-desktop-host\\obj\\Release\\net10.0-windows10.0.19041.0\\win-x64\\PublishOutputs.8e231b750d.txt",
+    "spikes\\p0-04-desktop-icons\\obj\\Release\\net10.0-windows10.0.19041.0\\win-x64\\p0-04-desktop-icons.csproj.FileListAbsolute.txt",
+    "spikes\\p0-04-desktop-icons\\obj\\Release\\net10.0-windows10.0.19041.0\\win-x64\\PublishOutputs.dbf3c7705b.txt",
+    "spikes\\p0-05-shell-icons\\obj\\Release\\net10.0-windows10.0.19041.0\\win-x64\\p0-05-shell-icons.csproj.FileListAbsolute.txt",
+    "spikes\\p0-05-shell-icons\\obj\\Release\\net10.0-windows10.0.19041.0\\win-x64\\PublishOutputs.9691332245.txt",
+    "spikes\\p0-06-blur-bench\\obj\\Release\\net10.0-windows10.0.19041.0\\win-x64\\p0-06-blur-bench.csproj.FileListAbsolute.txt",
+    "spikes\\p0-06-blur-bench\\obj\\Release\\net10.0-windows10.0.19041.0\\win-x64\\PublishOutputs.171f8195df.txt",
+    "spikes\\p0-07-mouse-hook\\obj\\Release\\net10.0-windows10.0.19041.0\\win-x64\\p0-07-mouse-hook.csproj.FileListAbsolute.txt",
+    "spikes\\p0-07-mouse-hook\\obj\\Release\\net10.0-windows10.0.19041.0\\win-x64\\PublishOutputs.e8740b4751.txt"
   ],
   "entities": [
     {
@@ -5385,6 +5395,33 @@
       "source": "MEMORY\\records\\2026-10-25-spike-harness-batch.md",
       "line": 116,
       "evidence": "## VM Access (2026-10-25)"
+    },
+    {
+      "id": "sec_hasil_parsial_vm_2026_10_25_win11_26h2_build_26300_dpi_100_",
+      "name": "Hasil Parsial VM (2026-10-25, Win11 26H2 build 26300, DPI 100)",
+      "type": "Section/Module",
+      "description": "Specification section from MEMORY\\records\\2026-10-25-spike-harness-batch.md",
+      "source": "MEMORY\\records\\2026-10-25-spike-harness-batch.md",
+      "line": 113,
+      "evidence": "## Hasil Parsial VM (2026-10-25, Win11 26H2 build 26300, DPI 100)"
+    },
+    {
+      "id": "ent_p0_05",
+      "name": "P0-05",
+      "type": "Component/Requirement",
+      "description": "5 item di Desktop, diulang jadi 500: ok=500 failed=0, **40812 ms (~82 ms/item)**.",
+      "source": "MEMORY\\records\\2026-10-25-spike-harness-batch.md",
+      "line": 115,
+      "evidence": "- **P0-05**: 5 item di Desktop, diulang jadi 500: ok=500 failed=0, **40812 ms (~82 ms/item)**."
+    },
+    {
+      "id": "ent_p0_04",
+      "name": "P0-04",
+      "type": "Component/Requirement",
+      "description": "read hidden=False, hide OK, read hidden=True, hide kedua \"already hidden, no toggle",
+      "source": "MEMORY\\records\\2026-10-25-spike-harness-batch.md",
+      "line": 118,
+      "evidence": "- **P0-04**: read hidden=False, hide OK, read hidden=True, hide kedua \"already hidden, no toggle"
     }
   ],
   "relations": [
@@ -6811,12 +6848,28 @@
       "evidence": "- **Monitor**: jika VM mendukung 2 monitor beda DPI, pindahkan jendela dan cek.",
       "source_file": "spikes\\p0-03-desktop-host\\RUNBOOK.md",
       "line": 36
+    },
+    {
+      "source": "sec_hasil_parsial_vm_2026_10_25_win11_26h2_build_26300_dpi_100_",
+      "relation": "DEFINES_REQUIREMENT",
+      "target": "ent_p0_05",
+      "evidence": "- **P0-05**: 5 item di Desktop, diulang jadi 500: ok=500 failed=0, **40812 ms (~82 ms/item)**.",
+      "source_file": "MEMORY\\records\\2026-10-25-spike-harness-batch.md",
+      "line": 115
+    },
+    {
+      "source": "sec_hasil_parsial_vm_2026_10_25_win11_26h2_build_26300_dpi_100_",
+      "relation": "DEFINES_REQUIREMENT",
+      "target": "ent_p0_04",
+      "evidence": "- **P0-04**: read hidden=False, hide OK, read hidden=True, hide kedua \"already hidden, no toggle",
+      "source_file": "MEMORY\\records\\2026-10-25-spike-harness-batch.md",
+      "line": 118
     }
   ],
   "stats": {
-    "total_sources": 90,
-    "total_entities": 588,
-    "total_relations": 178,
+    "total_sources": 100,
+    "total_entities": 591,
+    "total_relations": 180,
     "token_savings_estimate": "85-95%"
   }
 }
