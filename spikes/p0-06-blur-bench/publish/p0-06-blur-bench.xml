@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>p0-06-blur-bench</name>
+    </assembly>
+    <members>
+        <member name="T:P006BlurBench.Program">
+            <summary>
+            P0-06 spike harness. Opens 20 test windows (5 per variant: transparent, blur-behind,
+            acrylic, solid fallback) and reports process CPU + working set. The owner runs this in the
+            VM, idles 60 s, drags one window, and records Task Manager / Performance Monitor numbers.
+            Usage: <c>p0-06-blur-bench.exe [transparent|blur|acrylic|solid|all]</c>.
+            </summary>
+        </member>
+    </members>
+</doc>
