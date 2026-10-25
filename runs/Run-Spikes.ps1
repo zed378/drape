@@ -127,7 +127,7 @@ Write-Result '--- P0-06 blur bench (semi-auto) ---'
 $p06 = Join-Path $Root 'p0-06-blur-bench\p0-06-blur-bench.exe'
 if (Test-Path $p06) {
     Write-Host ''
-    Write-Host '>>> P0-06: 20 jendela akan dibuka. Buka Task Manager → Details.' -ForegroundColor Yellow
+    Write-Host '>>> P0-06: 20 jendela akan dibuka. Buka Task Manager -> Details.' -ForegroundColor Yellow
     Write-Host '>>> Idle 60 detik, catat CPU/GPU. Seret satu jendela, catat puncak.' -ForegroundColor Yellow
     Write-Host '>>> Tekan ENTER untuk buka...' -ForegroundColor Yellow
     Read-Host | Out-Null
