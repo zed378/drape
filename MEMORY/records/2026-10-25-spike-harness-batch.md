@@ -107,11 +107,20 @@ Explorer, DPI, monitor). Menulis harness dulu berarti owner bisa langsung uji ta
 
 ## What Was Not Determined
 
-- Semua hasil empiris di VM: tabel strategi × build, teknik icon stabil, biaya blur 20 jendela,
-  latensi hook. Semua menunggu owner.
-- Hasil awal P0-05 di HOST (dev machine, bukan VM): 77 item, 8308 ms (~108 ms/item) — JAUH di atas
-  target 1 detik/500 item. Diukur sinkron per item; produksi butuh async + cache (P1-08). Angka VM
-  akan menentukan seberapa jauh optimasi dibutuhkan.
+- Tabel strategi × build (P0-03), biaya blur (P0-06), latensi hook (P0-07). Menunggu owner
+  menjalankan bagian interaktif.
+
+## Hasil Parsial VM (2026-10-25, Win11 26H2 build 26300, DPI 100)
+
+- **P0-05**: 5 item di Desktop, diulang jadi 500: ok=500 failed=0, **40812 ms (~82 ms/item)**.
+  Konsisten dengan host (~108 ms/item). Target 1 detik/500 item MISSED ~40x. Produksi WAJIB
+  async + cache + lazy-load (P1-08); angka ini menjadi baseline optimasi.
+- **P0-04**: read hidden=False, hide OK, read hidden=True, hide kedua "already hidden, no toggle
+  sent" (TIDAK flip — benar), --restore OK, show OK. Teknik `WM_COMMAND 0x7402` + baca
+  `IsWindowVisible(SysListView32)` TERBUKTI di 26H2. Kill test belum (bug skrip: proses `read`
+  keluar sendiri sebelum di-kill — skrip diperbaiki, kill test jadi manual).
+- Skrip berhenti di error Stop-Process (tanpa try/catch) sehingga P0-07/03/06 belum jalan.
+  Skrip diperbaiki: tiap bagian try/catch + lanjut, kill test jadi instruksi manual.
 
 ## VM Access (2026-10-25)
 
