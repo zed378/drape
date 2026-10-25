@@ -2,7 +2,14 @@
 
 **The single status board.** History lives in [`../MEMORY/`](../MEMORY/README.md); this is state.
 
-Last updated: 2026-10-25 (spike harness P0-03..P0-07 siap, menunggu hasil VM; 98 tests green).
+Last updated: 2026-10-25 (VM pack diserahkan ke owner; menunggu hasil uji VM; 98 tests green).
+
+## VM Spike Pack — diserahkan 2026-10-25
+
+VM `10.1.200.32` hanya membuka RDP 3389 (WinRM/SMB tertutup), jadi eksekusi remote tidak mungkin.
+Paket di `runs/`: `CARA-UJI.md` + 5 ZIP (`p0-03` 179 MB, `p0-04` 6 MB, `p0-05` 6 MB, `p0-06` 179 MB,
+`p0-07` 6 MB). ZIP tidak dicommit (git-ignored); `CARA-UJI.md` dicommit sebagai panduan.
+Butuh .NET 10 Desktop Runtime di VM. Hasil yang ditunggu: tabel terisi + winver + DPI + monitor.
 
 ## Where This Project Actually Is
 
