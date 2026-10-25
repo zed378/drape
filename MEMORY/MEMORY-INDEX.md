@@ -10,6 +10,7 @@ Current status is in [`../TASKS/PROGRESS.md`](../TASKS/PROGRESS.md), not here.
 
 | Date | Task | Record | Hook |
 |---|---|---|---|
+| 2026-10-25 | P0-03…P0-07 | [Spike harness batch, menunggu VM](./records/2026-10-25-spike-harness-batch.md) | Semua 5 harness kompilasi + spec + runbook; hasil empiris menunggu owner. ADR tanpa data adalah asumsi yang menyamar. |
 | 2026-10-25 | P0-10, P1-12, P1-04-parsial | [Subagents, coverage, ViewModel](./records/2026-10-25-p0-10-p1-12-p1-04.md) | The 20 ms save budget does not hold (~24 ms median) — the test now gates the median at 30 ms while the record states the actual number honestly. |
 | 2026-10-25 | P0-01/02/08, P1-03/07 | [Phase 0 + P1 batch: CI, composition root, DrapeService](./records/2026-10-25-phase0-p1-batch.md) | `with { Prop = bad }` bypasses the property initializer — Rename and WithOrder needed explicit validation; the manifest had 3 stacked defects behind one generic error. |
 | 2026-10-23 | P1-01/02/03/06/11 | [Core domain, contracts, ConfigStore, layout, persistence](./records/2026-10-23-P1-core-domain-config-layout.md) | `public Drape(...)` does not compile: the type name resolves to the root namespace in a constructor declaration, so the record needed a primary constructor. The same trap then hit every test file. |
@@ -56,5 +57,8 @@ Full text in [`DECISIONS.md`](./DECISIONS.md). Part II (2026-10-10) says what ch
 | Task | Spec |
 |---|---|
 | P1-03 | [Config store](./specs/P1-03-config-store.md) — retrospective; implementation already existed. |
+| P0-03 | [Desktop host spike](./specs/P0-03-desktop-host.md) — written before spike code. |
+| P0-04 | [Desktop icons spike](./specs/P0-04-desktop-icons.md) — written before spike code. |
+| P0-07 | [Mouse hook spike](./specs/P0-07-mouse-hook.md) — written before spike code. |
 
 See [`specs/README.md`](./specs/README.md).

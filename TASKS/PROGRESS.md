@@ -2,14 +2,15 @@
 
 **The single status board.** History lives in [`../MEMORY/`](../MEMORY/README.md); this is state.
 
-Last updated: 2026-10-25 (P0-10, P1-12 DONE; P1-04 parsial; 98 tests green).
+Last updated: 2026-10-25 (spike harness P0-03..P0-07 siap, menunggu hasil VM; 98 tests green).
 
 ## Where This Project Actually Is
 
 Early implementation. `Drape.slnx` builds with 0 warnings; 98 tests pass (71 Core + 14 Infra + 7 Arch + 6 UI).
 DONE: P0-01, P0-02, P0-08, P0-10, P1-01, P1-02, P1-03, P1-06, P1-07-Core, P1-11, P1-12.
-P1-04 parsial: ViewModel + Window + 6 headless tests green; desktop-layer attach, focus, DPI screenshots
-need P0-03 + hardware. Blocked on hardware/spikes: P0-03…P0-07, P0-09, and everything downstream of P1-04.
+P1-04 parsial: ViewModel + Window + 6 headless tests green.
+Spike harness P0-03..P0-07: spec + kode + runbook DONE, kompilasi hijau; hasil empiris menunggu owner
+menjalankan di VM. P0-09 (ADR final) terblokir sampai hasil itu masuk.
 
 ## Current Focus
 
@@ -35,8 +36,8 @@ _Empty — everything verifiable without hardware or the P0-03 spike is done._
 
 | ID | Title | Blocked by |
 |---|---|---|
-| P0-03 … P0-07 | Spikes (need hardware matrix) | Owner / VMs |
-| P0-09 | Record spike results as ADRs | P0-03 … P0-07 |
+| P0-03 … P0-07 hasil VM | Hasil empiris dari owner | Owner menjalankan runbook di VM |
+| P0-09 | Record spike results as ADRs | Hasil VM P0-03 … P0-07 |
 | P1-04-rest, P1-05 | Desktop-layer attach, focus, DPI | P0-09 (ADR-007 final) |
 | P1-08, P1-09, P1-10 | Items, drag-drop, DPI | P1-04 window + P0-05 answer |
 | P1-07-UI | Tray/menu commands for DrapeService | P1-04 |

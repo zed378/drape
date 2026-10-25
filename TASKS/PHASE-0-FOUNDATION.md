@@ -77,7 +77,7 @@ Workflow `ci.yml`: locked restore, build with `-warnaserror`, format check, test
 
 | | |
 |---|---|
-| **Status** | TODO |
+| **Status** | WIP (2026-10-25) — harness + spec + runbook done; hasil VM menunggu owner |
 | **Priority** | P0 |
 | **Estimate** | 3 days |
 | **Role** | shell-engineer-windows |
@@ -106,7 +106,7 @@ Prototype strategies A, B and C for placing a transparent **Avalonia** window in
 
 | | |
 |---|---|
-| **Status** | TODO |
+| **Status** | WIP (2026-10-25) — harness + spec + runbook done; hasil VM menunggu owner |
 | **Priority** | P0 |
 | **Estimate** | 2 days |
 | **Role** | shell-engineer-windows |
@@ -135,7 +135,7 @@ Find the most stable way to read the current state, hide and show desktop icons;
 
 | | |
 |---|---|
-| **Status** | TODO |
+| **Status** | WIP (2026-10-25) — harness + runbook done; hasil VM menunggu owner |
 | **Priority** | P1 |
 | **Estimate** | 2 days |
 | **Role** | shell-engineer-windows |
@@ -164,7 +164,7 @@ Enumerate Desktop plus Public Desktop through the Known Folder API, and fetch ic
 
 | | |
 |---|---|
-| **Status** | TODO |
+| **Status** | WIP (2026-10-25) — harness + runbook done; hasil VM menunggu owner |
 | **Priority** | P1 |
 | **Estimate** | 2 days |
 | **Role** | ui-engineer |
@@ -192,7 +192,7 @@ Compare Avalonia's transparency-level hint (transparent and blur-behind), acryli
 
 | | |
 |---|---|
-| **Status** | TODO |
+| **Status** | WIP (2026-10-25) — harness + spec + runbook done; hasil VM menunggu owner |
 | **Priority** | P1 |
 | **Estimate** | 2 days |
 | **Role** | shell-engineer-windows |

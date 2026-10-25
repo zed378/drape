@@ -1,0 +1,15 @@
+FindWindowW
+FindWindowExW
+EnumWindows
+EnumChildWindows
+GetClassNameW
+SendMessageW
+IsWindowVisible
+ShowWindow
+SHOW_WINDOW_CMD
+HWND
+BOOL
+WPARAM
+LPARAM
+LRESULT
+WNDENUMPROC
