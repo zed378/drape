@@ -19,9 +19,6 @@ coverage*/
 # Local Drape data that must never be committed (user paths, configs, logs)
 *.local.json
 
-# VM spike packs (large binaries, rebuilt on demand; see runs/CARA-UJI.md)
-runs/*-vm.zip
-runs/*-sc-vm.zip
+# VM spike pack (large binary, rebuilt on demand; see runs/CARA-UJI.md)
 runs/drape-spikes-full.zip
 runs/spike-pack/
-runs/vm-spike-pack/

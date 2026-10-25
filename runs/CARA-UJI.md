@@ -1,7 +1,7 @@
 # Cara Uji Spike di VM Windows
 
-> CARA OTOMATIS (disarankan): salin SATU file `drape-spikes-full.zip` ke VM,
-> ekstrak, lalu jalankan SEKALI:
+> Salin SATU file `drape-spikes-full.zip` (±272 MB, self-contained — TIDAK butuh
+> instal .NET runtime) ke VM, ekstrak, lalu jalankan SEKALI:
 >
 > ```
 > powershell -ExecutionPolicy Bypass -File Run-Spikes.ps1
@@ -11,13 +11,8 @@
 > memandu bagian interaktif (P0-03/06/07), dan menulis `spike-results.txt`.
 > Kirim file itu kembali. Checkpoint VM dulu. Catat `winver`, DPI, monitor.
 >
-> BUTUH .NET 10 RUNTIME? Dua opsi:
-> - (a) Instal .NET 10 Desktop Runtime sekali (~150 MB), lalu pakai 5 ZIP kecil
->   `p0-*-vm.zip` (6-179 MB) + `spike-agent.zip` (skrip).
-> - (b) Tanpa instal runtime: pakai 5 ZIP self-contained `p0-*-sc-vm.zip`
->   (40-76 MB per file, total ~272 MB) — langsung jalan.
->
-> CARA MANUAL: tiap ZIP berisi RUNBOOK masing-masing. Semua `.exe` Release.
+> Isi ZIP: 5 folder spike (`p0-03` s/d `p0-07`, exe self-contained + RUNBOOK),
+> `Run-Spikes.ps1`, dan file ini sebagai README. Semua `.exe` Release.
 
 ## Urutan
 
