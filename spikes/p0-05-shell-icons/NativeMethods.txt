@@ -1,0 +1,13 @@
+SHGetKnownFolderPath
+SHCreateItemFromParsingName
+IShellItem
+IShellItemImageFactory
+SIIGBF
+SIGDN
+SIZE
+DeleteObject
+CoTaskMemFree
+CoCreateInstance
+CoInitializeEx
+CoUninitialize
+COINIT
