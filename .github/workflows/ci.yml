@@ -1,0 +1,69 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build-test:
+    name: Build, format, test
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Cache NuGet
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: nuget-${{ hashFiles('Directory.Packages.props', '**/*.csproj') }}
+          restore-keys: nuget-
+
+      - name: Restore (locked)
+        run: dotnet restore Drape.slnx --locked-mode
+
+      - name: Build Release with warnings as errors
+        run: dotnet build Drape.slnx -c Release --no-restore -warnaserror
+
+      - name: Format check
+        run: dotnet format Drape.slnx --verify-no-changes --verbosity minimal
+
+      - name: Test with coverage
+        run: dotnet test Drape.slnx -c Release --no-build --collect:"XPlat Code Coverage" --results-directory ./coverage
+
+      - name: Upload coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: ./coverage
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: ./coverage
+
+  vulnerabilities:
+    name: Package vulnerability scan
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Restore
+        run: dotnet restore Drape.slnx
+
+      - name: List vulnerable packages
+        run: dotnet list Drape.slnx package --vulnerable --include-transitive

@@ -68,7 +68,7 @@ Define `IConfigStore`, `IDesktopItemSource`, `IDesktopHost`, `IDesktopIcons`, `I
 
 | | |
 |---|---|
-| **Status** | WIP — implemented and tested; missing the feature spec and the 20 ms measurement |
+| **Status** | DONE (2026-10-25) — spec written, 50x50 save measured under 20 ms
 | **Priority** | P0 |
 | **Estimate** | 3 days |
 | **Role** | core-engineer |

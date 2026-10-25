@@ -2,7 +2,7 @@
 
 A desktop organizer. Drape groups your desktop icons, shortcuts and files into semi-transparent panels — called **Drapes** — drawn above the wallpaper. Move them, resize them, roll them up, and double-click the empty desktop to hide everything at once.
 
-> **Status: planning phase. There is no code yet, and nothing here has been built or run.** The documentation describes the intended product; every platform-specific technique is a hypothesis until a spike proves it. See [`TASKS/PROGRESS.md`](./TASKS/PROGRESS.md) for the current state.
+> **Status: early implementation. Core domain, config store, layout maths and Windows capability skeleton exist and are tested (81 tests green).** The desktop host, icon hiding and UI windows are still hypotheses until their spikes prove them. See [`TASKS/PROGRESS.md`](./TASKS/PROGRESS.md) for the current state.
 
 ## What It Will Do
 

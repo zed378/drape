@@ -65,7 +65,17 @@ public sealed record Drape(
     /// <summary>Returns a copy with a different title.</summary>
     /// <param name="title">The new title; must not be blank.</param>
     /// <returns>The renamed Drape.</returns>
-    public Drape Rename(string title) => this with { Title = title };
+    /// <exception cref="ArgumentException">The title is blank.</exception>
+    /// <remarks>
+    /// Validated explicitly because a <c>with</c> expression assigns through the <c>init</c>
+    /// accessor without running the property initializer — the constructor-time validation does
+    /// not apply to copies.
+    /// </remarks>
+    public Drape Rename(string title)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(title);
+        return this with { Title = title };
+    }
 
     /// <summary>Returns a copy with new bounds.</summary>
     /// <param name="bounds">The new bounds.</param>

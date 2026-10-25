@@ -49,7 +49,20 @@ public sealed record DrapeItem(
     /// <summary>Returns a copy with a new order.</summary>
     /// <param name="order">New position; must not be negative.</param>
     /// <returns>The reordered item.</returns>
-    public DrapeItem WithOrder(int order) => this with { Order = order };
+    /// <exception cref="ArgumentOutOfRangeException">The order is negative.</exception>
+    /// <remarks>
+    /// Validated explicitly: a <c>with</c> expression bypasses the property initializer, so the
+    /// constructor-time check does not apply to copies.
+    /// </remarks>
+    public DrapeItem WithOrder(int order)
+    {
+        if (order < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(order), order, "Order cannot be negative.");
+        }
+
+        return this with { Order = order };
+    }
 
     /// <summary>Marks the item as missing, keeping the original timestamp if it was already missing.</summary>
     /// <param name="at">When it was noticed.</param>
