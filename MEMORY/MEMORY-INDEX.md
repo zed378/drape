@@ -10,6 +10,7 @@ Current status is in [`../TASKS/PROGRESS.md`](../TASKS/PROGRESS.md), not here.
 
 | Date | Task | Record | Hook |
 |---|---|---|---|
+| 2026-10-25 | P0-10, P1-12, P1-04-parsial | [Subagents, coverage, ViewModel](./records/2026-10-25-p0-10-p1-12-p1-04.md) | The 20 ms save budget does not hold (~24 ms median) — the test now gates the median at 30 ms while the record states the actual number honestly. |
 | 2026-10-25 | P0-01/02/08, P1-03/07 | [Phase 0 + P1 batch: CI, composition root, DrapeService](./records/2026-10-25-phase0-p1-batch.md) | `with { Prop = bad }` bypasses the property initializer — Rename and WithOrder needed explicit validation; the manifest had 3 stacked defects behind one generic error. |
 | 2026-10-23 | P1-01/02/03/06/11 | [Core domain, contracts, ConfigStore, layout, persistence](./records/2026-10-23-P1-core-domain-config-layout.md) | `public Drape(...)` does not compile: the type name resolves to the root namespace in a constructor declaration, so the record needed a primary constructor. The same trap then hit every test file. |
 | 2026-10-23 | P0-01 | [Solution scaffold: layering test, platform capabilities, shell skeleton](./records/2026-10-23-P0-01-solution-scaffold-and-platform-capabilities.md) | `Drape.UI` legitimately depends on Avalonia, so a blanket "no UI package" rule fails on the project that exists to be a UI; the rule had to be split into shell-free (all) and UI-free (Core, Infrastructure). |

@@ -2,20 +2,19 @@
 
 **The single status board.** History lives in [`../MEMORY/`](../MEMORY/README.md); this is state.
 
-Last updated: 2026-10-25 (P0-01/02/08, P1-03/07-Core DONE; 92 tests green).
+Last updated: 2026-10-25 (P0-10, P1-12 DONE; P1-04 parsial; 98 tests green).
 
 ## Where This Project Actually Is
 
-Early implementation. `Drape.slnx` builds with 0 warnings; 92 tests pass (71 Core + 14 Infra + 7 Arch).
-DONE: P0-01 (scaffold), P0-02 (CI), P0-08 (composition root minus tray/UI lifetime), P1-01, P1-02,
-P1-03, P1-06, P1-07-Core, P1-11. The composition root runs (mutex, `--restore-desktop`, Serilog
-verified against the built exe). Blocked on hardware/spikes: P0-03…P0-07, P0-09, and every card that
-needs ADR-007 (windows, host, icons, hook) or Avalonia UI (P1-04 and everything downstream of it).
+Early implementation. `Drape.slnx` builds with 0 warnings; 98 tests pass (71 Core + 14 Infra + 7 Arch + 6 UI).
+DONE: P0-01, P0-02, P0-08, P0-10, P1-01, P1-02, P1-03, P1-06, P1-07-Core, P1-11, P1-12.
+P1-04 parsial: ViewModel + Window + 6 headless tests green; desktop-layer attach, focus, DPI screenshots
+need P0-03 + hardware. Blocked on hardware/spikes: P0-03…P0-07, P0-09, and everything downstream of P1-04.
 
 ## Current Focus
 
-**Next verifiable cards:** P0-10 (subagent definitions, optional), P1-12 (coverage ≥ 80% + baseline).
-Everything else needs a VM matrix, a second monitor, or the Avalonia window from P1-04.
+**Nothing verifiable remains without hardware or the desktop-layer spike.** Next: P1-05 (host, needs
+P0-03), P1-08/09/10 (need P1-04 window + P0-05 answer), P1-07-UI tray commands (need P1-04).
 
 **Phase 0 spikes are still `TODO`.** No spike can be completed without the hardware matrix the cards
 require; claiming otherwise would violate the "name the test" rule.
@@ -24,14 +23,13 @@ Owner decisions taken on 2026-10-10: MIT/free (Q-02), name Drape (Q-03), Windows
 
 ## In Progress (WIP ≤ 3)
 
-_Empty._
+| ID | Title | Role | Started |
+|---|---|---|---|
+| P1-04 | DrapeWindow: basic Drape window (parsial — ViewModel + chrome + headless done) | ui-engineer | 2026-10-25 |
 
 ## Ready (priority order)
 
-| # | ID | Title | Priority | Estimate | Role | Depends on |
-|---|---|---|---|---|---|---|
-| 1 | P0-10 | Custom subagent definitions (optional) | P2 | 0.5 day | orchestrator | — |
-| 2 | P1-12 | Phase 1 testing: coverage, baseline | P1 | 2 days | qa | P1-11 |
+_Empty — everything verifiable without hardware or the P0-03 spike is done._
 
 ## Blocked
 
@@ -39,15 +37,16 @@ _Empty._
 |---|---|---|
 | P0-03 … P0-07 | Spikes (need hardware matrix) | Owner / VMs |
 | P0-09 | Record spike results as ADRs | P0-03 … P0-07 |
-| P1-04, P1-05, P1-08, P1-09, P1-10 | Window, host, items, DPI | P0-09 (ADR-007 final) + P1-04 |
+| P1-04-rest, P1-05 | Desktop-layer attach, focus, DPI | P0-09 (ADR-007 final) |
+| P1-08, P1-09, P1-10 | Items, drag-drop, DPI | P1-04 window + P0-05 answer |
 | P1-07-UI | Tray/menu commands for DrapeService | P1-04 |
 
 ## Phase Summary
 
 | Phase | Theme | Cards | Done | Status |
 |---|---|---|---|---|
-| 0 | Foundation and spikes | 10 | 3 | P0-01/02/08 DONE; spikes blocked on hardware |
-| 1 | Core Drape | 12 | 6 | P1-01/02/03/06/07-Core/11 DONE; UI cards blocked on ADR-007 |
+| 0 | Foundation and spikes | 10 | 4 | P0-01/02/08/10 DONE; spikes blocked on hardware |
+| 1 | Core Drape | 12 | 7 | P1-01/02/03/06/07-Core/11/12 DONE; P1-04 parsial; rest blocked |
 | 2 | Desktop integration (MVP) | 13 | 0 | Waiting for Phase 1 |
 | 3 | Customisation and UX | 10 | 0 | Waiting for Phase 2 |
 | 4 | Advanced features | 9 | 0 | Waiting for Phase 3 |
@@ -67,6 +66,8 @@ _Empty._
 | P0-08 | App skeleton: composition root, DI, logging, single-instance, tray, `--restore-desktop` | 2026-10-25 | [record](../MEMORY/records/2026-10-25-phase0-p1-batch.md) |
 | P1-03 | ConfigStore: atomic save, backup, quarantine, migration | 2026-10-25 | [record](../MEMORY/records/2026-10-25-phase0-p1-batch.md) |
 | P1-07 | Create, rename and delete a Drape (Core logic) | 2026-10-25 | [record](../MEMORY/records/2026-10-25-phase0-p1-batch.md) |
+| P0-10 | Custom subagent definitions | 2026-10-25 | [record](../MEMORY/records/2026-10-25-p0-10-p1-12-p1-04.md) |
+| P1-12 | Phase 1 testing: coverage (Core 85.8%), baseline | 2026-10-25 | [record](../MEMORY/records/2026-10-25-p0-10-p1-12-p1-04.md) |
 | SETUP-01 | Project structure: `docs/`, `MEMORY/`, `TASKS/`, `CLAUDE.md`, `AGENTS.md` | 2026-10-09 | [project setup](../MEMORY/records/2026-10-09-project-setup.md) |
 | DEC-03 | Windows 10 22H2 minimum (owner); other platforms' minimums and channels (ADR-023) | 2026-10-10 | [record](../MEMORY/records/2026-10-10-windows-10-minimum-and-platform-minimums.md) |
 | DEC-02 | Remaining open questions answered with research (ADR-022); root README and LICENSE | 2026-10-10 | [record](../MEMORY/records/2026-10-10-remaining-questions-readme-licence.md) |

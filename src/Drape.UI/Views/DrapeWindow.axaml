@@ -1,0 +1,72 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Drape.UI.ViewModels"
+        x:Class="Drape.UI.Views.DrapeWindow"
+        x:DataType="vm:DrapeViewModel"
+        Title="{Binding Title}"
+        Width="320" Height="240"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaTitleBarHeightHint="-1"
+        ShowInTaskbar="False"
+        ShowActivated="False"
+        Background="Transparent"
+        TransparencyLevelHint="Transparent">
+  <Border Background="#733A6EA5"
+          CornerRadius="8"
+          BorderThickness="0">
+    <Grid RowDefinitions="28,*">
+      <!-- Title bar: drag to move, double-click to roll up -->
+      <Border Grid.Row="0"
+              Background="Transparent"
+              AutomationProperties.Name="Drape title bar">
+        <Grid ColumnDefinitions="*,Auto,Auto">
+          <TextBlock Grid.Column="0"
+                     Text="{Binding Title}"
+                     FontSize="13"
+                     FontWeight="SemiBold"
+                     VerticalAlignment="Center"
+                     Margin="10,0,0,0"
+                     AutomationProperties.Name="Drape title" />
+          <Button Grid.Column="1"
+                  Command="{Binding ToggleRollupCommand}"
+                  Content="▾"
+                  Width="28" Height="28"
+                  Background="Transparent"
+                  AutomationProperties.Name="Roll up or open" />
+        </Grid>
+      </Border>
+      <!-- Item area -->
+      <ScrollViewer Grid.Row="1" Margin="10">
+        <ItemsControl ItemsSource="{Binding Items}">
+          <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+              <WrapPanel Orientation="Horizontal" />
+            </ItemsPanelTemplate>
+          </ItemsControl.ItemsPanel>
+          <ItemsControl.ItemTemplate>
+            <DataTemplate DataType="vm:DrapeItemViewModel">
+              <!-- Missing items are dimmed via the view-model's DimOpacity; the badge and tooltip
+                   follow the UI spec ("File not found"). -->
+              <StackPanel Width="72" Margin="6"
+                          Opacity="{Binding DimOpacity}"
+                          ToolTip.Tip="{Binding MissingTooltip}">
+                <Border Width="48" Height="48"
+                        Background="#FF888888"
+                        CornerRadius="4"
+                        HorizontalAlignment="Center"
+                        AutomationProperties.Name="Item icon placeholder" />
+                <TextBlock Text="{Binding DisplayName}"
+                           FontSize="11"
+                           TextWrapping="Wrap"
+                           MaxLines="2"
+                           TextTrimming="CharacterEllipsis"
+                           TextAlignment="Center"
+                           AutomationProperties.Name="Item label" />
+              </StackPanel>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </ScrollViewer>
+    </Grid>
+  </Border>
+</Window>
