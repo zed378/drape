@@ -1,7 +1,18 @@
 # Cara Uji Spike di VM Windows
 
-> 5 file ZIP di folder ini. Salin ke VM (via RDP drive sharing / copy-paste).
-> Semua `.exe` sudah dibuild Release. Checkpoint VM dulu. Catat `winver`, DPI, monitor.
+> CARA OTOMATIS (disarankan): salin SATU file `drape-spikes-full.zip` ke VM,
+> ekstrak, lalu jalankan SEKALI sebagai Administrator-optional:
+>
+> ```
+> powershell -ExecutionPolicy Bypass -File Run-Spikes.ps1
+> ```
+>
+> Skrip menjalankan bagian otomatis (P0-05 timing, P0-04 hide/show/restore+kill),
+> memandu bagian interaktif (P0-03/06/07), dan menulis `spike-results.txt`.
+> Kirim file itu kembali. Checkpoint VM dulu. Catat `winver`, DPI, monitor.
+>
+> CARA MANUAL: 5 ZIP per spike (`p0-*-vm.zip`) + RUNBOOK masing-masing.
+> Semua `.exe` sudah dibuild Release.
 
 ## Urutan
 
