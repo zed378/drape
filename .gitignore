@@ -21,4 +21,6 @@ coverage*/
 
 # VM spike packs (large binaries, rebuilt on demand; see runs/CARA-UJI.md)
 runs/*-vm.zip
+runs/drape-spikes-full.zip
+runs/spike-pack/
 runs/vm-spike-pack/

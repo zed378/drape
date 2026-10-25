@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "last_updated": "2026-10-25T06:55:22.872Z",
+  "last_updated": "2026-10-25T07:03:28.218Z",
   "sources": [
     "README.md",
     "TASKS\\README.md",
@@ -5376,6 +5376,15 @@
       "source": "TASKS\\PROGRESS.md",
       "line": 7,
       "evidence": "## VM Spike Pack — diserahkan 2026-10-25"
+    },
+    {
+      "id": "sec_vm_access_2026_10_25_",
+      "name": "VM Access (2026-10-25)",
+      "type": "Section/Module",
+      "description": "Specification section from MEMORY\\records\\2026-10-25-spike-harness-batch.md",
+      "source": "MEMORY\\records\\2026-10-25-spike-harness-batch.md",
+      "line": 116,
+      "evidence": "## VM Access (2026-10-25)"
     }
   ],
   "relations": [
@@ -6806,7 +6815,7 @@
   ],
   "stats": {
     "total_sources": 90,
-    "total_entities": 587,
+    "total_entities": 588,
     "total_relations": 178,
     "token_savings_estimate": "85-95%"
   }

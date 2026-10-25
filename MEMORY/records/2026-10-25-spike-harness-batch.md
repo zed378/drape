@@ -107,5 +107,17 @@ Explorer, DPI, monitor). Menulis harness dulu berarti owner bisa langsung uji ta
 
 ## What Was Not Determined
 
-- Semua hasil empiris: tabel strategi × build, teknik icon stabil, kecepatan icon 500 item, biaya blur
-  20 jendela, latensi hook. Semua menunggu VM owner.
+- Semua hasil empiris di VM: tabel strategi × build, teknik icon stabil, biaya blur 20 jendela,
+  latensi hook. Semua menunggu owner.
+- Hasil awal P0-05 di HOST (dev machine, bukan VM): 77 item, 8308 ms (~108 ms/item) — JAUH di atas
+  target 1 detik/500 item. Diukur sinkron per item; produksi butuh async + cache (P1-08). Angka VM
+  akan menentukan seberapa jauh optimasi dibutuhkan.
+
+## VM Access (2026-10-25)
+
+- VM `10.1.200.32`: ping diblokir firewall, RDP 3389 OPEN, WinRM 5985/5986 + SMB 445 + SSH 22 TIMEOUT.
+  Eksekusi remote tidak mungkin; otomatisasi via "agent polling" (`runs/Run-Spikes.ps1`): owner
+  jalankan sekali di VM, skrip menguji otomatis (P0-05, P0-04) + memandu interaktif (P0-03/06/07),
+  menulis `spike-results.txt`. Sintaks PS 5.1 OK (em-dash harus dihindari — PSParser 5.1 gagal).
+- Paket: `runs/drape-spikes-full.zip` (376 MB, semua exe + runbook + agent) + 5 ZIP per spike +
+  `runs/spike-agent.zip` (skrip + panduan, 4 KB). ZIP di-ignore git; `CARA-UJI.md` dicommit.
