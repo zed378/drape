@@ -1,4 +1,4 @@
-# Memory Index
+﻿# Memory Index
 
 Every record and every decision, newest first. Add a line here as part of writing the record or ADR: **an unindexed record is a record nobody finds.**
 
@@ -10,6 +10,7 @@ Current status is in [`../TASKS/PROGRESS.md`](../TASKS/PROGRESS.md), not here.
 
 | Date | Task | Record | Hook |
 |---|---|---|---|
+| 2026-10-25 | P0-01/02/08, P1-03/07 | [Phase 0 + P1 batch: CI, composition root, DrapeService](./records/2026-10-25-phase0-p1-batch.md) | `with { Prop = bad }` bypasses the property initializer — Rename and WithOrder needed explicit validation; the manifest had 3 stacked defects behind one generic error. |
 | 2026-10-23 | P1-01/02/03/06/11 | [Core domain, contracts, ConfigStore, layout, persistence](./records/2026-10-23-P1-core-domain-config-layout.md) | `public Drape(...)` does not compile: the type name resolves to the root namespace in a constructor declaration, so the record needed a primary constructor. The same trap then hit every test file. |
 | 2026-10-23 | P0-01 | [Solution scaffold: layering test, platform capabilities, shell skeleton](./records/2026-10-23-P0-01-solution-scaffold-and-platform-capabilities.md) | `Drape.UI` legitimately depends on Avalonia, so a blanket "no UI package" rule fails on the project that exists to be a UI; the rule had to be split into shell-free (all) and UI-free (Core, Infrastructure). |
 | 2026-10-10 | — | [Windows 10 minimum; other platforms' minimums and channels](./records/2026-10-10-windows-10-minimum-and-platform-minimums.md) | Windows 10 becomes a release gate and a two-path visual problem while its Microsoft support ends 2027; my edit script broke two lines and was caught by re-reading. Documents only. |
@@ -51,4 +52,8 @@ Full text in [`DECISIONS.md`](./DECISIONS.md). Part II (2026-10-10) says what ch
 
 ## Specs
 
-None yet. See [`specs/README.md`](./specs/README.md).
+| Task | Spec |
+|---|---|
+| P1-03 | [Config store](./specs/P1-03-config-store.md) — retrospective; implementation already existed. |
+
+See [`specs/README.md`](./specs/README.md).

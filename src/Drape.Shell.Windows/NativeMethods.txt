@@ -19,5 +19,6 @@ IFileOpenDialog
 IShellItem
 IShellItemArray
 SHCreateItemFromParsingName
+SHGetKnownFolderPath
 SIGDN
 CoTaskMemFree

@@ -175,6 +175,19 @@ public sealed class DrapeModelTests
         drape.Items.Count.ShouldBe(1);
     }
 
+    /// <summary>WithOrder with a negative order is rejected even on a copy.</summary>
+    /// <remarks>
+    /// A <c>with</c> expression bypasses the property initializer, so without the explicit check
+    /// in <c>WithOrder</c> this would silently produce an invalid item.
+    /// </remarks>
+    [Fact]
+    public void WithOrder_WithNegativeOrder_Throws()
+    {
+        var item = Item(@"C:\a.txt");
+
+        Should.Throw<ArgumentOutOfRangeException>(() => item.WithOrder(-1));
+    }
+
     /// <summary>An item with a blank path is rejected.</summary>
     [Fact]
     public void Item_WithBlankPath_Throws()

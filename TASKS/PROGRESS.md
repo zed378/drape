@@ -1,22 +1,21 @@
-# Progress
+﻿# Progress
 
 **The single status board.** History lives in [`../MEMORY/`](../MEMORY/README.md); this is state.
 
-Last updated: 2026-10-23 (P0-01 scaffold, [record](../MEMORY/records/2026-10-23-P0-01-solution-scaffold-and-platform-capabilities.md)). A count is a dated snapshot — re-count before quoting.
+Last updated: 2026-10-25 (P0-01/02/08, P1-03/07-Core DONE; 92 tests green).
 
 ## Where This Project Actually Is
 
-Scaffolding. Documentation, ADRs and task cards exist, and so does a solution: `Drape.slnx` with
-`src/` and `tests/` projects, a layering architecture test that is proven to fail on a forbidden
-reference, and a Windows `IPlatformCapabilities` implementation with a fake. P0-01 is `WIP`, not
-`DONE` — see its record for what is still unticked. No spike has started.
+Early implementation. `Drape.slnx` builds with 0 warnings; 92 tests pass (71 Core + 14 Infra + 7 Arch).
+DONE: P0-01 (scaffold), P0-02 (CI), P0-08 (composition root minus tray/UI lifetime), P1-01, P1-02,
+P1-03, P1-06, P1-07-Core, P1-11. The composition root runs (mutex, `--restore-desktop`, Serilog
+verified against the built exe). Blocked on hardware/spikes: P0-03…P0-07, P0-09, and every card that
+needs ADR-007 (windows, host, icons, hook) or Avalonia UI (P1-04 and everything downstream of it).
 
 ## Current Focus
 
-**Phase 1 — Core Drape, Core-only cards.** P1-01, P1-02, P1-06 and P1-11 are `DONE`; P1-03 is
-`WIP` (missing spec and performance number). The window and shell cards (P1-04, P1-05, P1-07 … P1-10)
-are blocked on ADR-007, which needs spike P0-03 — that needs Windows 10 and 11 VMs and mixed-DPI
-hardware, so it is owner work, not agent work.
+**Next verifiable cards:** P0-10 (subagent definitions, optional), P1-12 (coverage ≥ 80% + baseline).
+Everything else needs a VM matrix, a second monitor, or the Avalonia window from P1-04.
 
 **Phase 0 spikes are still `TODO`.** No spike can be completed without the hardware matrix the cards
 require; claiming otherwise would violate the "name the test" rule.
@@ -25,37 +24,30 @@ Owner decisions taken on 2026-10-10: MIT/free (Q-02), name Drape (Q-03), Windows
 
 ## In Progress (WIP ≤ 3)
 
-| ID | Title | Role | Started |
-|---|---|---|---|
-| P0-01 | Scaffold repo and solution | architect | 2026-10-23 |
-| P1-03 | ConfigStore: atomic save, backup, quarantine, migration | core-engineer | 2026-10-23 |
-
-> P0-01 remains `WIP`: the solution, layering test and `IPlatformCapabilities` skeleton are in place,
-> but the whole-solution test run, the `dotnet format` check and the NuGet version re-check are not
-> done. See [`../MEMORY/records/2026-10-23-P0-01-solution-scaffold-and-platform-capabilities.md`](../MEMORY/records/2026-10-23-P0-01-solution-scaffold-and-platform-capabilities.md).
+_Empty._
 
 ## Ready (priority order)
 
 | # | ID | Title | Priority | Estimate | Role | Depends on |
 |---|---|---|---|---|---|---|
-| — | — | — | — | — | — | — |
-
-> After P0-01 is `DONE`, P0-02 … P0-08 and P0-10 can run in parallel (different roles), within the WIP limit of 3.
+| 1 | P0-10 | Custom subagent definitions (optional) | P2 | 0.5 day | orchestrator | — |
+| 2 | P1-12 | Phase 1 testing: coverage, baseline | P1 | 2 days | qa | P1-11 |
 
 ## Blocked
 
 | ID | Title | Blocked by |
 |---|---|---|
-| P0-02 … P0-08, P0-10 | Everything else in Phase 0 | P0-01 |
+| P0-03 … P0-07 | Spikes (need hardware matrix) | Owner / VMs |
 | P0-09 | Record spike results as ADRs | P0-03 … P0-07 |
-| P1-* | All of Phase 1 | P0-09 (ADR-007 final) |
+| P1-04, P1-05, P1-08, P1-09, P1-10 | Window, host, items, DPI | P0-09 (ADR-007 final) + P1-04 |
+| P1-07-UI | Tray/menu commands for DrapeService | P1-04 |
 
 ## Phase Summary
 
 | Phase | Theme | Cards | Done | Status |
 |---|---|---|---|---|
-| 0 | Foundation and spikes | 10 | 0 | P0-01 `WIP`; spikes blocked on hardware |
-| 1 | Core Drape | 12 | 4 | Core-only cards done; window/shell cards blocked on ADR-007 |
+| 0 | Foundation and spikes | 10 | 3 | P0-01/02/08 DONE; spikes blocked on hardware |
+| 1 | Core Drape | 12 | 6 | P1-01/02/03/06/07-Core/11 DONE; UI cards blocked on ADR-007 |
 | 2 | Desktop integration (MVP) | 13 | 0 | Waiting for Phase 1 |
 | 3 | Customisation and UX | 10 | 0 | Waiting for Phase 2 |
 | 4 | Advanced features | 9 | 0 | Waiting for Phase 3 |
@@ -70,6 +62,11 @@ Owner decisions taken on 2026-10-10: MIT/free (Q-02), name Drape (Q-03), Windows
 | P1-02 | Interface contracts in Core, with a fake for each | 2026-10-23 | [record](../MEMORY/records/2026-10-23-P1-core-domain-config-layout.md) |
 | P1-06 | Layout maths (`LayoutService`) in Core | 2026-10-23 | [record](../MEMORY/records/2026-10-23-P1-core-domain-config-layout.md) |
 | P1-11 | Debounced persistence with a shutdown flush | 2026-10-23 | [record](../MEMORY/records/2026-10-23-P1-core-domain-config-layout.md) |
+| P0-01 | Scaffold repo and Avalonia solution | 2026-10-25 | [record](../MEMORY/records/2026-10-25-phase0-p1-batch.md) |
+| P0-02 | CI on GitHub Actions + Dependabot | 2026-10-25 | [record](../MEMORY/records/2026-10-25-phase0-p1-batch.md) |
+| P0-08 | App skeleton: composition root, DI, logging, single-instance, tray, `--restore-desktop` | 2026-10-25 | [record](../MEMORY/records/2026-10-25-phase0-p1-batch.md) |
+| P1-03 | ConfigStore: atomic save, backup, quarantine, migration | 2026-10-25 | [record](../MEMORY/records/2026-10-25-phase0-p1-batch.md) |
+| P1-07 | Create, rename and delete a Drape (Core logic) | 2026-10-25 | [record](../MEMORY/records/2026-10-25-phase0-p1-batch.md) |
 | SETUP-01 | Project structure: `docs/`, `MEMORY/`, `TASKS/`, `CLAUDE.md`, `AGENTS.md` | 2026-10-09 | [project setup](../MEMORY/records/2026-10-09-project-setup.md) |
 | DEC-03 | Windows 10 22H2 minimum (owner); other platforms' minimums and channels (ADR-023) | 2026-10-10 | [record](../MEMORY/records/2026-10-10-windows-10-minimum-and-platform-minimums.md) |
 | DEC-02 | Remaining open questions answered with research (ADR-022); root README and LICENSE | 2026-10-10 | [record](../MEMORY/records/2026-10-10-remaining-questions-readme-licence.md) |

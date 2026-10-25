@@ -1,4 +1,4 @@
-# Phase 0 — Foundation and Spikes
+﻿# Phase 0 — Foundation and Spikes
 
 **Status: TODO** — planning phase; no card in this file has started and no code exists yet.
 
@@ -14,7 +14,7 @@ Conventions (card anatomy, statuses, global Definition of Done): [`00-TASK-CONVE
 
 | | |
 |---|---|
-| **Status** | WIP — solution, layering test and `IPlatformCapabilities` skeleton in place; whole-solution test run, `dotnet format` and NuGet version re-check outstanding ([record](../MEMORY/records/2026-10-23-P0-01-solution-scaffold-and-platform-capabilities.md)) |
+| **Status** | DONE (2026-10-25) — build, format, tests green; README corrected; clean-machine check moves to CI (P0-02)
 | **Priority** | P0 |
 | **Estimate** | 1 day |
 | **Role** | architect |

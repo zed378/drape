@@ -269,4 +269,51 @@ public sealed class FileConfigStoreTests
         var written = fileSystem.ReadAllText(ConfigPath);
         written.ShouldContain($"\"schemaVersion\": {DrapeConfig.CurrentSchemaVersion}");
     }
+
+    /// <summary>Saving 50 Drapes × 50 items stays under the 20 ms budget (P1-03 DoD).</summary>
+    /// <remarks>
+    /// This runs against <see cref="FakeFileSystem"/>, so it measures serialisation plus store
+    /// overhead without real disk I/O — a lower bound. A real-disk number needs a manual run.
+    /// </remarks>
+    [Fact]
+    public async Task SaveAsync_FiftyDrapesTimesFiftyItems_UnderTwentyMilliseconds()
+    {
+        var (store, _, _) = CreateStore();
+        var page = new Page(_pageId, "Main", 0);
+        var drapes = new List<DrapeEntity>(50);
+        for (var d = 0; d < 50; d++)
+        {
+            var items = new List<DrapeItem>(50);
+            for (var i = 0; i < 50; i++)
+            {
+                items.Add(new DrapeItem(
+                    Guid.NewGuid(),
+                    DrapeItemKind.File,
+                    $@"C:\Users\test\Desktop\drape-{d:00}\file-{i:000}.txt",
+                    i,
+                    new DateTimeOffset(2026, 1, 1, 0, 0, 0, TimeSpan.Zero)));
+            }
+
+            drapes.Add(new DrapeEntity(
+                Guid.NewGuid(),
+                _pageId,
+                $"Drape {d:00}",
+                new DrapeBounds(@"\\.\DISPLAY1", 40, 60, 320, 240, 96, 0.02, 0.05, 0.16, 0.22))
+            {
+                Items = items,
+            });
+        }
+
+        var config = new DrapeConfig(1, [page], drapes);
+
+        // Warm up once so JIT cost does not pollute the measurement.
+        await store.SaveAsync(config);
+
+        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+        await store.SaveAsync(config);
+        stopwatch.Stop();
+
+        stopwatch.Elapsed.ShouldBeLessThan(TimeSpan.FromMilliseconds(20),
+            $"saving 50 Drapes × 50 items took {stopwatch.Elapsed.TotalMilliseconds:F1} ms");
+    }
 }
