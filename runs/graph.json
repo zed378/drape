@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "last_updated": "2026-10-23T13:49:48.976Z",
+  "last_updated": "2026-10-25T06:55:22.872Z",
   "sources": [
     "README.md",
     "TASKS\\README.md",
@@ -62,7 +62,36 @@
     "TASKS\\PROGRESS.md",
     "TASKS\\PHASE-0-FOUNDATION.md",
     "MEMORY\\records\\2026-10-23-P1-core-domain-config-layout.md",
-    "TASKS\\PHASE-1-DRAPE-CORE.md"
+    "TASKS\\PHASE-1-DRAPE-CORE.md",
+    "MEMORY\\specs\\P1-03-config-store.md",
+    "MEMORY\\records\\2026-10-25-phase0-p1-batch.md",
+    ".claude\\agents\\shell-engineer-windows.md",
+    ".claude\\agents\\core-engineer.md",
+    ".claude\\agents\\ui-engineer.md",
+    ".claude\\agents\\qa.md",
+    "docs\\TESTING\\PHASE-1-BASELINE.md",
+    "tests\\Drape.UI.Tests\\bin\\Release\\net10.0\\EmptyFiles\\document\\empty.docx",
+    "tests\\Drape.UI.Tests\\bin\\Release\\net10.0\\EmptyFiles\\document\\empty.pdf",
+    "tests\\Drape.UI.Tests\\bin\\Release\\net10.0\\EmptyFiles\\slide\\empty.pptx",
+    "MEMORY\\records\\2026-10-25-p0-10-p1-12-p1-04.md",
+    "MEMORY\\specs\\P0-03-desktop-host.md",
+    "spikes\\p0-03-desktop-host\\NativeMethods.txt",
+    "spikes\\p0-03-desktop-host\\obj\\Release\\net10.0-windows10.0.19041.0\\p0-03-desktop-host.csproj.FileListAbsolute.txt",
+    "spikes\\p0-03-desktop-host\\RUNBOOK.md",
+    "MEMORY\\specs\\P0-04-desktop-icons.md",
+    "spikes\\p0-04-desktop-icons\\NativeMethods.txt",
+    "spikes\\p0-04-desktop-icons\\obj\\Release\\net10.0-windows10.0.19041.0\\p0-04-desktop-icons.csproj.FileListAbsolute.txt",
+    "spikes\\p0-04-desktop-icons\\RUNBOOK.md",
+    "spikes\\p0-05-shell-icons\\NativeMethods.txt",
+    "spikes\\p0-05-shell-icons\\obj\\Release\\net10.0-windows10.0.19041.0\\p0-05-shell-icons.csproj.FileListAbsolute.txt",
+    "spikes\\p0-05-shell-icons\\RUNBOOK.md",
+    "spikes\\p0-06-blur-bench\\obj\\Release\\net10.0-windows10.0.19041.0\\p0-06-blur-bench.csproj.FileListAbsolute.txt",
+    "spikes\\p0-06-blur-bench\\RUNBOOK.md",
+    "MEMORY\\specs\\P0-07-mouse-hook.md",
+    "spikes\\p0-07-mouse-hook\\NativeMethods.txt",
+    "spikes\\p0-07-mouse-hook\\obj\\Release\\net10.0-windows10.0.19041.0\\p0-07-mouse-hook.csproj.FileListAbsolute.txt",
+    "spikes\\p0-07-mouse-hook\\RUNBOOK.md",
+    "MEMORY\\records\\2026-10-25-spike-harness-batch.md"
   ],
   "entities": [
     {
@@ -4924,6 +4953,429 @@
       "source": "TASKS\\PHASE-1-DRAPE-CORE.md",
       "line": 318,
       "evidence": "### P1-12 — Phase 1 testing: unit, integration, manual checklist, performance baseline"
+    },
+    {
+      "id": "sec_feature_spec_p1_03_configstore_atomic_save_backup_quarantine_migration",
+      "name": "Feature Spec — P1-03 ConfigStore: Atomic Save, Backup, Quarantine, Migration",
+      "type": "Section/Module",
+      "description": "Specification section from MEMORY\\specs\\P1-03-config-store.md",
+      "source": "MEMORY\\specs\\P1-03-config-store.md",
+      "line": 1,
+      "evidence": "# Feature Spec — P1-03 ConfigStore: Atomic Save, Backup, Quarantine, Migration"
+    },
+    {
+      "id": "sec_p0_01_done_p0_02_p0_08_p1_03_done_p1_07_core_batch_2026_10_25",
+      "name": "P0-01 DONE, P0-02, P0-08, P1-03 DONE, P1-07 Core — Batch 2026-10-25",
+      "type": "Section/Module",
+      "description": "Specification section from MEMORY\\records\\2026-10-25-phase0-p1-batch.md",
+      "source": "MEMORY\\records\\2026-10-25-phase0-p1-batch.md",
+      "line": 1,
+      "evidence": "# P0-01 DONE, P0-02, P0-08, P1-03 DONE, P1-07 Core — Batch 2026-10-25"
+    },
+    {
+      "id": "ent_folderid_via_cswin32_constant_",
+      "name": "FOLDERID via CsWin32 constant.",
+      "type": "Component/Requirement",
+      "description": "Not available — CsWin32 0.3.367 does not project",
+      "source": "MEMORY\\records\\2026-10-25-phase0-p1-batch.md",
+      "line": 70,
+      "evidence": "- **FOLDERID via CsWin32 constant.** Not available — CsWin32 0.3.367 does not project"
+    },
+    {
+      "id": "ent__shgetknownfolderpath_returning_pwstr_",
+      "name": "`SHGetKnownFolderPath` returning `PWSTR`.",
+      "type": "Component/Requirement",
+      "description": "The generated signature returns",
+      "source": "MEMORY\\records\\2026-10-25-phase0-p1-batch.md",
+      "line": 72,
+      "evidence": "- **`SHGetKnownFolderPath` returning `PWSTR`.** The generated signature returns"
+    },
+    {
+      "id": "ent_testing_restore_desktop_via_dotnet_run_",
+      "name": "Testing `--restore-desktop` via `dotnet run`.",
+      "type": "Component/Requirement",
+      "description": "Does not forward args reliably in this",
+      "source": "MEMORY\\records\\2026-10-25-phase0-p1-batch.md",
+      "line": 74,
+      "evidence": "- **Testing `--restore-desktop` via `dotnet run`.** Does not forward args reliably in this"
+    },
+    {
+      "id": "ent_restore_paths_",
+      "name": "Restore paths:",
+      "type": "Component/Requirement",
+      "description": "`--restore-desktop` parses and dispatches; real behaviour is P2-03.",
+      "source": "MEMORY\\records\\2026-10-25-phase0-p1-batch.md",
+      "line": 136,
+      "evidence": "- **Restore paths:** `--restore-desktop` parses and dispatches; real behaviour is P2-03."
+    },
+    {
+      "id": "sec_owns",
+      "name": "Owns",
+      "type": "Section/Module",
+      "description": "Specification section from .claude\\agents\\shell-engineer-windows.md",
+      "source": ".claude\\agents\\shell-engineer-windows.md",
+      "line": 5,
+      "evidence": "## Owns"
+    },
+    {
+      "id": "sec_must_read_first",
+      "name": "Must read first",
+      "type": "Section/Module",
+      "description": "Specification section from .claude\\agents\\shell-engineer-windows.md",
+      "source": ".claude\\agents\\shell-engineer-windows.md",
+      "line": 9,
+      "evidence": "## Must read first"
+    },
+    {
+      "id": "sec_knows_before_touching_anything",
+      "name": "Knows before touching anything",
+      "type": "Section/Module",
+      "description": "Specification section from .claude\\agents\\shell-engineer-windows.md",
+      "source": ".claude\\agents\\shell-engineer-windows.md",
+      "line": 16,
+      "evidence": "## Knows before touching anything"
+    },
+    {
+      "id": "sec_must_not",
+      "name": "Must not",
+      "type": "Section/Module",
+      "description": "Specification section from .claude\\agents\\shell-engineer-windows.md",
+      "source": ".claude\\agents\\shell-engineer-windows.md",
+      "line": 23,
+      "evidence": "## Must not"
+    },
+    {
+      "id": "sec_quality_gates",
+      "name": "Quality gates",
+      "type": "Section/Module",
+      "description": "Specification section from .claude\\agents\\shell-engineer-windows.md",
+      "source": ".claude\\agents\\shell-engineer-windows.md",
+      "line": 29,
+      "evidence": "## Quality gates"
+    },
+    {
+      "id": "sec_completion_report",
+      "name": "Completion report",
+      "type": "Section/Module",
+      "description": "Specification section from .claude\\agents\\shell-engineer-windows.md",
+      "source": ".claude\\agents\\shell-engineer-windows.md",
+      "line": 33,
+      "evidence": "## Completion report"
+    },
+    {
+      "id": "sec_phase_1_performance_baseline",
+      "name": "Phase 1 Performance Baseline",
+      "type": "Section/Module",
+      "description": "Specification section from docs\\TESTING\\PHASE-1-BASELINE.md",
+      "source": "docs\\TESTING\\PHASE-1-BASELINE.md",
+      "line": 1,
+      "evidence": "# Phase 1 Performance Baseline"
+    },
+    {
+      "id": "sec_coverage",
+      "name": "Coverage",
+      "type": "Section/Module",
+      "description": "Specification section from docs\\TESTING\\PHASE-1-BASELINE.md",
+      "source": "docs\\TESTING\\PHASE-1-BASELINE.md",
+      "line": 5,
+      "evidence": "## Coverage"
+    },
+    {
+      "id": "sec_idle_cpu_memory",
+      "name": "Idle CPU / Memory",
+      "type": "Section/Module",
+      "description": "Specification section from docs\\TESTING\\PHASE-1-BASELINE.md",
+      "source": "docs\\TESTING\\PHASE-1-BASELINE.md",
+      "line": 20,
+      "evidence": "## Idle CPU / Memory"
+    },
+    {
+      "id": "sec_save_performance",
+      "name": "Save performance",
+      "type": "Section/Module",
+      "description": "Specification section from docs\\TESTING\\PHASE-1-BASELINE.md",
+      "source": "docs\\TESTING\\PHASE-1-BASELINE.md",
+      "line": 24,
+      "evidence": "## Save performance"
+    },
+    {
+      "id": "sec_p0_10_p1_12_p1_04_parsial_subagents_coverage_viewmodel",
+      "name": "P0-10, P1-12, P1-04 Parsial — Subagents, Coverage, ViewModel",
+      "type": "Section/Module",
+      "description": "Specification section from MEMORY\\records\\2026-10-25-p0-10-p1-12-p1-04.md",
+      "source": "MEMORY\\records\\2026-10-25-p0-10-p1-12-p1-04.md",
+      "line": 1,
+      "evidence": "# P0-10, P1-12, P1-04 Parsial — Subagents, Coverage, ViewModel"
+    },
+    {
+      "id": "sec_feature_spec_p0_03_spike_window_host_in_the_desktop_layer",
+      "name": "Feature Spec — P0-03 Spike: Window Host in the Desktop Layer",
+      "type": "Section/Module",
+      "description": "Specification section from MEMORY\\specs\\P0-03-desktop-host.md",
+      "source": "MEMORY\\specs\\P0-03-desktop-host.md",
+      "line": 1,
+      "evidence": "# Feature Spec — P0-03 Spike: Window Host in the Desktop Layer"
+    },
+    {
+      "id": "sec_p0_03_runbook_jalankan_di_vm_windows",
+      "name": "P0-03 Runbook — jalankan di VM Windows",
+      "type": "Section/Module",
+      "description": "Specification section from spikes\\p0-03-desktop-host\\RUNBOOK.md",
+      "source": "spikes\\p0-03-desktop-host\\RUNBOOK.md",
+      "line": 1,
+      "evidence": "# P0-03 Runbook — jalankan di VM Windows"
+    },
+    {
+      "id": "sec_persiapan",
+      "name": "Persiapan",
+      "type": "Section/Module",
+      "description": "Specification section from spikes\\p0-03-desktop-host\\RUNBOOK.md",
+      "source": "spikes\\p0-03-desktop-host\\RUNBOOK.md",
+      "line": 3,
+      "evidence": "## Persiapan"
+    },
+    {
+      "id": "sec_jalankan",
+      "name": "Jalankan",
+      "type": "Section/Module",
+      "description": "Specification section from spikes\\p0-03-desktop-host\\RUNBOOK.md",
+      "source": "spikes\\p0-03-desktop-host\\RUNBOOK.md",
+      "line": 10,
+      "evidence": "## Jalankan"
+    },
+    {
+      "id": "sec_cara_uji_tiap_kriteria",
+      "name": "Cara uji tiap kriteria",
+      "type": "Section/Module",
+      "description": "Specification section from spikes\\p0-03-desktop-host\\RUNBOOK.md",
+      "source": "spikes\\p0-03-desktop-host\\RUNBOOK.md",
+      "line": 29,
+      "evidence": "## Cara uji tiap kriteria"
+    },
+    {
+      "id": "ent_win_d",
+      "name": "Win+D",
+      "type": "Component/Requirement",
+      "description": "tekan Win+D dua kali; jendela harus tetap terlihat.",
+      "source": "spikes\\p0-03-desktop-host\\RUNBOOK.md",
+      "line": 31,
+      "evidence": "- **Win+D**: tekan Win+D dua kali; jendela harus tetap terlihat."
+    },
+    {
+      "id": "ent_peek",
+      "name": "Peek",
+      "type": "Component/Requirement",
+      "description": "arahkan ke pojok \"Show desktop\"; jendela harus tetap terlihat.",
+      "source": "spikes\\p0-03-desktop-host\\RUNBOOK.md",
+      "line": 32,
+      "evidence": "- **Peek**: arahkan ke pojok \"Show desktop\"; jendela harus tetap terlihat."
+    },
+    {
+      "id": "ent_fokus",
+      "name": "Fokus",
+      "type": "Component/Requirement",
+      "description": "saat jendela muncul, fokus harus tetap di app sebelumnya. Alt+Tab tidak boleh menampilkan \"P0-03 spike\".",
+      "source": "spikes\\p0-03-desktop-host\\RUNBOOK.md",
+      "line": 33,
+      "evidence": "- **Fokus**: saat jendela muncul, fokus harus tetap di app sebelumnya. Alt+Tab tidak boleh menampilkan \"P0-03 spike\"."
+    },
+    {
+      "id": "ent_explorer_restart",
+      "name": "Explorer restart",
+      "type": "Component/Requirement",
+      "description": "buka Task Manager → restart Windows Explorer (jangan kill via script). Tunggu desktop kembali, cek jendela masih di layer yang benar.",
+      "source": "spikes\\p0-03-desktop-host\\RUNBOOK.md",
+      "line": 34,
+      "evidence": "- **Explorer restart**: buka Task Manager → restart Windows Explorer (jangan kill via script). Tunggu desktop kembali, cek jendela masih di layer yang benar."
+    },
+    {
+      "id": "ent_dpi",
+      "name": "DPI",
+      "type": "Component/Requirement",
+      "description": "ubah skala display ke 150% dan 200%, logout/login, cek transparansi dan posisi.",
+      "source": "spikes\\p0-03-desktop-host\\RUNBOOK.md",
+      "line": 35,
+      "evidence": "- **DPI**: ubah skala display ke 150% dan 200%, logout/login, cek transparansi dan posisi."
+    },
+    {
+      "id": "ent_monitor",
+      "name": "Monitor",
+      "type": "Component/Requirement",
+      "description": "jika VM mendukung 2 monitor beda DPI, pindahkan jendela dan cek.",
+      "source": "spikes\\p0-03-desktop-host\\RUNBOOK.md",
+      "line": 36,
+      "evidence": "- **Monitor**: jika VM mendukung 2 monitor beda DPI, pindahkan jendela dan cek."
+    },
+    {
+      "id": "sec_setelah_selesai",
+      "name": "Setelah selesai",
+      "type": "Section/Module",
+      "description": "Specification section from spikes\\p0-03-desktop-host\\RUNBOOK.md",
+      "source": "spikes\\p0-03-desktop-host\\RUNBOOK.md",
+      "line": 38,
+      "evidence": "## Setelah selesai"
+    },
+    {
+      "id": "sec_feature_spec_p0_04_spike_hide_show_native_icons_and_recovery",
+      "name": "Feature Spec — P0-04 Spike: Hide/Show Native Icons and Recovery",
+      "type": "Section/Module",
+      "description": "Specification section from MEMORY\\specs\\P0-04-desktop-icons.md",
+      "source": "MEMORY\\specs\\P0-04-desktop-icons.md",
+      "line": 1,
+      "evidence": "# Feature Spec — P0-04 Spike: Hide/Show Native Icons and Recovery"
+    },
+    {
+      "id": "sec_p0_04_runbook_jalankan_di_vm_windows_saja",
+      "name": "P0-04 Runbook — jalankan di VM Windows SAJA",
+      "type": "Section/Module",
+      "description": "Specification section from spikes\\p0-04-desktop-icons\\RUNBOOK.md",
+      "source": "spikes\\p0-04-desktop-icons\\RUNBOOK.md",
+      "line": 1,
+      "evidence": "# P0-04 Runbook — jalankan di VM Windows SAJA"
+    },
+    {
+      "id": "sec_prosedur",
+      "name": "Prosedur",
+      "type": "Section/Module",
+      "description": "Specification section from spikes\\p0-04-desktop-icons\\RUNBOOK.md",
+      "source": "spikes\\p0-04-desktop-icons\\RUNBOOK.md",
+      "line": 10,
+      "evidence": "## Prosedur"
+    },
+    {
+      "id": "sec_kill_test_recovery_",
+      "name": "Kill test (recovery)",
+      "type": "Section/Module",
+      "description": "Specification section from spikes\\p0-04-desktop-icons\\RUNBOOK.md",
+      "source": "spikes\\p0-04-desktop-icons\\RUNBOOK.md",
+      "line": 20,
+      "evidence": "## Kill test (recovery)"
+    },
+    {
+      "id": "sec_explorer_restart",
+      "name": "Explorer restart",
+      "type": "Section/Module",
+      "description": "Specification section from spikes\\p0-04-desktop-icons\\RUNBOOK.md",
+      "source": "spikes\\p0-04-desktop-icons\\RUNBOOK.md",
+      "line": 28,
+      "evidence": "## Explorer restart"
+    },
+    {
+      "id": "sec_alternatif_swhide_opsional_jika_wmcommand_gagal_",
+      "name": "Alternatif SWHIDE (opsional, jika WMCOMMAND gagal)",
+      "type": "Section/Module",
+      "description": "Specification section from spikes\\p0-04-desktop-icons\\RUNBOOK.md",
+      "source": "spikes\\p0-04-desktop-icons\\RUNBOOK.md",
+      "line": 37,
+      "evidence": "## Alternatif SW_HIDE (opsional, jika WM_COMMAND gagal)"
+    },
+    {
+      "id": "sec_hasil_yang_dikirim_kembali",
+      "name": "Hasil yang dikirim kembali",
+      "type": "Section/Module",
+      "description": "Specification section from spikes\\p0-04-desktop-icons\\RUNBOOK.md",
+      "source": "spikes\\p0-04-desktop-icons\\RUNBOOK.md",
+      "line": 42,
+      "evidence": "## Hasil yang dikirim kembali"
+    },
+    {
+      "id": "sec_p0_05_runbook_jalankan_di_vm_windows",
+      "name": "P0-05 Runbook — jalankan di VM Windows",
+      "type": "Section/Module",
+      "description": "Specification section from spikes\\p0-05-shell-icons\\RUNBOOK.md",
+      "source": "spikes\\p0-05-shell-icons\\RUNBOOK.md",
+      "line": 1,
+      "evidence": "# P0-05 Runbook — jalankan di VM Windows"
+    },
+    {
+      "id": "sec_yang_diamati_manual",
+      "name": "Yang diamati manual",
+      "type": "Section/Module",
+      "description": "Specification section from spikes\\p0-05-shell-icons\\RUNBOOK.md",
+      "source": "spikes\\p0-05-shell-icons\\RUNBOOK.md",
+      "line": 18,
+      "evidence": "## Yang diamati manual"
+    },
+    {
+      "id": "sec_pertanyaan_yang_harus_dijawab",
+      "name": "Pertanyaan yang harus dijawab",
+      "type": "Section/Module",
+      "description": "Specification section from spikes\\p0-05-shell-icons\\RUNBOOK.md",
+      "source": "spikes\\p0-05-shell-icons\\RUNBOOK.md",
+      "line": 25,
+      "evidence": "## Pertanyaan yang harus dijawab"
+    },
+    {
+      "id": "sec_p0_06_runbook_jalankan_di_vm_windows",
+      "name": "P0-06 Runbook — jalankan di VM Windows",
+      "type": "Section/Module",
+      "description": "Specification section from spikes\\p0-06-blur-bench\\RUNBOOK.md",
+      "source": "spikes\\p0-06-blur-bench\\RUNBOOK.md",
+      "line": 1,
+      "evidence": "# P0-06 Runbook — jalankan di VM Windows"
+    },
+    {
+      "id": "sec_tabel_hasil",
+      "name": "Tabel hasil",
+      "type": "Section/Module",
+      "description": "Specification section from spikes\\p0-06-blur-bench\\RUNBOOK.md",
+      "source": "spikes\\p0-06-blur-bench\\RUNBOOK.md",
+      "line": 22,
+      "evidence": "## Tabel hasil"
+    },
+    {
+      "id": "sec_keputusan_yang_diharapkan",
+      "name": "Keputusan yang diharapkan",
+      "type": "Section/Module",
+      "description": "Specification section from spikes\\p0-06-blur-bench\\RUNBOOK.md",
+      "source": "spikes\\p0-06-blur-bench\\RUNBOOK.md",
+      "line": 31,
+      "evidence": "## Keputusan yang diharapkan"
+    },
+    {
+      "id": "sec_feature_spec_p0_07_spike_mouse_hook_desktop_double_click_and_right_drag_",
+      "name": "Feature Spec — P0-07 Spike: Mouse Hook (Desktop Double-Click and Right-Drag)",
+      "type": "Section/Module",
+      "description": "Specification section from MEMORY\\specs\\P0-07-mouse-hook.md",
+      "source": "MEMORY\\specs\\P0-07-mouse-hook.md",
+      "line": 1,
+      "evidence": "# Feature Spec — P0-07 Spike: Mouse Hook (Desktop Double-Click and Right-Drag)"
+    },
+    {
+      "id": "sec_p0_07_runbook_jalankan_di_vm_windows",
+      "name": "P0-07 Runbook — jalankan di VM Windows",
+      "type": "Section/Module",
+      "description": "Specification section from spikes\\p0-07-mouse-hook\\RUNBOOK.md",
+      "source": "spikes\\p0-07-mouse-hook\\RUNBOOK.md",
+      "line": 1,
+      "evidence": "# P0-07 Runbook — jalankan di VM Windows"
+    },
+    {
+      "id": "sec_yang_dicatat",
+      "name": "Yang dicatat",
+      "type": "Section/Module",
+      "description": "Specification section from spikes\\p0-07-mouse-hook\\RUNBOOK.md",
+      "source": "spikes\\p0-07-mouse-hook\\RUNBOOK.md",
+      "line": 20,
+      "evidence": "## Yang dicatat"
+    },
+    {
+      "id": "sec_p0_03_p0_07_spike_harness_batch_siap_uji_di_vm",
+      "name": "P0-03…P0-07 Spike Harness Batch — Siap Uji di VM",
+      "type": "Section/Module",
+      "description": "Specification section from MEMORY\\records\\2026-10-25-spike-harness-batch.md",
+      "source": "MEMORY\\records\\2026-10-25-spike-harness-batch.md",
+      "line": 1,
+      "evidence": "# P0-03…P0-07 Spike Harness Batch — Siap Uji di VM"
+    },
+    {
+      "id": "sec_vm_spike_pack_diserahkan_2026_10_25",
+      "name": "VM Spike Pack — diserahkan 2026-10-25",
+      "type": "Section/Module",
+      "description": "Specification section from TASKS\\PROGRESS.md",
+      "source": "TASKS\\PROGRESS.md",
+      "line": 7,
+      "evidence": "## VM Spike Pack — diserahkan 2026-10-25"
     }
   ],
   "relations": [
@@ -6270,12 +6722,92 @@
       "evidence": "- **Mutation checks:** two, both observed to fail and then reverted.",
       "source_file": "MEMORY\\records\\2026-10-23-P1-core-domain-config-layout.md",
       "line": 138
+    },
+    {
+      "source": "sec_alternatives_considered",
+      "relation": "DEFINES_REQUIREMENT",
+      "target": "ent_folderid_via_cswin32_constant_",
+      "evidence": "- **FOLDERID via CsWin32 constant.** Not available — CsWin32 0.3.367 does not project",
+      "source_file": "MEMORY\\records\\2026-10-25-phase0-p1-batch.md",
+      "line": 70
+    },
+    {
+      "source": "sec_alternatives_considered",
+      "relation": "DEFINES_REQUIREMENT",
+      "target": "ent__shgetknownfolderpath_returning_pwstr_",
+      "evidence": "- **`SHGetKnownFolderPath` returning `PWSTR`.** The generated signature returns",
+      "source_file": "MEMORY\\records\\2026-10-25-phase0-p1-batch.md",
+      "line": 72
+    },
+    {
+      "source": "sec_alternatives_considered",
+      "relation": "DEFINES_REQUIREMENT",
+      "target": "ent_testing_restore_desktop_via_dotnet_run_",
+      "evidence": "- **Testing `--restore-desktop` via `dotnet run`.** Does not forward args reliably in this",
+      "source_file": "MEMORY\\records\\2026-10-25-phase0-p1-batch.md",
+      "line": 74
+    },
+    {
+      "source": "sec_desktop_safety",
+      "relation": "DEFINES_REQUIREMENT",
+      "target": "ent_restore_paths_",
+      "evidence": "- **Restore paths:** `--restore-desktop` parses and dispatches; real behaviour is P2-03.",
+      "source_file": "MEMORY\\records\\2026-10-25-phase0-p1-batch.md",
+      "line": 136
+    },
+    {
+      "source": "sec_cara_uji_tiap_kriteria",
+      "relation": "DEFINES_REQUIREMENT",
+      "target": "ent_win_d",
+      "evidence": "- **Win+D**: tekan Win+D dua kali; jendela harus tetap terlihat.",
+      "source_file": "spikes\\p0-03-desktop-host\\RUNBOOK.md",
+      "line": 31
+    },
+    {
+      "source": "sec_cara_uji_tiap_kriteria",
+      "relation": "DEFINES_REQUIREMENT",
+      "target": "ent_peek",
+      "evidence": "- **Peek**: arahkan ke pojok \"Show desktop\"; jendela harus tetap terlihat.",
+      "source_file": "spikes\\p0-03-desktop-host\\RUNBOOK.md",
+      "line": 32
+    },
+    {
+      "source": "sec_cara_uji_tiap_kriteria",
+      "relation": "DEFINES_REQUIREMENT",
+      "target": "ent_fokus",
+      "evidence": "- **Fokus**: saat jendela muncul, fokus harus tetap di app sebelumnya. Alt+Tab tidak boleh menampilkan \"P0-03 spike\".",
+      "source_file": "spikes\\p0-03-desktop-host\\RUNBOOK.md",
+      "line": 33
+    },
+    {
+      "source": "sec_cara_uji_tiap_kriteria",
+      "relation": "DEFINES_REQUIREMENT",
+      "target": "ent_explorer_restart",
+      "evidence": "- **Explorer restart**: buka Task Manager → restart Windows Explorer (jangan kill via script). Tunggu desktop kembali, cek jendela masih di layer yang benar.",
+      "source_file": "spikes\\p0-03-desktop-host\\RUNBOOK.md",
+      "line": 34
+    },
+    {
+      "source": "sec_cara_uji_tiap_kriteria",
+      "relation": "DEFINES_REQUIREMENT",
+      "target": "ent_dpi",
+      "evidence": "- **DPI**: ubah skala display ke 150% dan 200%, logout/login, cek transparansi dan posisi.",
+      "source_file": "spikes\\p0-03-desktop-host\\RUNBOOK.md",
+      "line": 35
+    },
+    {
+      "source": "sec_cara_uji_tiap_kriteria",
+      "relation": "DEFINES_REQUIREMENT",
+      "target": "ent_monitor",
+      "evidence": "- **Monitor**: jika VM mendukung 2 monitor beda DPI, pindahkan jendela dan cek.",
+      "source_file": "spikes\\p0-03-desktop-host\\RUNBOOK.md",
+      "line": 36
     }
   ],
   "stats": {
-    "total_sources": 61,
-    "total_entities": 540,
-    "total_relations": 168,
+    "total_sources": 90,
+    "total_entities": 587,
+    "total_relations": 178,
     "token_savings_estimate": "85-95%"
   }
 }
