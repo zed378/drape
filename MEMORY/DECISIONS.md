@@ -133,7 +133,7 @@ Written before any code existed. Everything here is a decision on paper; none ha
 - Unknown properties are preserved for backward compatibility.
 - Portal items (folders with many entries) must not be stored in the config, only the folder path, or the file grows.
 
-**Status:** Accepted
+**Status:** Accepted atomic-storage intent; durability/compatibility limits clarified by ADR-026. Earlier text remains historical.
 
 ---
 
@@ -161,7 +161,7 @@ Written before any code existed. Everything here is a decision on paper; none ha
 - A user who disables "hide desktop icons" will see duplicate icons; this has to be documented.
 - The hiding technique relies on undocumented behaviour that may change between Windows builds.
 
-**Status:** Accepted (principle); technique Proposed — pending spike P0-04
+**Status:** Accepted non-destructive principle; technique remains unverified. Rust recovery/ownership constraints clarified by ADR-025/026; new evidence comes from R0-05, not the legacy P0-04 card.
 
 ---
 
@@ -196,7 +196,7 @@ Acceptance criteria for a strategy (all must pass on Windows 11 23H2/24H2+ and W
 - Whether an Avalonia window can be re-parented into the desktop host and stay transparent is unproven (risk PR-4; spike P0-03, P0-06).
 - Spike P0-03 gates Phase 1; this ADR becomes Accepted or is superseded when the spike result is attached.
 
-**Status:** Proposed (pending spike P0-03)
+**Status:** Proposed host technique pending Rust R0-04/R0-07 evidence; one-window-per-Drape principle retained by ADR-025. Earlier Avalonia/spike references remain historical.
 
 ---
 
@@ -218,7 +218,7 @@ Acceptance criteria for a strategy (all must pass on Windows 11 23H2/24H2+ and W
 - Two binaries; the Guard must stay tiny, with minimal dependencies, and be signed with the app.
 - If the Guard fails to launch, the app keeps running and warns; `state.json` and the tray button remain as fallbacks. The Guard is required from the MVP (ADR-022, Q-08 closed).
 
-**Status:** Accepted
+**Status:** Accepted independent-Guard intent; launch ordering, liveness and App/Guard/CLI ownership protocol superseded/clarified by ADR-025/026. Earlier body remains historical.
 
 ---
 
@@ -306,7 +306,7 @@ Each entry says which earlier ADR it supersedes, if any.
 - Avalonia is less common than WPF; some platform APIs need manual bridges; mobile support is still maturing.
 - The old documents still said WPF and Windows-only after this choice; that mismatch is part of the 2026-10-10 documentation rework.
 
-**Status:** Accepted
+**Status:** Superseded by ADR-025 (Rust + Slint target, 2026-11-25); retained as historical C# decision.
 
 ---
 
@@ -371,7 +371,7 @@ Each entry says which earlier ADR it supersedes, if any.
 - One extra conversion step for icons (pixels to bitmap) in the UI layer.
 - A capability flag set must be kept honest: a flag that claims support without a spike result misleads.
 
-**Status:** Accepted
+**Status:** Accepted in intent; Rust names/ports and native lifetime boundaries updated by ADR-025.
 
 ---
 
@@ -604,4 +604,115 @@ Data stays local in the app sandbox. `Drape.Core`, `Drape.Infrastructure` and `D
 - The architecture test must be extended in Phase 6 to assert that each head references exactly one shell project; the rule is written down here so it is not reinvented.
 - Cost of changing later: medium. Moving to multi-targeting would touch the app project, CI and the packaging pipeline but not Core, UI or the shell projects.
 
-**Status:** Accepted
+**Status:** Superseded in implementation detail by ADR-025; App-to-platform-adapter composition remains, C# project-reference choice is historical.
+
+
+## ADR-025: Rust + Slint Target Architecture; Documentation Before Implementation
+
+**Date:** 2026-11-25 | **Source:** owner decision in conversation: Rust for RAM, performance, memory safety and application size; Slint for native UI without WebView/web engine; owner then requested documentation updates only.
+
+**Status:** Accepted target decision. Documentation delivery requires separate review; no implementation acceptance or benchmark result is implied.
+
+**Supersedes:** ADR-012 stack/tooling; ADR-024 C# project-reference implementation detail; ADR-004 where still relevant. **Updates in part:** ADR-007 (Slint replaces Avalonia, one window per Drape retained; host strategy still unproved), ADR-015 (Rust traits/capability data), ADR-022 packaging preference requires Rust revalidation, ADR-023 non-Windows minimums require new evidence. Other product/safety decisions remain.
+
+### Decision
+
+Use Rust stable with compiled Slint components and native OS adapters. No WebView/browser engine, JavaScript UI runtime or .NET runtime in the future Rust product. Platform-free Core, I/O Infrastructure, isolated shell adapters, shared UI, explicit App composition and independent minimal Guard form a Cargo workspace under crates/. Exact toolchain/dependency versions/backend/renderer are selected in later tasks, not invented now.
+
+Update active reference docs, task plan, agent instructions and continuity records now. Preserve existing C# source/build files/CI/harnesses and original historical records; no Rust code, Cargo files, source removal or desktop experiment is authorised in this change. New R0/R1 tasks replace historical P0/P1 as active Rust work; P2–P6 retain future product scope. No language-only schema bump: version 1 JSON compatibility, unknown fields/values and old recovery records need tests.
+
+### Rationale and alternatives
+
+The owner's goals favour a native-compiled non-WebView architecture with controlled allocations and narrowly reviewed native code. Remaining on C#/Avalonia preserves current investment but does not meet the chosen stack direction. Tauri introduces the excluded WebView. iced/egui are native alternatives but Slint was explicitly selected; Flutter/Rust adds a separate UI language/runtime. None of these comparisons constitutes measured RAM or performance evidence.
+
+### Safety and consequences, including costs
+
+Rust ownership reduces classes of memory errors in safe code; native unsafe/COM/FFI still needs lifetime/apartment/ABI review, matching RAII releases and no unwinding across callbacks. Slint-owned native handles are borrowed by Shell only within registration lifetime. Shared Core/UI forbid unsafe and OS checks; capabilities remain neutral data.
+
+Guard readiness plus durable ownership intent precede hiding. Guard failure keeps icons visible; config/log failure cannot prevent restoration. Drop/panic hooks do not cover abort/kill/reboot. Independent Guard, next-start recovery and standalone --restore-desktop remain unwaivable. This clarifies unsafe ordering in earlier startup prose; it is not permission to weaken recovery.
+
+Costs: rewrite/parity effort, new Rust/Slint expertise, repeated host/rendering/drop/UIA spikes, new test/CI/packaging tooling, possible backend integration gaps, and revalidation of Phase 6 support. Native compilation does not imply OS-native controls or guaranteed accessibility. Existing C# test counts/results are not Rust evidence. Old estimates are withdrawn pending Rust spikes. No destructive legacy retirement is authorised.
+
+### Licensing and performance
+
+Drape remains MIT. Explicit dependency-policy exception: Slint's royalty-free desktop/mobile/web application licence, with AboutSlint attribution planned through top-level Settings/About and notices retained. The exact pinned release/licence/dependencies must be verified at R0-02 and before distribution. Do not describe Slint as MIT or silently switch licence options.
+
+Preserve existing ceilings: combined App + Guard working set <100 MB at 20 panels ×20 items after 30 minutes, idle CPU average <0.5%, startup median <1.5 s on SSD. Record private bytes, GPU memory, per-panel scaling and installed/download/binary/prerequisite sizes separately. Benefits remain unmeasured; Q-20 sets numeric size/tighter memory budgets after baseline. Q-19 blur MVP priority, Q-21 backend/renderer/handle/drop/UIA integration and Q-22 packaging remain open. Blur stays in planned scope until owner decides otherwise.
+
+### References and follow-through
+
+- [Owner-supplied Gemini discussion](https://share.gemini.google/UwyvsCzSs0aM), read 2026-11-25: brainstorming only, not validated code, version pins, automatic desktop fallback or RAM/timeline evidence.
+- [Slint official site](https://slint.dev), [documentation](https://docs.slint.dev), [royalty-free licence 2.0](https://github.com/slint-ui/slint/blob/master/LICENSES/LicenseRef-Slint-Royalty-free-2.0.md), licence text read 2026-11-25. Reverify at version pinning.
+- [Migration specification](../docs/ARCHITECTURE/03-RUST-MIGRATION.md), [task cards](../TASKS/RUST-MIGRATION.md) and [record](./records/2026-11-25-R0-01-rust-slint-documentation.md).
+
+No Rust build/test/desktop validation was performed for this decision. R0-02–R0-10 and R1-01–R1-06 establish future implementation evidence and parity before release or any separately authorised source retirement.
+
+
+## ADR-026: Reviewed Recovery, Durability and Acceptance Contracts
+
+**Date:** 2026-11-25 | **Source:** owner explicitly requested multiple specialist agents to audit all documentation and patch/remove unsupported or irrelevant content. Architecture, Windows/security and QA/release/UI reviewers contributed independent findings.
+
+**Status:** Accepted documentation clarification within the existing safety/product requirements. No Rust implementation, native experiment or release acceptance is implied.
+
+**Clarifies:** ADR-005 atomic storage, ADR-006 non-destructive icon ownership, ADR-007 host evidence, ADR-008 independent Guard, ADR-015 platform seams and ADR-025 migration. Existing stack, Windows minimum, feature scope, MIT licence, offline defaults and open owner decisions remain.
+
+### Decision and rationale
+
+Serialize App/Guard/standalone CLI recovery by user/session ownership and validated process/generation identity before mutating icons. A second instance must not restore a live owner's changes. Use authenticated bounded IPC, reject stale/replayed state and acknowledge/revalidate Guard before hide. Monitor Guard health after readiness: if lost while App survives, promptly restore owned changes and prevent rehide until rearmed. Unknown original intent preserves observed state, reports uncertainty and offers explicit restoration; never blind-toggle or force user-hidden icons visible. Test each non-atomic crash boundary and retain independent/next-start recovery instead of claiming all concurrent failure windows disappear.
+
+Quick-hide that mutates native icons follows the same ownership/recovery protocol. Native context-menu destructive verbs require explicit confirmation/reviewed invocation; Windows or third-party handlers cannot be assumed to prompt. Threads/timeouts protect responsiveness, not process integrity or safe cancellation. No new process-isolation feature is added; unsupported destructive/native invocation must not bypass the non-destructive contract.
+
+Native FileSystem operations belong to platform adapters selected/injected by App; Infrastructure coordinates platform-neutral persistence without importing Shell. Preserve literal path data and filesystem comparison rules, native handle/COM lifetimes and stale response rejection. Core/shared UI stay platform-free and safe Rust.
+
+Atomic config saving protects the last successfully committed valid configuration; the 500 ms debounce means unsaved recent edits can be lost. Flush/replace guarantees are bounded by filesystem/storage behaviour. Require single-writer sequencing, failure injection, unknown-field/value preservation and compatible legacy records; never promise absolute power-loss immunity.
+
+Keyboard-only entry to tray/Settings/Drape chooser and panel move/resize must not depend on optional global hotkeys or assume Tab crosses native windows. Verify UIA/keyboard/high contrast and the promised DPI through 300%/one-to-four-monitor range. Capability matrices must distinguish planned integration from measured Rust support.
+
+Performance measures App + Guard, machine-normalised CPU, summed process working sets (shared pages can be counted twice), private bytes/GPU memory, cold/warm startup and installed/download/prerequisite footprint. Thresholds are retained, not claimed achieved. Installer/update/uninstall cover Windows minimum, signed compatible App/Guard pairs, trust roots, staged failure/rollback and restoration before removal. Internal unsigned experiments do not waive signing for formal public beta/stable releases.
+
+### Alternatives and costs
+
+Rejected: treating readiness as permanent protection, restoring before checking live ownership, assuming Drop/panic hooks handle kills, treating native thread timeouts as containment, assuming OS confirmation, or retaining inaccurate zero-loss/support claims. These simplify prose at the cost of unsafe or unverifiable implementation guidance.
+
+The clarified contracts require more explicit state-machine, failure-injection, native-lifetime and manual-matrix tests. They do not choose unverified APIs, thresholds, an updater implementation, a new schema or a final desktop-host strategy. Q-19–Q-22 remain open. Q-23 records missing pin/page/tab/portal representation contracts as feature-spec prerequisites, with scope retained.
+
+### Documentation relevance and review evidence
+
+Remove generic plugin-dashboard/savings/footer requirements and mandates to invoke unavailable context/graph/skill commands from agent instructions. Keep RTK, available graph-first code discovery, bounded document reads, primary sources and durable MEMORY checkpoints. Saving a checkpoint is not manual conversation compaction; this session has no callable manual compaction tool.
+
+Keep historical ADR/record bodies and legacy source intact; update status metadata or add archive notices rather than manufacture Rust results. Reviewers approved planning contracts subject to cross-file reconciliation, which is recorded in the [audit record](./records/2026-11-25-R0-01-specialist-documentation-review.md). Global Markdown checks follow there. Reviewed local work remains REVIEW until actual merge; no commit/PR/merge is authorised implicitly.
+
+
+## ADR-027: Begin the Reviewed Rust Workspace Baseline
+
+**Date:** 2026-11-25. **Status:** accepted task execution decision; implementation in progress, review/merge pending.
+
+**Authority:** owner request ?lanjutkan implementasi? after the specialist-reviewed R0-01 baseline. This supersedes the documentation-only execution restriction for the next migration task. R0-01 remains REVIEW until merge; the reviewed local baseline is the explicit prerequisite for R0-02 continuation, without manufacturing a DONE status. No legacy source retirement, CI conversion, native icon mutation or host-strategy change is authorised by this baseline.
+
+**Decision:** create the seven Windows-v1 workspace members; pin stable Rust 1.90.0 and Slint 1.13.1 with defaults disabled and winit/software/accessibility enabled. These reproducible baseline pins are not claims of latest versions or final Q-21 selection. The downloaded Slint and slint-build manifests declare Rust 1.85; target-filtered dependency metadata declares no minimum above 1.90. The royalty-free 2.0 licence included in the pinned package is selected under ADR-025, with AboutSlint attribution in the baseline window. Record the actual Cargo graph and preserve the lockfile. Native Windows support still requires the named Win10/Win11 matrix.
+
+**Contracts:** only neutral capability data and an injected clock enter Core now. More domain/ports belong to R1-01. Restore CLI is a renderer-independent route that explicitly fails unavailable until R0-05; Guard cannot announce readiness. A compiled scaffold is never presented as verified icon recovery or a usable desktop organizer.
+
+**Alternatives/costs:** waiting for an unrequested merge would block the authorised continuation; marking R0-01 DONE would falsify the board. Taking the newest release or default Slint backend without validation would introduce unreviewed features. Pinning an older stable baseline requires future security/update review; software rendering may fail later host/performance gates and remains provisional. Required different-role implementation review remains pending. No desktop-safety exception is made.
+
+
+## ADR-028: Isolate Slint-generated unsafe glue
+
+Date: 2026-11-25. Status: implementation decision pending review.
+
+Evidence: the pinned Slint 1.13.1 generated ItemTreeVTable_static macros fail E0453 under crate-level forbid(unsafe_code). Hand-written Core and UI remain safe-only. The UI root uses deny(unsafe_code), a private generated module alone allows the compiler output, and presentation.rs unconditionally forbids unsafe. No hand-written native bindings or unsafe blocks are authorised.
+
+Alternative: forbidding every generated macro prevents compiling the selected toolkit. Globally allowing unsafe would weaken the shared-code boundary. A separate generated crate adds a workspace member without improving this narrow trust boundary. Cost: compiler output and pinned toolkit internals remain trusted; architecture tests verify the exception remains confined. This refines the literal UI crate-wide prohibition in ADR-025, without changing toolkit, host, schema or product scope. Review and runtime safety evidence remain separate.
+
+
+## ADR-029: Parallel local continuation with one validation owner
+
+Date: 2026-11-25. Status: accepted execution decision under explicit owner authorisation.
+
+Authority: the owner requested parallel implementation with several agents, and exactly one testing agent executing a sequential queue.
+
+Decision: release-engineer continues R0-03 and core-engineer starts R1-01 against the R0-02 local REVIEW baseline. A single QA agent owns all validation execution and independently reviews the baseline before dependent acceptance. The orchestrator owns shared task/continuity files and acts as architect for proposed Core interfaces. Implementation agents author tests but never execute validation. Existing dirty work and branch are retained; no commit, merge, legacy retirement or desktop mutation is implied. R1-01 contracts precede implementations; native ports remain subject to their spike evidence.
+
+Rationale: this carries out authorised parallel work without overlapping test processes or falsely marking prerequisites DONE. Disjoint implementation ownership prevents file conflicts.
+
+Alternatives/costs: serial implementation wastes the expressly requested parallel capacity; concurrent testers violate the owner instruction. Local dependent work risks rework if baseline review finds defects, and the shared branch requires later task-scoped commit preparation. Tasks remain REVIEW or WIP until their actual acceptance evidence exists; merging remains separate.

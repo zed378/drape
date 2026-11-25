@@ -1,7 +1,7 @@
 # 00 — UI/UX Specification
 
 Status: draft. Numeric values are starting points; adjust after the Phase 1 prototype. Unit: DIP (device-independent pixel) unless stated.
-Common patterns follow what desktop organizers customarily do; all visuals, icons and text are original ([`../PLAN/05-LEGAL-AND-NAMING.md`](../PLAN/05-LEGAL-AND-NAMING.md)). UI is Avalonia; it is platform-neutral and never calls native APIs ([`../ENGINEERING/00-CODING-STANDARDS.md`](../ENGINEERING/00-CODING-STANDARDS.md)).
+Common patterns follow what desktop organizers customarily do; all visuals, icons and text are original ([`../PLAN/05-LEGAL-AND-NAMING.md`](../PLAN/05-LEGAL-AND-NAMING.md)). UI is Slint; it is platform-neutral and never calls native APIs ([`../ENGINEERING/00-CODING-STANDARDS.md`](../ENGINEERING/00-CODING-STANDARDS.md)).
 
 ## Anatomy of a Drape
 
@@ -69,7 +69,7 @@ Common patterns follow what desktop organizers customarily do; all visuals, icon
 
 | Key | Result |
 |---|---|
-| Tab / Shift+Tab | Move focus between Drapes, then to items |
+| Tab / Shift+Tab | Move through controls in the currently focused window; cross-window navigation uses the Drape chooser |
 | Arrows | Move between items |
 | Enter | Open the focused item |
 | Delete | Remove from Drape (optional confirmation) |
@@ -78,13 +78,13 @@ Common patterns follow what desktop organizers customarily do; all visuals, icon
 | Shift+F10 / Menu key | Context menu |
 | Esc | Cancel drag, close menu |
 
-A Drape lives on the desktop layer, so it normally does not receive keyboard focus. Focus is obtained by clicking or via the "Focus Drape" hotkey (F-27). Recorded as a risk in [`../PLATFORM/00-WINDOWS-INTEGRATION.md`](../PLATFORM/00-WINDOWS-INTEGRATION.md).
+A Drape must not steal focus when shown, but must accept deliberate keyboard interaction. A keyboard-reachable notification-area menu exposes Settings and a "Focus Drape" chooser; Settings also lists Drapes with a focus action. These routes work without configuring optional global hotkeys (F-27) and remain available while Drapes are quick-hidden. Selecting a Drape focuses its title/item area through the validated host adapter; closing a chooser restores the previous focus where possible. Do not assume Tab moves between separate native child windows. The R0-07/R1-04 matrix must prove this route, including high contrast and Narrator. Native activation policy must distinguish passive show from explicit user focus.
 
 ## Menus
 
 Drape menu: Rename · Roll up/Open · Lock/Unlock · Sort ▸ (manual, name, type, date) · Style… · Exclude from quick-hide · Delete Drape…
 Item menu: the platform's native item menu + Remove from Drape · Move to Drape ▸ · Show in file manager.
-Tray menu: Show/Hide Drapes · New Drape · Page ▸ · Snapshot ▸ · Settings… · Restore desktop icons · Quit.
+Tray menu: Show/Hide Drapes · New Drape · Focus Drape ▸ · Page ▸ · Snapshot ▸ · Settings… · Restore desktop icons · Quit. Expose only implemented phase features; restore and Quit remain available when normal UI/hosting is degraded.
 
 Delete Drape: confirm when it contains items; items return to the Inbox and **files are not deleted**. The confirmation text must say so.
 
@@ -97,10 +97,12 @@ Settings apply immediately with a preview; each tab has a "Restore defaults" but
 
 - Follow the system light/dark theme and accent colour. High-contrast support: blur and shadow off, solid outline.
 - Text and icons have contrast ≥ 4.5:1 against the effective background. For a translucent background over an unknown wallpaper, offer an "Ensure contrast" option that adds a backing layer.
-- Every control has an `AutomationProperties.Name`; a Drape is exposed as a group, items as list items named after the file.
+- Every interactive control has a supported Slint accessible role/name/state/action, verified in Windows UIA; a Drape is exposed as a group, items as list items named after the file.
 - Honour the OS "show animations" setting: when off, no rollup/fade animation.
 - Text size follows the OS text-size setting.
 - All strings live in resources for id-ID and en-US.
+- Mouse-only gestures have keyboard/menu equivalents: New Drape, move/resize, style, rollup, lock, item ordering and drag-to-other-Drape are reachable through commands. Selecting Move/Resize enters a keyboard mode with arrows, Enter to commit and Esc to cancel; the exact step sizes are UI prototype parameters, not domain coordinate changes.
+- Settings and context menus expose disabled reasons to accessibility clients, retain visible focus and avoid traps. Native drag initiation and UIA interaction must be validated with the actual Slint backend, not inferred from a headless test.
 
 ## Animation
 
@@ -126,3 +128,11 @@ Settings apply immediately with a preview; each tab has a "Restore defaults" but
 ## Imitation Policy
 
 Imitating common function is fine; do not copy another product's distinctive look pixel for pixel, its icons, branded feature names or UI text.
+
+## Slint implementation constraints (ADR-025)
+
+Compile .slint components; Rust adapters connect domain state through models/properties/callbacks. No WebView or web UI engine. Shared theme tokens/components replace XAML resources. UI updates run on the Slint event loop; workers send owned data, weak UI references prevent closed-window retention.
+
+Native compilation does not imply OS-native widgets or automatic accessibility parity. R0-07 must verify keyboard focus, Windows UIA/Narrator, high contrast, text scaling, native OLE drops and per-monitor DPI with the chosen host/backend/renderer. Native effects/drop handling stay behind capabilities and shell adapters. Blur remains planned; its MVP priority is unresolved (Q-19), with an always-available solid/translucent fallback. Avoid continuous idle animations/redraw.
+
+Settings/About, reachable through the top-level menu/tray, exposes AboutSlint and third-party notices for the selected royalty-free licence. Validate exact attribution requirements against the pinned Slint release before distribution.

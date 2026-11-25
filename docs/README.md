@@ -2,7 +2,7 @@
 
 Reference documentation for **Drape**: a desktop organizer that groups desktop icons, shortcuts and files into semi-transparent panels ("Drapes") drawn above the wallpaper.
 
-**Status: planning phase, no code yet.** Until code exists these documents describe the *intended* system. From the first milestone on, `docs/` becomes **as-built** reference: every fact must name the file, spike result or ADR it comes from. A document that disagrees with the code produces confidently wrong work, and the confidence is the dangerous part — if you find a claim the code contradicts, the code wins and correcting the document is part of the fix.
+**Status: Rust + Slint target design, ADR-025, revised 2026-11-25.** Early C# code exists; no Rust implementation is claimed. Active docs describe the new target, while historical specs/runbooks/baselines remain labelled. Keep current source facts distinct from intended behaviour and verified measurements. Read [migration boundaries](./ARCHITECTURE/03-RUST-MIGRATION.md) before acting.
 
 The execution plan lives in [`../TASKS/`](../TASKS/README.md). The record of what was built, decided and learned lives in [`../MEMORY/`](../MEMORY/README.md). `docs/` is reference material: it is amended deliberately through the **deviation protocol** in [`../TASKS/00-TASK-CONVENTIONS.md`](../TASKS/00-TASK-CONVENTIONS.md), never as a side effect of implementation.
 
@@ -25,7 +25,7 @@ The execution plan lives in [`../TASKS/`](../TASKS/README.md). The record of wha
 
 ```
 PLAN/           7 files — vision, requirements, features, roadmap, risk register, legal, glossary
-ARCHITECTURE/   4 files — layers, lifecycle, tech stack, data model
+ARCHITECTURE/   5 files — layers, lifecycle, tech stack, data model
 PLATFORM/       3 files — Windows (Win32) integration; per-platform support matrix
 UI-UX/          1 file  — anatomy, states, interactions, accessibility
 ENGINEERING/    1 file  — how code is written, layered, named, reviewed
@@ -49,11 +49,12 @@ Architecture Decision Records are **not** in `docs/`: they live in [`../MEMORY/D
 | [PLAN/06](./PLAN/06-GLOSSARY.md) | Product and technical terms | docs-keeper |
 | [ARCHITECTURE/00](./ARCHITECTURE/00-SYSTEM-ARCHITECTURE.md) | Layers, components, flows, threading, errors | architect |
 | [ARCHITECTURE/01](./ARCHITECTURE/01-TECH-STACK.md) | Technology choices, packages, solution setup | architect |
+| [ARCHITECTURE/03](./ARCHITECTURE/03-RUST-MIGRATION.md) | Migration boundaries, parity, evidence and open decisions | architect |
 | [ARCHITECTURE/02](./ARCHITECTURE/02-DATA-MODEL.md) | Entities, config schema, versioning, migration | architect |
 | [PLATFORM/00](./PLATFORM/00-WINDOWS-INTEGRATION.md) | Desktop hierarchy, host strategies, icons, hooks, DPI, risks | shell-engineer-windows |
 | [PLATFORM/01](./PLATFORM/01-PLATFORM-SUPPORT.md) | Capability matrix and per-platform notes (macOS, Linux, Android, iOS) | architect |
 | [UI-UX/00](./UI-UX/00-UI-UX-SPEC.md) | Drape anatomy, states, interaction, menus, accessibility | ui-engineer |
-| [ENGINEERING/00](./ENGINEERING/00-CODING-STANDARDS.md) | C# conventions, boundaries, interop, git, PRs | architect |
+| [ENGINEERING/00](./ENGINEERING/00-CODING-STANDARDS.md) | Rust/Slint conventions, boundaries, interop, git, PRs | architect |
 | [TESTING/00](./TESTING/00-TESTING-STRATEGY.md) | Test pyramid, mandatory tests, manual matrix, performance | qa |
 | [DEVOPS/00](./DEVOPS/00-BUILD-AND-RELEASE.md) | Build, CI, versioning, installer, signing | release-engineer |
 | [SECURITY/00](./SECURITY/00-SECURITY-AND-PRIVACY.md) | Threat model, privacy, release checklist | architect |

@@ -1,5 +1,7 @@
 # Cara Uji Spike di VM Windows
 
+> **Arsip panduan C#/.NET/Avalonia, bukan prosedur validasi Rust + Slint.** Paket dan perintah di bawah berasal dari eksperimen lama; keberadaan, versi, dan mode publikasi ZIP belum diverifikasi ulang. Jangan menjalankannya sebagai task Rust. Gunakan [task migrasi Rust](../TASKS/RUST-MIGRATION.md) untuk spesifikasi dan runbook baru. Kontradiksi lama antara ZIP self-contained dan framework-dependent dipertahankan sebagai bukti historis; periksa artefak yang benar-benar tersedia sebelum pengujian di VM ber-checkpoint. Contoh keluaran bukan hasil pengujian baru.
+
 > Salin SATU file `drape-spikes-full.zip` (±272 MB, self-contained — TIDAK butuh
 > instal .NET runtime) ke VM, ekstrak, lalu jalankan SEKALI:
 >

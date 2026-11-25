@@ -1,73 +1,61 @@
 # 01 — Tech Stack
 
-Status: **Accepted.** The cross-platform choice of Avalonia UI was made by the project owner ([ADR-012](../../MEMORY/DECISIONS.md), which supersedes the original WPF assumption in ADR-004).
+Accepted target: **Rust + Slint**, owner decision [ADR-025](../../MEMORY/DECISIONS.md), superseding ADR-012's C#/.NET/Avalonia stack. No Rust workspace, pinned dependencies or implementation are created by this documentation update.
 
-## Main Choices
+## Choices
 
-| Area | Choice | Alternatives considered | Why |
-|---|---|---|---|
-| Language | C# | Rust, C++ | High productivity; mature interop on every OS |
-| Runtime | .NET 10 LTS | .NET 8 (support ends late 2026) | Newest LTS. Re-verify at P0-01 |
-| UI | **Avalonia UI** | .NET MAUI (no Linux), WPF (Windows only), Uno Platform, Tauri | Cross-platform (Windows/macOS/Linux/Android/iOS), WPF-like XAML, access to native window handles, MIT licence |
-| MVVM | CommunityToolkit.Mvvm | Prism, ReactiveUI | Light, source generators, Avalonia-compatible |
-| DI / hosting | Microsoft.Extensions.Hosting | Autofac | Standard and sufficient |
-| Windows P/Invoke | Microsoft.Windows.CsWin32 | Manual P/Invoke, Vanara | Type-safe, generated from official Win32 metadata; only in `Drape.Shell.Windows` |
-| macOS interop | P/Invoke into `libobjc` / CoreGraphics | — | `NSWindow`, window levels; only in `Drape.Shell.Mac` |
-| Linux interop | X11 binding / GTK interop | — | Desktop window-type hints; only in `Drape.Shell.Linux` |
-| Serialisation | System.Text.Json (source-generated) | Newtonsoft.Json | Built in, fast, trim-friendly |
-| Logging | Serilog (+ File sink) | Microsoft.Extensions.Logging alone | Rolling files, structured logs |
-| Tray | Avalonia `TrayIcon` | Per-platform tray libraries | Cross-platform; verify behaviour per OS in P0-08 |
-| Tests | xUnit, NSubstitute, Shouldly | NUnit, Moq, FluentAssertions | Clean licences, widely used |
-| UI tests | Avalonia.Headless + FlaUI (Windows) | WinAppDriver | Headless tests for cross-platform UI logic |
-| Installer / update | Velopack (Windows/macOS/Linux) | MSIX, WiX, pkg | Per-user install, delta updates, no admin; chosen in ADR-022 (direct distribution; Store/MSIX deferred) |
-| Mobile distribution | Google Play + App Store | Sideload | Standard channels (Phase 6) |
-| CI | GitHub Actions (windows / macos / ubuntu) | Azure DevOps | Runners for every platform |
+| Area | Target | Status / rationale |
+|---|---|---|
+| Language | Rust stable, exact toolchain selected/pinned at R0-02 | Ownership/borrowing and native compilation; RAM/performance/size benefits require measurement |
+| UI | Slint with compiled .slint components and Rust adapters | Owner selected; no WebView, browser engine or JavaScript UI runtime |
+| Backend/renderer | Eligible native non-Qt deployment | R0-04/R0-07 compare supported renderers, handle API and host compatibility |
+| State/composition | Core state, Slint models/properties/callbacks; explicit constructor injection | No reflection DI or .NET Generic Host |
+| Windows integration | Microsoft's windows crate, minimal features | Win32/COM isolated in drape-shell-windows; verify API/OS minimum |
+| Serialisation | serde + serde_json in persistence adapters | Preserve existing schema/names/values and unknown fields; platform-free document transformations may use neutral value data without performing I/O/parsing in Core |
+| Errors | Typed Result; consider thiserror | No panic for expected environment failures |
+| Logging | tracing, tracing-subscriber, rolling writer such as tracing-appender | Local/redacted, bounded retention and explicit flush lifetime |
+| Watcher | notify candidate behind DesktopItemSource | Debounce, overflow/rescan and shutdown tested |
+| Tray | tray-icon candidate or Windows adapter | Prove native/Slint event-loop integration |
+| Concurrency | Standard threads and bounded channels first | No mandatory Tokio/general async runtime |
+| Tests | Rust unit/integration/doc tests, hand-written fakes | tempfile/proptest only if useful; Core coverage >=80% |
+| UI/accessibility tests | Slint testing support and real Windows UIA/manual checks | Verify exact version; no invented Avalonia.Headless equivalents |
+| Release | Windows x64 App + independent Guard, portable zip, per-user installer, winget | Evaluate existing Velopack preference for Rust: Q-22 / P5-03 |
+| CI | GitHub Actions, exact toolchain, locked dependencies | Current workflows remain legacy until R0-03 |
 
-## NuGet Packages (initial proposal; lock versions in `Directory.Packages.props`)
+These crates are candidates, not installed or pinned packages. R0-02 checks releases, MSRV, licence, maintenance, transitive features and minimum Windows support. Commit Cargo.lock. Select necessary Slint features rather than unused backends/renderers. Native compilation does not imply OS-native widgets.
 
-| Package | Used in |
-|---|---|
-| `Avalonia`, `Avalonia.Desktop`, `Avalonia.Themes.Fluent` | UI / App.Desktop |
-| `Avalonia.Android`, `Avalonia.iOS` | App.Android / App.iOS (Phase 6) |
-| `CommunityToolkit.Mvvm` | UI |
-| `Microsoft.Extensions.Hosting` | App |
-| `Serilog`, `Serilog.Extensions.Hosting`, `Serilog.Sinks.File` | App, Infrastructure |
-| `Microsoft.Windows.CsWin32` | Shell.Windows |
-| `xunit`, `xunit.runner.visualstudio`, `NSubstitute`, `Shouldly`, `Microsoft.NET.Test.Sdk` | Tests |
-| `Avalonia.Headless.XUnit` | Tests (headless UI) |
-| `FlaUI.UIA3` | E2E (Windows) |
-| `Meziantou.Analyzer`, `Roslynator.Analyzers` (optional) | All |
+Feature review covers both target and host/build dependency graphs: build-time Slint generation and testing features must not silently enable another production backend. Record exactly which executable owns each dependency; Cargo's unified feature graph is not an excuse to ship Slint or broad application features with Guard. Verify Guard's own binary/runtime imports and footprint using its supported build command and release artefact, not only the workspace manifest.
 
-Rule: add a new package only through a task or architect approval. Check the licence (MIT/Apache-2.0/BSD) and maintenance activity. Verify current versions on NuGet — do not rely on memory.
+## Workspace and future gates
 
-## Development Tools
+[Migration specification](./03-RUST-MIGRATION.md) defines paths. Future build controls are Cargo.toml, Cargo.lock and rust-toolchain.toml; legacy .NET files remain until separately authorised.
 
-- **IDE:** Visual Studio 2022/2026 (".NET desktop development" workload plus the Avalonia extension), JetBrains Rider, or VS Code + C# Dev Kit. No MAUI workload is needed.
-- **Desktop development:** Windows 11 (primary); macOS (Sonoma+) and Ubuntu 22.04+ when Phase 6 starts.
-- **VMs:** Hyper-V for Windows; Parallels/UTM for macOS; used for risky scenarios.
-- **Windows tools:** Spy++, Inspect.exe, Accessibility Insights, Process Explorer, dotMemory / `dotnet-counters`.
-- **macOS tools:** Xcode Instruments, Accessibility Inspector, `lldb`.
-- **Linux tools:** GTK Inspector, `xprop`, `xwininfo`, `arandr`.
+Valid only after R0-02, not build evidence today:
 
-## Solution Setup
+```bash
+rtk cargo build --workspace --release --locked
+rtk cargo fmt --all -- --check
+rtk cargo clippy --workspace --all-targets --locked -- -D warnings
+rtk cargo test --workspace --locked
+rtk cargo run -p drape-app -- --restore-desktop
+```
 
-- `global.json` pins the SDK. `Directory.Build.props` sets `Nullable=enable`, `TreatWarningsAsErrors=true`, `LangVersion=latest`, analyzers.
-- `Directory.Packages.props` enables Central Package Management.
-- `app.manifest` (Windows): `PerMonitorV2`, `longPathAware`, supported OS Windows 10/11, `asInvoker`.
-- Target frameworks (verify exact monikers at P0-01):
-  - `Drape.Core`, `Drape.Infrastructure`: `net10.0` (platform-agnostic)
-  - `Drape.UI`: `net10.0` (Avalonia; no platform APIs)
-  - `Drape.Shell.Windows`: `net10.0-windows10.0.19041.0`
-  - `Drape.Shell.Mac`: `net10.0-macos` (requires the macOS workload; Phase 6)
-  - `Drape.Shell.Linux`: `net10.0` (Phase 6)
-  - `Drape.App.Desktop`: how it references the platform Shell projects (multi-target, conditional references, or per-OS heads) is decided in P0-01
-  - `Drape.App.Android`: `net10.0-android`; `Drape.App.iOS`: `net10.0-ios` (Phase 6)
-  - `Drape.Guard`: tiny; Windows first, other platforms in Phase 6
+Do not indiscriminately enable --all-features: backend/platform features can conflict. Test the documented supported matrix.
 
-## Technology Notes
+## Safety and performance
 
-- **Trimming / NativeAOT.** Avalonia supports trimming and NativeAOT on desktop given compiled bindings and no reflection-based XAML loading; evaluate per platform in Phase 5. Do not assume it.
-- **Visual effects.** Blur/acrylic differs per platform: DWM/Windows backdrop on Windows, `NSVisualEffectView` on macOS, none in GTK Linux (solid fallback). Wrapped in `IBlurEffect`.
-- **Desktop layer.** The core feature is unavailable on Android and iOS; those apps present a regular shortcut-group management UI ([`../PLATFORM/01-PLATFORM-SUPPORT.md`](../PLATFORM/01-PLATFORM-SUPPORT.md)).
-- **Wayland.** `wlr-layer-shell` exists on wlroots-based compositors (e.g. Sway) and KDE Plasma, but not stock GNOME. Needs a spike (P6-04).
-- **Mobile.** Starts only after the Windows v1.0 ships ([ADR-014](../../MEMORY/DECISIONS.md)).
+- Core/shared UI forbid unsafe and OS-specific code. Native adapters use reviewed narrow unsafe blocks, safety comments and RAII.
+- Guard has no Slint, renderer, broad watcher or application runtime; only minimal recovery dependencies.
+- Measure LTO, codegen units, stripping, CRT linkage and panic strategy. Abort invalidates in-process panic recovery; Guard remains mandatory.
+- Windows manifests preserve PerMonitorV2/long-path/asInvoker as applicable. Restore mode bypasses renderer startup.
+- Windows 10 22H2 x64 is a real test gate. Document deployment prerequisites instead of promising a universally dependency-free binary.
+
+## Slint licence
+
+Drape's own code remains MIT. Slint is not MIT. The [royalty-free desktop/mobile/web licence 2.0](https://github.com/slint-ui/slint/blob/master/LICENSES/LicenseRef-Slint-Royalty-free-2.0.md) reviewed 2026-11-25 requires attribution. Plan AboutSlint accessible through top-level Settings/About; verify the exact pinned release and bundled notices in R0-02 and before distribution. Do not silently substitute another licence option.
+
+## References and deferred platforms
+
+[Owner-supplied Gemini discussion](https://share.gemini.google/UwyvsCzSs0aM) informs the design, not API correctness or performance promises. [Slint documentation](https://docs.slint.dev) and [Microsoft Windows bindings](https://github.com/microsoft/windows-rs) are primary implementation references.
+
+macOS/Linux remain post-v1; maintained native Rust bindings/protocols are selected after spikes, no version chosen today. Mobile is a companion UI, not a desktop layer. ADR-023 non-Windows minimums remain planning targets requiring Rust/Slint revalidation; old Avalonia support tiers are no longer evidence.

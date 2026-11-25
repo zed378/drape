@@ -1,6 +1,10 @@
 # Phase 5 — Polish and Release
 
-**Status:** TODO (planning phase; no code yet)
+> Estimates in retained cards are provisional legacy planning allowances, not Rust delivery commitments. Re-estimate/split at claim time after the Rust spikes; follow actual per-card prerequisites.
+
+> Rust + Slint target (ADR-025). R0/R1 dependencies refer to [Rust migration cards](./RUST-MIGRATION.md), not historical P0/P1 results. These implementation tasks remain unstarted; no code is authorised by the documentation update.
+
+**Status:** TODO (Rust target work not started; legacy C# code retained)
 
 **Goal:** Release quality for v1.0, **Windows only** (ADR-014): full id-ID/en-US localisation, performance inside the NFR budgets, installer and opt-in updater, code signing, security and legal audits, user documentation, full-environment testing and a limited public beta. Spec: `docs/DEVOPS/00-BUILD-AND-RELEASE.md`, `docs/TESTING/00-TESTING-STRATEGY.md`, `docs/PLAN/05-LEGAL-AND-NAMING.md`, `docs/SECURITY/00-SECURITY-AND-PRIVACY.md`.
 
@@ -31,7 +35,7 @@ All user-facing strings live in resources for `id-ID` and `en-US`; a language pi
 - [ ] both locales are complete: a test fails when a key exists in one resource and not the other
 
 **Abuse cases**
-- Analyzer that ignores strings in XAML/AXAML bindings, so only C# strings are checked
+- Auditing Rust strings while ignoring .slint strings, or the reverse
 - English text copied into the id-ID resource to satisfy the "complete" check
 
 ---
@@ -48,19 +52,19 @@ All user-facing strings live in resources for `id-ID` and `en-US`; a language pi
 | **Spec refs** | docs/PLAN/01-PRODUCT-REQUIREMENTS.md (NFR-01..03) · docs/PLAN/04-RISK-REGISTER.md (PR-5) · docs/ARCHITECTURE/01-TECH-STACK.md · docs/TESTING/00-TESTING-STRATEGY.md |
 | **Spec required** | no |
 
-**Why:** PR-5 is the risk that an Avalonia window per Drape cannot meet the CPU and memory budgets; this card is where that risk is closed or escalated with numbers.
+**Why:** PR-5 is the risk that a Slint window per Drape cannot meet the CPU and memory budgets; this card is where that risk is closed or escalated with numbers.
 
-Profile CPU, memory, startup and GDI/USER handles; tune the GC; icon cache; avoid allocations on hot paths. Re-measure the Avalonia memory/CPU footprint against PR-5 using the Phase 0 baseline. Consider trimming/AOT **only if measured** to be needed and proven not to break reflection-based pieces; do not trim speculatively.
+Profile CPU, memory, startup and GDI/USER handles; bound allocations, caches, queues and workers; icon cache; avoid allocations on hot paths. Re-measure the Slint memory/CPU footprint against PR-5 using the Phase 0 baseline. Compare supported renderers and measured LTO/codegen-unit/stripping/CRT profiles; Rust is already native-compiled. Record panic strategy and keep Guard independent.
 
 **Definition of Done**
-- [ ] idle CPU < 0.5%, working set < 100 MB with 20 x 20, startup median < 1.5 s (each with a named measurement: build, DPI, machine)
+- [ ] combined App + Guard idle CPU <0.5% (machine-normalised), summed working set <100 MB with 20 x 20 after 30 min, startup median <1.5 s; private bytes/GPU/footprint also recorded per TESTING/00 with backend, build, DPI, monitors and machine
 - [ ] no handle leak across a 1,000-cycle test (create/destroy Drapes, rollup, page switch)
 - [ ] the PR-5 entry in the risk register is updated with measured results
-- [ ] if trimming was introduced: a measured gain recorded, and a smoke test over all features on the trimmed build
+- [ ] selected renderer/LTO/codegen/stripping/CRT/panic profiles have measured gains and supported-feature parity; actual shipped Release App + Guard pass recovery and functional smoke tests
 
 **Abuse cases**
 - Measuring with debugger attached, in Debug configuration, or with 1 Drape
-- Enabling trimming for the headline number and breaking a reflection/serialisation path that only the full test run would find
+- Reporting a smaller executable after stripping/feature changes while omitting renderer prerequisites, Guard, native drop/UIA or recovery failures
 
 ---
 
@@ -74,14 +78,16 @@ Profile CPU, memory, startup and GDI/USER handles; tune the GC; icon cache; avoi
 | **Role** | release-engineer |
 | **Depends on** | P4-06 |
 | **Spec refs** | docs/DEVOPS/00-BUILD-AND-RELEASE.md · docs/SECURITY/00-SECURITY-AND-PRIVACY.md · ADR-017, ADR-022 in MEMORY/DECISIONS.md |
-| **Spec required** | no |
+| **Spec required** | yes |
 
-**Why:** Uninstalling the app must not leave the user's desktop icons hidden, and an updater is the one place the app talks to the network unprompted.
+**Why:** Uninstall must restore owned icon changes. Update networking is permitted only by explicit manual/periodic opt-in and needs authenticated release/pair compatibility and rollback design.
 
-Velopack with GitHub Releases as the update source, plus a winget manifest (ADR-022); verify winget accepts the installer and its silent switches. Per-user install, no admin. Updates are **OFF by default** and opt-in (ADR-017); delta updates where supported. Uninstall restores desktop icons (runs the `--restore-desktop` path) and offers to delete user data.
+Evaluate the existing Velopack preference for a native Rust App + Guard, including runtime footprint, supported Windows minimum, signing, rollback and uninstall restoration (Q-22). Keep GitHub Releases + per-user installer + portable zip + winget channels. If unsuitable, write a replacement ADR before changing tooling; verify installer silent switches and winget compatibility. Per-user install, no admin. Updates are **OFF by default** and opt-in (ADR-017); delta updates where supported. Uninstall restores desktop icons (runs the `--restore-desktop` path) and offers to delete user data.
 
 **Definition of Done**
-- [ ] install, update and uninstall succeed on a clean Windows 11 VM without admin rights
+- [ ] installer and portable operation, update and uninstall succeed non-elevated on clean Windows 10 22H2 and Windows 11 VMs; exact builds and prerequisites recorded
+- [ ] test compatible App + Guard pair staging, interrupted/failed update, pinned signer/trust-root rejection, tampered hash/metadata, downgrade/schema rollback and offline recovery
+- [ ] no active recovery binary is removed/replaced before verified icon restoration; uninstall failure retains a usable restore path
 - [ ] uninstall restores the desktop icons (verified with icons hidden before uninstall, including when the app is not running)
 - [ ] a fresh install makes no network request until the user opts in to update checks (verified by capture)
 - [ ] updates come only from the official channel and are signature/hash verified
@@ -107,7 +113,7 @@ Velopack with GitHub Releases as the update source, plus a winget manifest (ADR-
 
 **Why:** An unsigned binary that hides desktop icons and hooks the mouse looks exactly like malware to users and to antivirus.
 
-Sign `Drape.exe`, `Drape.Guard.exe` and the installer; publish `SHA256SUMS.txt`; keep keys safe in CI.
+Sign `drape-app.exe`, `drape-guard.exe` and the installer; publish `SHA256SUMS.txt`; keep keys safe in CI.
 
 **Definition of Done**
 - [ ] all artefacts carry a valid signature (verified by script on the released files, not the build output)
@@ -138,7 +144,7 @@ Review hooks, storage, logs, dependencies and update flow. Produce `SECURITY.md`
 
 **Definition of Done**
 - [ ] the release security checklist in `docs/SECURITY/00-SECURITY-AND-PRIVACY.md` is complete, each item pointing at its evidence
-- [ ] an automated test fails when `Drape.Core` or any `Drape.Shell.*` assembly references a network API (mutation check: add a reference, watch it fail)
+- [ ] an automated test fails when `drape-core` or any `drape-shell-*` assembly references a network API (mutation check: add a reference, watch it fail)
 - [ ] `SECURITY.md` and the privacy statement exist and match actual behaviour (logs, config, update opt-in)
 - [ ] logs and diagnostics contain no user paths or file names at default level; dependency vulnerability scan is clean or each finding is triaged
 

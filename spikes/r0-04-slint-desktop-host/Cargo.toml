@@ -1,0 +1,23 @@
+[package]
+name = "drape-r0-04-handle-probe"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.90"
+license = "MIT"
+publish = false
+build = "build.rs"
+
+# Deliberately isolated: this experiment does not change product features/lock.
+[workspace]
+
+[dependencies]
+slint = { version = "=1.13.1", default-features = false, features = ["std", "backend-winit", "renderer-software", "accessibility", "compat-1-2", "raw-window-handle-06"] }
+raw-window-handle = "=0.6.2"
+
+[build-dependencies]
+slint-build = "=1.13.1"
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+panic = "unwind"

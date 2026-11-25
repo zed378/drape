@@ -12,8 +12,8 @@ Every agent, regardless of role, is bound by these. Violating them is not role-s
 |---|---|
 | **Desktop safety** | Every path that hides icons restores them on **every** exit path (normal, exception, Guard, next start, `--restore-desktop`) |
 | **Non-destructive by default** | No user file is moved, renamed or deleted without explicit confirmation |
-| **Capability-gated** | Features ask `IPlatformCapabilities`; no OS checks in UI or Core |
-| **Core is platform-free** | No Win32, Cocoa, GTK, Avalonia or direct I/O in `Drape.Core` |
+| **Capability-gated** | Features ask `PlatformCapabilities`; no OS checks in UI or Core |
+| **Core is platform-free** | No Win32, Cocoa, GTK, Slint or direct I/O in `drape-core` |
 | **Name the test** | An assertion that a test passed is not evidence |
 | **Deviations get an ADR** | A documented deviation is a decision; an undocumented one is a bug nobody has found yet |
 | **Nothing is `DONE` without its record** | `MEMORY/records/` entry, `MEMORY-INDEX.md` line, `TASKS/PROGRESS.md` updated in the same commit |
@@ -36,87 +36,87 @@ Each agent edits only the directories its role owns. Crossing a boundary goes th
 
 **Reads:** [`TASKS/README.md`](TASKS/README.md) · [`TASKS/PROGRESS.md`](TASKS/PROGRESS.md) · [`docs/PLAN/03-IMPLEMENTATION-ROADMAP.md`](docs/PLAN/03-IMPLEMENTATION-ROADMAP.md)
 
-**Does not:** change `src/`.
+**Does not:** change implementation under `crates/` or legacy `src/`.
 
 ### architect
 
-**Owns:** `docs/`, ADRs, and the interface contracts in `src/Drape.Core/` (**interfaces only**).
+**Owns:** `docs/`, ADRs, and the interface contracts in `crates/drape-core/` (**interfaces only**).
 
 **Knows before touching anything:** an interface change affects every implementer; `docs/` changes only through the deviation protocol; the layering rules in `CLAUDE.md`.
 
 **Reads:** [`docs/ARCHITECTURE/00-SYSTEM-ARCHITECTURE.md`](docs/ARCHITECTURE/00-SYSTEM-ARCHITECTURE.md) · [`docs/ARCHITECTURE/02-DATA-MODEL.md`](docs/ARCHITECTURE/02-DATA-MODEL.md) · [`docs/ENGINEERING/00-CODING-STANDARDS.md`](docs/ENGINEERING/00-CODING-STANDARDS.md)
 
-**Does not:** edit `src/Drape.Shell.*` or `src/Drape.UI/`.
+**Does not:** edit `crates/drape-shell-*` or `crates/drape-ui/`.
 
 ### shell-engineer-windows
 
-**Owns:** `src/Drape.Shell.Windows/`, `src/Drape.Guard/`, `spikes/`, and related tests. Win32/COM: desktop host, icons, hooks, DPI, monitors, Explorer restart.
+**Owns:** `crates/drape-shell-windows/`, `crates/drape-guard/`, `spikes/`, and related tests. Rust windows crate / Win32/COM: desktop host, icons, hooks, DPI, monitors, Explorer restart.
 
 **Knows before touching anything:**
 
 - Never hard-code the desktop window hierarchy; the icon toggle is not a setter; read state before acting.
 - Every hide has a restore on every exit path; Guard must work when the app is killed.
-- Wrap handles/PIDLs/COM objects in `SafeHandle`/`IDisposable`; hook callbacks stay minimal.
+- Wrap handles/PIDLs/COM objects in RAII wrappers with the matching native release API; hook callbacks stay minimal.
 - A spike result names the build, DPI and monitor count.
 
 **Reads:** [`docs/PLATFORM/00-WINDOWS-INTEGRATION.md`](docs/PLATFORM/00-WINDOWS-INTEGRATION.md) · [`docs/SECURITY/00-SECURITY-AND-PRIVACY.md`](docs/SECURITY/00-SECURITY-AND-PRIVACY.md)
 
-**Does not:** edit `src/Drape.UI/` or `src/Drape.Core/` (except through a handoff to the architect); kill `explorer.exe` automatically.
+**Does not:** edit `crates/drape-ui/` or `crates/drape-core/` (except through a handoff to the architect); kill `explorer.exe` automatically.
 
 ### shell-engineer-mac
 
-**Owns:** `src/Drape.Shell.Mac/` and related tests (**Phase 6**). Cocoa/CoreGraphics: desktop host, icons, menu, DPI, NSWorkspace events.
+**Owns:** `crates/drape-shell-mac/` and related tests (**Phase 6**). Cocoa/CoreGraphics: desktop host, icons, menu, DPI, NSWorkspace events.
 
 **Knows before touching anything:** how macOS lets a window sit at desktop level, and whether Finder icons can be hidden safely, are unverified; start with the spikes (P6-01, P6-02) and treat the platform matrix as hypotheses.
 
 **Reads:** [`docs/PLATFORM/01-PLATFORM-SUPPORT.md`](docs/PLATFORM/01-PLATFORM-SUPPORT.md)
 
-**Does not:** edit `src/Drape.UI/` or `src/Drape.Core/`.
+**Does not:** edit `crates/drape-ui/` or `crates/drape-core/`.
 
 ### shell-engineer-linux
 
-**Owns:** `src/Drape.Shell.Linux/` and related tests (**Phase 6**). X11/Wayland: desktop host, icons, DPI, compositor hints.
+**Owns:** `crates/drape-shell-linux/` and related tests (**Phase 6**). X11/Wayland: desktop host, icons, DPI, compositor hints.
 
 **Knows before touching anything:** X11 and Wayland (wlr-layer-shell) differ; capabilities must report honestly what each session supports.
 
 **Reads:** [`docs/PLATFORM/01-PLATFORM-SUPPORT.md`](docs/PLATFORM/01-PLATFORM-SUPPORT.md)
 
-**Does not:** edit `src/Drape.UI/` or `src/Drape.Core/`.
+**Does not:** edit `crates/drape-ui/` or `crates/drape-core/`.
 
 ### core-engineer
 
-**Owns:** `src/Drape.Core/`, `src/Drape.Infrastructure/` and their tests. Domain model, rule engine, layout math, snap, schema migration, ConfigStore, DesktopItemSource.
+**Owns:** `crates/drape-core/`, `crates/drape-infrastructure/` and their tests. Domain model, rule engine, layout math, snap, schema migration, ConfigStore, DesktopItemSource.
 
 **Knows before touching anything:**
 
-- Core is platform-free: I/O via `IFileSystem`, time via `IClock`; return `IconBitmap`, never a UI image type.
+- Core is platform-free: I/O via `FileSystem`, time via `Clock`; return `IconBitmap`, never a UI image type.
 - Tests first for Core logic, including error branches and negative cases.
 - Config is atomic, versioned and migrated; migration tests use hand-written fixtures per version.
 - Interface changes need architect approval.
 
 **Reads:** [`docs/ARCHITECTURE/02-DATA-MODEL.md`](docs/ARCHITECTURE/02-DATA-MODEL.md) · [`docs/ENGINEERING/00-CODING-STANDARDS.md`](docs/ENGINEERING/00-CODING-STANDARDS.md)
 
-**Does not:** edit `src/Drape.Shell.*`; add a platform reference to Core.
+**Does not:** edit `crates/drape-shell-*`; add a platform reference to Core.
 
 ### ui-engineer
 
-**Owns:** `src/Drape.UI/`, `src/Drape.App.Desktop/` and their tests. Drape window, controls, themes, settings, tray, accessibility (Avalonia).
+**Owns:** `crates/drape-ui/`, `crates/drape-app/` and their tests. Drape window, controls, themes, settings, tray, accessibility (Slint).
 
-**Knows before touching anything:** one window per Drape (ADR-007); view-models never call native APIs; gate features on `IPlatformCapabilities`; marshal to `Dispatcher.UIThread`; the app must be usable by keyboard alone.
+**Knows before touching anything:** one window per Drape (ADR-007); view-models never call native APIs; gate features on `PlatformCapabilities`; marshal to `slint::invoke_from_event_loop`; the app must be usable by keyboard alone.
 
 **Reads:** [`docs/UI-UX/00-UI-UX-SPEC.md`](docs/UI-UX/00-UI-UX-SPEC.md) · [`docs/ARCHITECTURE/00-SYSTEM-ARCHITECTURE.md`](docs/ARCHITECTURE/00-SYSTEM-ARCHITECTURE.md)
 
-**Does not:** edit `src/Drape.Shell.*`; use OS checks.
+**Does not:** edit `crates/drape-shell-*`; use OS checks.
 
 ### mobile-engineer
 
-**Owns:** `src/Drape.App.Android/`, `src/Drape.App.iOS/` and related tests (**Phase 6**). Entry points, mobile UI adaptation, store distribution.
+**Owns:** `crates/drape-app-android/`, `crates/drape-app-ios/` and related tests (**Phase 6**). Entry points, mobile UI adaptation, store distribution.
 
 **Knows before touching anything:** mobile is a shortcut-group management UI; there is no panel above a wallpaper.
 
 **Reads:** [`docs/PLATFORM/01-PLATFORM-SUPPORT.md`](docs/PLATFORM/01-PLATFORM-SUPPORT.md)
 
-**Does not:** edit `src/Drape.Shell.*` or `src/Drape.Core/`.
+**Does not:** edit `crates/drape-shell-*` or `crates/drape-core/`.
 
 ### qa
 
@@ -126,17 +126,17 @@ Each agent edits only the directories its role owns. Crossing a boundary goes th
 
 **Reads:** [`docs/TESTING/00-TESTING-STRATEGY.md`](docs/TESTING/00-TESTING-STRATEGY.md)
 
-**Does not:** fix bugs in `src/` — report them.
+**Does not:** fix bugs in `crates/` or legacy `src/` — report them.
 
 ### release-engineer
 
-**Owns:** `.github/`, [`docs/DEVOPS/`](docs/DEVOPS/00-BUILD-AND-RELEASE.md), build scripts. CI, versioning, installer (Velopack on desktop, stores on mobile), signing, changelog.
+**Owns:** `.github/`, [`docs/DEVOPS/`](docs/DEVOPS/00-BUILD-AND-RELEASE.md), build scripts. CI, versioning, Rust-compatible packaging/updater evaluation (existing Velopack preference subject to Q-22; mobile stores deferred), signing, changelog.
 
 **Knows before touching anything:** builds must be reproducible from a tag; `.github/workflows/*` is a conflict-sensitive file; signing credentials never enter the repository.
 
 **Reads:** [`docs/DEVOPS/00-BUILD-AND-RELEASE.md`](docs/DEVOPS/00-BUILD-AND-RELEASE.md)
 
-**Does not:** edit `src/`.
+**Does not:** edit implementation under `crates/` or legacy `src/`.
 
 ### docs-keeper
 
@@ -146,7 +146,7 @@ Each agent edits only the directories its role owns. Crossing a boundary goes th
 
 **Reads:** [`docs/README.md`](docs/README.md) · [`docs/PLAN/06-GLOSSARY.md`](docs/PLAN/06-GLOSSARY.md)
 
-**Does not:** edit `src/`.
+**Does not:** edit implementation under `crates/` or legacy `src/`.
 
 ---
 
@@ -164,17 +164,17 @@ Each agent edits only the directories its role owns. Crossing a boundary goes th
 Statuses: `TODO` → `WIP` → `REVIEW` → `DONE`. Side statuses: `BLOCKED`, `DROPPED` (with a reason).
 
 1. **Claim.** Set `WIP` on the card and in `TASKS/PROGRESS.md` with owner and date. At most **3** `WIP` at once.
-2. **Work.** Follow `CLAUDE.md`. Small, frequent commits on `{type}/{task-id}-{slug}`.
+2. **Work.** Follow `CLAUDE.md`. Small, frequent commits on `{type}/{task-id}-{slug}`; Rust foundation/core uses fresh R0/R1 IDs.
 3. **Review.** Set `REVIEW`. The reviewer is a **different role** from the owner: `architect` for interfaces, `qa` for behaviour, a shell engineer for anything native.
-4. **Done.** Acceptance met, review passed, record written — then `DONE`.
+4. **Done.** Acceptance met, review passed, record written and merged — then `DONE`. Reviewed local changes remain `REVIEW` until merge; no commit/PR/merge is implied by a documentation-review request.
 
 ## Parallel Rules
 
 - Two agents never edit the same file at the same time. Sequence them with `BLOCKED` and `Depends on`.
-- **Conflict-sensitive files** are changed only by `orchestrator` or `architect`: `Drape.sln`, `Directory.Packages.props`, `Directory.Build.props`, `global.json`, `.editorconfig`, `.github/workflows/*`.
+- **Conflict-sensitive files** are changed only by `orchestrator` or `architect`: `Cargo.toml`, `Cargo.lock`, `rust-toolchain.toml`, `.editorconfig`, `.github/workflows/*` (legacy solution/build files remain conflict-sensitive until retirement).
 - **Core interface changes** need `architect` approval and notice to every implementer (`shell-engineer-*`, `ui-engineer`, `mobile-engineer`).
 - **Safe in parallel:** spikes on different platforms, Core tests vs UI code, docs vs code.
-- **Must be sequential:** `P0-01` before everything; the interface contract before two-sided implementation.
+- **Must be sequential:** `R0-02` before Rust implementation; the interface contract before two-sided implementation.
 
 ## Handoff Template
 
@@ -212,19 +212,20 @@ Read the task card and **every document in its Spec refs**. If it is `Spec requi
 ### While working
 
 - Found a trap? Add it to the traps table in `CLAUDE.md`.
-- Found a gap in `docs/`? **Stop.** That is the deviation protocol.
+- Found a gap in `docs/`? Stop relying on that assumption; follow the deviation protocol. An explicitly authorised documentation audit may patch supported gaps within scope and record the result, while unresolved owner decisions stay in the backlog.
 - Found an open question or an idea? `TASKS/BACKLOG.md`. Do not quietly widen the task.
 - Do not "tidy" files owned by another role.
 
 ### Before a PR
 
 ```bash
-dotnet build Drape.sln -c Release -warnaserror
-dotnet format --verify-no-changes
-dotnet test Drape.sln
+rtk cargo build --workspace --release --locked
+rtk cargo fmt --all -- --check
+rtk cargo clippy --workspace --all-targets --locked -- -D warnings
+rtk cargo test --workspace --locked
 ```
 
-The PR title is `feat(core): P1-01 add domain records`. The body states spec refs, what changed and why, **named tests**, the DoD checklist, anything waived and who agreed, and anything **not determined**. The last item is not optional.
+The PR title is `feat(core): R1-01 add domain structs`. The body states spec refs, what changed and why, **named tests**, the DoD checklist, anything waived and who agreed, and anything **not determined**. The last item is not optional.
 
 ### Handover
 
@@ -258,8 +259,8 @@ Otherwise take the most sensible assumption, write it in `TASKS/BACKLOG.md`, and
 - `shell-engineer-mac`: no leaked handles; icons recover; works after a Dock/Finder restart.
 - `shell-engineer-linux`: window hints applied; works on X11 and Wayland (wlr-layer-shell).
 - `core-engineer`: new logic has tests; Core stays platform-free (checked by an analyzer or architecture test).
-- `ui-engineer`: usable by keyboard alone; light, dark and high-contrast themes; DPI 100/150/200% on desktop.
-- `mobile-engineer`: builds on Android 12 (API 31)+ and iOS 18+ (Avalonia support tiers, ADR-022); no crashes on the emulator.
+- `ui-engineer`: keyboard-only tray/settings/Drape entry without an optional global hotkey; light/dark/high contrast; supported DPI through 300% and one to four monitors, with mixed-scale coverage.
+- `mobile-engineer`: builds on Android 12 (API 31)+ and iOS 18+ planning targets, revalidated for Rust/Slint before support is promised (ADR-025); no crashes on the emulator.
 - `qa`: bug reports include steps, OS build/version, DPI, monitor count and logs.
 - `release-engineer`: reproducible build from a tag; signed artifacts; checksums published.
 
@@ -267,8 +268,8 @@ Otherwise take the most sensible assumption, write it in `TASKS/BACKLOG.md`, and
 
 ```
 You are acting as shell-engineer-windows on the Drape project. Read CLAUDE.md, AGENTS.md,
-docs/PLATFORM/00-WINDOWS-INTEGRATION.md and task P0-03 in TASKS/PHASE-0-FOUNDATION.md.
-Do only P0-03. Change only src/Drape.Shell.Windows/ or spikes/ and related tests.
+docs/PLATFORM/00-WINDOWS-INTEGRATION.md and task R0-04 in TASKS/RUST-MIGRATION.md.
+Do only R0-04, once implementation is explicitly authorised. Change only crates/drape-shell-windows/ or spikes/ and related tests.
 Name the build, DPI and monitor setup of every result. End with a completion report
 using the template in AGENTS.md.
 ```
@@ -282,94 +283,22 @@ using the template in AGENTS.md.
 - Keeping knowledge only in the conversation. Decisions and lessons go to `MEMORY/`.
 - Rounding "renders" up to "works".
 
+
+## Rust migration boundary — ADR-025
+
+Ownership paths above name the future Rust workspace. Existing src/Drape.* code, .NET manifests/CI and legacy harnesses remain unchanged. The owner authorised implementation continuation on 2026-11-25; implementation tasks are R0/R1 in [RUST-MIGRATION](./TASKS/RUST-MIGRATION.md), not reused P0/P1 DONE cards. Future Cargo gates become valid after R0-02; documentation changes use link/consistency/whitespace/scope checks. Core/shared UI forbid unsafe; shell adapters use reviewed unsafe/RAII with no FFI unwinding. Borrowed Slint HWND lifetimes are explicit. Guard readiness plus durable intent precedes hiding, and Drop/panic hooks do not cover forced kills. PlatformCapabilities is neutral Rust data; ports are traits without I prefixes. Slint attribution is required under the selected royalty-free licence.
+
+### Handoff architect → orchestrator · 2026-11-25
+
+- Context: owner requested all documentation migrate to Rust + Slint, no implementation.
+- Done: future crate ownership, quality gates and migration/status policy updated.
+- Not done: source port, CI/manifests, code retirement, independent review.
+- Contract/interface changed: documentation target only; source interfaces untouched.
+- How to verify: Markdown link/whitespace checks and Markdown-only diff.
+- Risks / surprises: legacy statuses inconsistent; use historical records and fresh R0/R1 evidence.
+
 <!-- RTK_TOKEN_SAVER_START -->
-# RTK Token Saver Rule (agents)
+## Tool policy
 
-## RTK (Rust Token Killer) Optimization Rule
-Prefix every shell/terminal execution command with `rtk`:
-- `rtk git status`, `rtk git diff`, `rtk git log -n 5`
-- `rtk npm test`, `rtk npm run build`, `rtk pnpm test`, `rtk yarn test`
-- `rtk cargo check`, `rtk cargo test`, `rtk cargo build`
-- `rtk pytest`, `rtk vitest`
-- `rtk ls src/`, `rtk tree -L 2`, `rtk rg "pattern"`
-
-Keep the prefix inside chains: `rtk git add . && rtk git commit -m "msg"`.
-Commands RTK has no filter for run as-is, so the prefix is always safe.
-
-### Output & Token Optimization
-Command output is condensed to save 60-90% LLM context window tokens while preserving every critical signal, error, and exit code.
-- `rtk gain` / `rtk gain --history` - View token savings scoreboard.
-- `rtk proxy <cmd>` - Run a command unfiltered if raw output is strictly needed.
-- `RTK_DISABLED=1 <cmd>` - Skip RTK for one command.
-
-## 3-Tier Hybrid Web Research & Scraping Policy (Upstream: fastcrw/crw & lightpanda-io/browser)
-When your IDE agent receives a task requiring web research or extraction, it follows this strict 3-tier routing logic:
-
-1. **Discovery (Tier 1 - Default Search)**:
-   - The agent uses its built-in search tool (`search_web` / native search) to find target URLs or documentation links.
-2. **Fast Extraction (Tier 2 - fastCRW)**:
-   - The agent attempts to fetch the URL using fastCRW (`crw scrape <url>`, `crw_scrape`, or `http://127.0.0.1:3000`).
-   - If the page is server-rendered (like a blog, GitHub README, or docs site), fastCRW instantly grabs clean Markdown/text, saving 70-90% context tokens without JS engine overhead.
-3. **Deep Dynamic Rendering (Tier 3 - Lightpanda Local via MCP)**:
-   - If fastCRW returns empty content, a rendering error, or hits a client-side JavaScript wall (e.g., a React/Vue SPA app or login-gated dashboard), the agent automatically falls back to Lightpanda Local via MCP (`lightpanda mcp`).
-   - Lightpanda executes the JS via V8 and feeds a clean Accessibility Tree or Markdown back into the IDE context window using ~10x less memory than headless Chrome.
-
-
-## Mandatory Semantic Knowledge Graph First Policy (Token Saver Enforcement)
-Autonomous AI agents in ANY IDE MUST ALWAYS query the pre-indexed semantic knowledge graphs to provide answers BEFORE falling back to raw file reads that waste prompt tokens:
-
-### 1. Code-Based Files -> CodeGraphContext (Upstream: CodeGraphContext/CodeGraphContext)
-- **Code Query Engine:** For all code architecture, symbol definitions, function signatures, call hierarchies (callers/callees), class inheritance, and module dependencies, AI agents MUST query the CodeGraphContext index (/codegraph-query, `cgc query`, `cgc find`, or CodeGraphContext MCP tools) FIRST.
-- **Zero-Waste Fallback:** NEVER dump or read entire source code files or directory trees into LLM prompt context when answering code questions. Only fall back to localized file reads (and then only targeted slices) if the knowledge graph query does not provide sufficient detail.
-- **Live Synchronization:** The project code graph is continuously kept updated via background incremental sync / `cgc watch` / on-save triggers.
-
-### 2. Non-Code Files -> JevGraph (Upstream: chenmingtang830/jevgraph)
-- **Document Query Engine ONLY:** JevGraph is strictly designated for non-code files (documentation, Markdown specs, PRDs, PDFs, Word docs `.docx`, slides `.pptx`, text `.txt`).
-- **Bounded Evidence:** When ingesting large specs, PRDs, PDFs, or architectural documentation, build or query bounded evidence-backed knowledge graphs (/jevgraph-build, /jevgraph-query) with character-level page maps instead of loading raw long documents into prompt context.
-- **Strict Separation:** NEVER use JevGraph for source code AST indexing; code files are strictly handled by CodeGraphContext.
-
-
-## Headroom Context Compression (Upstream: headroomlabs-ai/headroom)
-- Utilize Headroom context compression and Compress-Cache-Retrieve (CCR) for heavy JSON structures, file reads, and tool payloads to minimize prompt tokens.
-
-
-## Anti-Slop Filter & Quality Rules (Upstream: miqdadbadjuber/anti-slop)
-Follow Anti-Slop rules to prevent generic AI slop in generated UI, copy, and code comments (Mode: DURING):
-- **Filter, Not Style Guide:** Run purpose tests before aesthetic choices (reject ungrounded neon glows, fake metrics, generic sparkle badges).
-- **Liveliness & Grounding:** Rely on `DESIGN.md` or explicit brief for design soul; enforce WCAG AA human accessibility.
-- **Dedicated Skills:** Read `skills/antislop/SKILL.md` (core), `skills/antislop-ui/SKILL.md`, `skills/antislop-copywriting/SKILL.md`, `skills/antislop-human/SKILL.md`, `skills/antislop-layoutmobile/SKILL.md`, `skills/antislop-code/SKILL.md` when performing relevant tasks.
-
-
-## Output & Generation Token Saver Rule (Ponytail Mode: FULL)
-- **YAGNI & Shortest Diff:** Only write code that must exist. Reach for standard library before custom code or new dependencies. Shortest working diff wins.
-- **Terse Responses:** Code first. At most 3 short lines of explanation: what was skipped, when to add it. No essays, no unsolicited design tours, no feature walkthroughs.
-
-## Terse Agent Directives
-- Eliminate pleasantries, greetings, and conversational filler. Provide direct answers and actionable code.
-- Avoid reprinting unchanged code blocks. Use targeted search/replace blocks or concise snippets.
-
-## Context Optimization (Compact Diffs & Outlines)
-- Inspect git changes using compact single-line diffs: `rtk git diff -U1` instead of wide multi-line context.
-- When exploring codebases, inspect function signatures / AST outlines (/rtk-outline) before reading entire files into context.
-
-## ECC Context Management & Compaction Protocol (Upstream: affaan-m/ECC)
-Autonomous AI agents MUST actively manage conversation context window load to prevent token bloat and degraded reasoning:
-1. **Strategic Compaction at Milestones:** At major phase completions or after 50+ tool calls, invoke strategic compaction (/strategic-compact) to summarize completed steps, pruned raw outputs, and focus active memory strictly on pending requirements.
-2. **Context Keeper (`ck`) Snapshots:** Before major context purges, architectural refactors, or switching tasks, persist durable checkpoint files (`.agents/ck/context.json` and `.agents/ck/CONTEXT.md` or invoke /ck:save) so state is never lost across conversation boundaries.
-3. **Anti-Loop Council & Agent Evaluation:** If stuck in repeated failed edits, build verification errors, or circular debug loops (>3 failed attempts), invoke /council or /agent-evaluator to obtain root-cause guidance and stop wasting tokens on trial-and-error repetition.
-
-## Upstream Engine Integration & Latency Guardrails Standards
-Whenever a new upstream engine or external tool (e.g. `fastcrw/crw`, `CodeGraphContext`, `JevGraph`) is introduced or updated:
-1. **Holistic Dashboard Integration (8 Surfaces Required)**:
-   - Header action toggle button (`Turn <Tool> ON / OFF`)
-   - Setup alert banner (missing chips + AI install prompt generator)
-   - Dedicated dashboard section & Quick Action triggers
-   - Multi-channel savings breakdown navigation tabs & distribution weights
-   - System Health diagnostics row with status, AI install prompt, sync, and uninstall actions
-   - Upstream versions dropdown listing
-   - Upstream Sync Picker (`showSyncPicker`) and Uninstall Picker (`showUninstallPicker`)
-   - Footer upstream reference links
-2. **Zero-Noise Latency Benchmarks**: "Test Upstream Latencies" must selectively ping and display only **installed** upstream components, silently omitting/ignoring uninstalled tools so users never see failed pings or clutter for optional tools.
-3. **Footer Version Number Invariant**: The current plugin release version must always be presented beside "Token Saver" in front of "• GitHub".
-
+Follow the shared RTK, graph-first discovery, bounded documentation and checkpoint policy in [CLAUDE.md](./CLAUDE.md). Product-specific requirements come from the task/spec; unrelated plugin-dashboard boilerplate does not apply.
 <!-- RTK_TOKEN_SAVER_END -->

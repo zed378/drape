@@ -1,5 +1,8 @@
 # Feature Spec — P0-04 Spike: Hide/Show Native Icons and Recovery
 
+> Historical C#/.NET/Avalonia baseline, frozen 2026-11-25. Commands, task states and measurements below describe legacy work only; they do not prove Rust/Slint behaviour. Rust replacement work uses fresh R0/R1 IDs in [Rust migration tasks](../../TASKS/RUST-MIGRATION.md). No code was ported or removed by the documentation update.
+
+
 **Written:** 2026-10-25 — **before** spike code
 **Task:** P0-04
 **Author:** code agent

@@ -1,4 +1,4 @@
-﻿# Memory Index
+# Memory Index
 
 Every record and every decision, newest first. Add a line here as part of writing the record or ADR: **an unindexed record is a record nobody finds.**
 
@@ -10,6 +10,18 @@ Current status is in [`../TASKS/PROGRESS.md`](../TASKS/PROGRESS.md), not here.
 
 | Date | Task | Record | Hook |
 |---|---|---|---|
+| 2026-11-25 | Integration | [Owner-authorized main integration](./records/2026-11-25-main-integration.md) | Commit/merge/push of reviewed Rust subsets; full native/integration acceptance remains pending. |
+| 2026-11-25 | R1-03 | [Pure layout and recovery](./records/2026-11-25-R1-03-layout.md) | Immutable stored position, explicit monitor fallback and pure snap; QA evidence and integration limits. |
+| 2026-11-25 | R0-04 | [Slint handle diagnostic](./records/2026-11-25-R0-04-handle-diagnostic.md) | Isolated read-only borrowed-handle probe; full host strategies and Windows matrix pending. |
+| 2026-11-25 | QA continuation | [Sequential layout/host verification](./records/2026-11-25-rust-parallel-qa-continuation.md) | Sole QA queue for current-source security, layout and isolated spike validation. |
+| 2026-11-25 | R1-03 / R0-04 | [Parallel layout and host continuation](./records/2026-11-25-parallel-layout-host-continuation.md) | Disjoint pure layout and safe borrowed-handle diagnostic owners; one sequential QA queue. |
+| 2026-11-25 | R0-03 | [Rust CI](./records/2026-11-25-R0-03-rust-ci.md) | Sequential pinned Windows gates; verification evidence and scanner compatibility findings. |
+| 2026-11-25 | R1-01 | [Domain and neutral ports](./records/2026-11-25-R1-01-domain-models.md) | Validated domain subset, explicit repairs, bounded icon data and deterministic fakes; full native ports deferred. |
+| 2026-11-25 | QA | [Sequential Rust verification](./records/2026-11-25-rust-parallel-qa.md) | Exclusive QA queue and named evidence for the parallel continuation. |
+| 2026-11-25 | R0-03 / R1-01 | [Parallel Rust continuation](./records/2026-11-25-parallel-rust-continuation.md) | Owner-authorised parallel owners and single sequential QA queue; ADR-029, local work pending verification. |
+| 2026-11-25 | R0-02 | [Rust workspace baseline](./records/2026-11-25-R0-02-rust-workspace.md) | Seven crates, pinned toolchain/Slint, metadata mutation checks, explicit unavailable restore/Guard; ADR-028 isolates generated unsafe glue. |
+| 2026-11-25 | R0-01 review | [Specialist documentation audit](./records/2026-11-25-R0-01-specialist-documentation-review.md) | Three independent specialist reviews; recovery/durability/UI/release fixes, Q-23, irrelevant policy removed; Markdown-only validation. |
+| 2026-11-25 | R0-01 | [Rust + Slint documentation baseline](./records/2026-11-25-R0-01-rust-slint-documentation.md) | ADR-025, native non-WebView target, fresh Rust task IDs, preserved C# history; Markdown only, no Rust tests; review pending. |
 | 2026-10-25 | P0-03…P0-07 | [Spike harness batch, menunggu VM](./records/2026-10-25-spike-harness-batch.md) | Semua 5 harness kompilasi + spec + runbook; hasil empiris menunggu owner. ADR tanpa data adalah asumsi yang menyamar. |
 | 2026-10-25 | P0-10, P1-12, P1-04-parsial | [Subagents, coverage, ViewModel](./records/2026-10-25-p0-10-p1-12-p1-04.md) | The 20 ms save budget does not hold (~24 ms median) — the test now gates the median at 30 ms while the record states the actual number honestly. |
 | 2026-10-25 | P0-01/02/08, P1-03/07 | [Phase 0 + P1 batch: CI, composition root, DrapeService](./records/2026-10-25-phase0-p1-batch.md) | `with { Prop = bad }` bypasses the property initializer — Rename and WithOrder needed explicit validation; the manifest had 3 stacked defects behind one generic error. |
@@ -27,7 +39,12 @@ Full text in [`DECISIONS.md`](./DECISIONS.md). Part II (2026-10-10) says what ch
 
 | ID | Date | Decision | Status |
 |---|---|---|---|
-| ADR-024 | 2026-10-23 | The desktop app references the platform shell directly; one thin head per OS in Phase 6 | Accepted |
+| ADR-029 | 2026-11-25 | Parallel local continuation; one sequential validation owner | Accepted owner-authorised execution policy |
+| ADR-028 | 2026-11-25 | Isolate compiler-generated Slint unsafe glue; hand-written UI/Core forbid unsafe | Implementation decision; review pending |
+| ADR-027 | 2026-11-25 | Owner-authorised R0-02 continuation, reproducible toolchain/Slint baseline and fail-closed recovery route | Local implementation checks passed; review/merge pending |
+| ADR-026 | 2026-11-25 | Reviewed recovery, durability, validation and documentation relevance contracts | Accepted documentation clarification; no runtime evidence |
+| ADR-025 | 2026-11-25 | Rust + Slint target; documentation first, legacy code/history preserved, R0/R1 replacement tasks | Accepted target; implementation unstarted |
+| ADR-024 | 2026-10-23 | The desktop app references the platform shell directly; one thin head per OS in Phase 6 | Implementation details superseded by ADR-025 |
 | ADR-023 | 2026-10-10 | Windows 10 22H2 is the supported minimum (owner); minimums and channels for macOS, Linux, Android, iOS | Accepted (Windows: owner; others: delegated) |
 | ADR-022 | 2026-10-10 | Answers to Q-04…Q-13 and Q-18: direct distribution, Windows 10 until ESU ends (Oct 2027), x64 only, Guard in MVP, updates off by default | Accepted (assumption, delegated) |
 | ADR-021 | 2026-10-10 | Mobile = companion shortcut groups, last in the queue (owner-delegated working decision) | Accepted (assumption) |
@@ -39,7 +56,7 @@ Full text in [`DECISIONS.md`](./DECISIONS.md). Part II (2026-10-10) says what ch
 | ADR-015 | 2026-10-10 | Platform seams: `IPlatformCapabilities`, locations/autostart in Shell, neutral `IconBitmap`, `IBlurEffect` | Accepted |
 | ADR-014 | 2026-10-10 | v1.0 ships Windows only; other platforms are Phase 6 | Accepted (confirmed by the owner; Q-15 closed) |
 | ADR-013 | 2026-10-10 | English documentation, code and commits; Indonesian conversation; UI id-ID + en-US | Accepted |
-| ADR-012 | 2026-10-10 | Stack: C# / .NET 10 LTS / Avalonia UI, cross-platform | Accepted |
+| ADR-012 | 2026-10-10 | Stack: C# / .NET 10 LTS / Avalonia UI, cross-platform | Superseded by ADR-025 |
 | ADR-011 | 2026-10-09 | One item belongs to exactly one Drape in v1 | Accepted (Q-09) |
 | ADR-010 | 2026-10-09 | No telemetry and no network by default | Accepted |
 | ADR-009 | 2026-10-09 | Windows 11 primary, Windows 10 22H2 best effort | Accepted (assumption; Q-05) |
@@ -56,6 +73,8 @@ Full text in [`DECISIONS.md`](./DECISIONS.md). Part II (2026-10-10) says what ch
 
 | Task | Spec |
 |---|---|
+| R0-04 | [Slint desktop-host diagnostic](./specs/R0-04-slint-desktop-host.md) — written before probe code; full native strategies/matrix pending. |
+| R0-02 | [Rust workspace baseline](./specs/R0-02-rust-workspace.md) ? written before workspace source. |
 | P1-03 | [Config store](./specs/P1-03-config-store.md) — retrospective; implementation already existed. |
 | P0-03 | [Desktop host spike](./specs/P0-03-desktop-host.md) — written before spike code. |
 | P0-04 | [Desktop icons spike](./specs/P0-04-desktop-icons.md) — written before spike code. |

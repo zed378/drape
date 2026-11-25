@@ -1,6 +1,10 @@
 # Phase 4 — Advanced Features
 
-**Status:** TODO (planning phase; no code yet)
+> Estimates in retained cards are provisional legacy planning allowances, not Rust delivery commitments. Re-estimate/split at claim time after the Rust spikes; follow actual per-card prerequisites.
+
+> Rust + Slint target (ADR-025). R0/R1 dependencies refer to [Rust migration cards](./RUST-MIGRATION.md), not historical P0/P1 results. These implementation tasks remain unstarted; no code is authorised by the documentation update.
+
+**Status:** TODO (Rust target work not started; legacy C# code retained)
 
 **Goal:** The differentiating features: folder portals, auto-sort rules, desktop pages, snapshots and export/import. Tabs, search and global hotkeys are optional (feature matrix marks them "Later") and are done only if time allows. Spec: `docs/PLAN/02-FEATURE-SPECIFICATION.md` (F-20..F-27). Priority order within the phase: portals and rules first.
 
@@ -18,7 +22,7 @@
 | **Role** | core-engineer |
 | **Depends on** | P3-10 |
 | **Spec refs** | docs/PLAN/02-FEATURE-SPECIFICATION.md (F-20) · docs/ARCHITECTURE/02-DATA-MODEL.md · docs/SECURITY/00-SECURITY-AND-PRIVACY.md |
-| **Spec required** | no |
+| **Spec required** | yes |
 
 **Why:** A portal mirrors a live folder; the folder is the source of truth and Drape must never silently modify it.
 
@@ -36,6 +40,8 @@ A Drape with `kind=portal` mirrors a folder's contents (optional recursion/filte
 
 ---
 
+Specification prerequisite Q-23: define identity/ownership, portal projection versus stored membership, pinned page visibility or tab representation as relevant; review snapshots/import compatibility and write any necessary schema migration/fixtures before implementation. Feature scope remains planned; do not invent persisted fields from examples.
+
 ### P4-02 — Rule engine (Core)
 
 | | |
@@ -50,16 +56,16 @@ A Drape with `kind=portal` mirrors a folder's contents (optional recursion/filte
 
 **Why:** User-authored patterns run against every new file; a pathological regex or a rule that keeps re-moving items would make the desktop unusable.
 
-`RuleEngine`, `IRuleCondition`, `IRuleAction`. Conditions: extension, name pattern (glob/regex with a timeout), age, size, type. Priorities and `pinnedByUser`. Spec first in `MEMORY/specs/P4-02-rule-engine.md`.
+`RuleEngine`, `RuleCondition`, `RuleAction`. Conditions: extension, name pattern (glob/regex with documented engine/pattern/input/evaluation bounds), age, size, type. Priorities and `pinnedByUser`. Prefer predictable-complexity matching; do not assume a .NET-style per-match timeout exists in Rust. Any engine-specific cancellation/timeout must be verified without blocking UI or unsafe thread termination. Spec first in `MEMORY/specs/P4-02-rule-engine.md`.
 
 **Definition of Done**
 - [ ] unit tests for priority order and combined conditions (AND/OR), including conflicting rules
-- [ ] a catastrophic-backtracking regex is cut off by the evaluation timeout and reported, not hung
+- [ ] unsupported or oversized patterns/inputs are rejected clearly; worst-case accepted matches satisfy bounded evaluation on representative batches, with engine-specific cancellation tested if selected
 - [ ] an item moved manually by the user is never re-sorted (`pinnedByUser`)
 - [ ] applying rules is deterministic: the same input state always yields the same result
 
 **Abuse cases**
-- Timeout enforced only in tests via a tiny input, never against a real backtracking pattern
+- Calling an engine bounded because a tiny input passed, without pattern/input/batch limits or worst-case evidence
 - `pinnedByUser` cleared on every app restart because it was not persisted
 
 ---
@@ -101,7 +107,7 @@ Rules tab: create/edit/reorder, impact preview, "Apply now" button.
 | **Role** | ui-engineer |
 | **Depends on** | P3-10 |
 | **Spec refs** | docs/PLAN/02-FEATURE-SPECIFICATION.md (F-22) · docs/ARCHITECTURE/02-DATA-MODEL.md · docs/UI-UX/00-UI-UX-SPEC.md |
-| **Spec required** | no |
+| **Spec required** | yes |
 
 **Why:** Pages multiply the number of windows; switching must be fast and must not lose or duplicate Drapes.
 
@@ -118,6 +124,8 @@ Several pages, switching via tray/hotkey/screen edge; a Drape can "stick to all 
 - A sticky Drape implemented as copies per page that drift apart
 
 ---
+
+Specification prerequisite Q-23: define identity/ownership, portal projection versus stored membership, pinned page visibility or tab representation as relevant; review snapshots/import compatibility and write any necessary schema migration/fixtures before implementation. Feature scope remains planned; do not invent persisted fields from examples.
 
 ### P4-05 — Layout snapshots
 
@@ -184,7 +192,7 @@ Export to a `.drape.json` file with an "anonymise paths" option; import in merge
 | **Role** | ui-engineer |
 | **Depends on** | P4-01 |
 | **Spec refs** | docs/PLAN/02-FEATURE-SPECIFICATION.md (F-24) · docs/UI-UX/00-UI-UX-SPEC.md |
-| **Spec required** | no |
+| **Spec required** | yes |
 
 **Why:** Optional; takes the phase beyond budget unless portals and rules are already done.
 
@@ -199,6 +207,8 @@ Tabs per Drape (item list or portal); dragging an item onto a tab moves it.
 - Starting this card while P4-01/P4-02 are still open, against the phase priority
 
 ---
+
+Specification prerequisite Q-23: define identity/ownership, portal projection versus stored membership, pinned page visibility or tab representation as relevant; review snapshots/import compatibility and write any necessary schema migration/fixtures before implementation. Feature scope remains planned; do not invent persisted fields from examples.
 
 ### P4-08 — Search inside a Drape (optional)
 
@@ -247,7 +257,7 @@ Typing while a Drape has focus filters its items; Esc cancels.
 - [ ] a hotkey conflict is handled with a clear message and a way to choose another key
 - [ ] there is no keyboard hook in the code (`SetWindowsHookEx` with `WH_KEYBOARD(_LL)` absent; verified by an architecture/grep test and by review)
 - [ ] the registration is released on every exit path
-- [ ] the hotkey capability is exposed through `IPlatformCapabilities` so other platforms can report it differently
+- [ ] the hotkey capability is exposed through `PlatformCapabilities` so other platforms can report it differently
 
 **Abuse cases**
 - A "temporary" `WH_KEYBOARD_LL` hook to detect conflicts

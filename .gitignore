@@ -1,4 +1,11 @@
 # .NET build output
+/.tools/
+/target/
+/.tmp-rust-*
+/.tmp-*
+__pycache__/
+
+# Rust build output is separate from retained legacy output.
 bin/
 obj/
 *.user

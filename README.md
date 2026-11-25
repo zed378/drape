@@ -2,7 +2,7 @@
 
 A desktop organizer. Drape groups your desktop icons, shortcuts and files into semi-transparent panels — called **Drapes** — drawn above the wallpaper. Move them, resize them, roll them up, and double-click the empty desktop to hide everything at once.
 
-> **Status: early implementation. Core domain, config store, layout maths and Windows capability skeleton exist and are tested (81 tests green).** The desktop host, icon hiding and UI windows are still hypotheses until their spikes prove them. See [`TASKS/PROGRESS.md`](./TASKS/PROGRESS.md) for the current state.
+> **Status: Rust + Slint target documented; implementation not started.** Early C#/.NET/Avalonia code and dated test records remain in the repository. No Rust scaffolding, code removal or CI change is part of this update. See [progress](./TASKS/PROGRESS.md) and [migration design](./docs/ARCHITECTURE/03-RUST-MIGRATION.md).
 
 ## What It Will Do
 
@@ -24,25 +24,17 @@ A desktop organizer. Drape groups your desktop icons, shortcuts and files into s
 | | Status |
 |---|---|
 | Windows 11 (x64) | **v1.0 target**, primary |
-| Windows 10 22H2 (x64) | **Minimum supported OS** |
+| Windows 10 22H2 (x64) | **Minimum target OS**; Rust backend validation pending |
 | macOS 14+, Linux (Ubuntu 22.04 / Debian 12 families) | Planned after v1.0 (Phase 6), each behind a spike |
-| Android 12+, iOS 18+ | Planned last, as a shortcut-group companion without a desktop layer |
+| Android 12+, iOS 18+ | Planned last as a shortcut-group companion; minimums/backend support require revalidation |
 
 ## Tech
 
-C# / .NET 10 · Avalonia UI · CommunityToolkit.Mvvm · Microsoft.Extensions.Hosting · Serilog · CsWin32 (Windows shell integration) · xUnit, NSubstitute, Shouldly. Details and alternatives: [`docs/ARCHITECTURE/01-TECH-STACK.md`](./docs/ARCHITECTURE/01-TECH-STACK.md).
+Rust + Slint: native compiled UI without WebView/browser engine. Windows integration uses the Microsoft windows crate behind platform-free ports. The owner prioritises RAM, performance, memory safety and distribution size; results require measurements. See [stack](./docs/ARCHITECTURE/01-TECH-STACK.md) and [ADR-025](./MEMORY/DECISIONS.md).
 
-## Building
+## Build status
 
-Not possible yet: the solution is created by task [P0-01](./TASKS/PHASE-0-FOUNDATION.md). Once it exists the commands will be:
-
-```
-dotnet restore
-dotnet build Drape.sln -c Debug
-dotnet test Drape.sln
-dotnet run --project src/Drape.App.Desktop
-dotnet run --project src/Drape.App.Desktop -- --restore-desktop   # restore desktop icons
-```
+The repository still contains the legacy .NET solution; a Rust workspace does not exist yet. [R0-02](./TASKS/RUST-MIGRATION.md) creates it in a later implementation task. Future Rust build/run commands are documented in [build and release](./docs/DEVOPS/00-BUILD-AND-RELEASE.md); they are not usable as migration evidence today. Legacy measurements/test counts remain historical and were not rerun for this documentation update.
 
 ## Documentation
 
@@ -61,6 +53,6 @@ Work is organised as small task cards in [`TASKS/`](./TASKS/README.md). Read [`T
 
 ## Licence
 
-[MIT](./LICENSE) — free to use, modify and distribute. The licence grants no trademark rights.
+[MIT](./LICENSE) for Drape code — free to use, modify and distribute. Slint has separate royalty-free licensing and attribution requirements; see the stack/licensing documents. The licence grants no trademark rights.
 
 Drape is an independent project. It is not affiliated with, endorsed by or derived from any other desktop-organizer product, and it uses none of their code, names, icons or text ([`docs/PLAN/05-LEGAL-AND-NAMING.md`](./docs/PLAN/05-LEGAL-AND-NAMING.md)). The name "Drape" has not yet been through a trademark search.

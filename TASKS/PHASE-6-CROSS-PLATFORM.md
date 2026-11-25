@@ -1,14 +1,18 @@
 # Phase 6 — Cross-Platform Expansion
 
-**Status:** TODO (planning phase; post-v1, **planned but not committed**. Windows-first is confirmed by the owner, ADR-014.)
+> Estimates in retained cards are provisional legacy planning allowances, not Rust delivery commitments. Re-estimate/split at claim time after the Rust spikes; follow actual per-card prerequisites.
+
+> Rust + Slint target (ADR-025). R0/R1 dependencies refer to [Rust migration cards](./RUST-MIGRATION.md), not historical P0/P1 results. These implementation tasks remain unstarted; no code is authorised by the documentation update.
+
+**Status:** TODO (Rust target planning; post-v1, **planned but not committed**. Windows-first is confirmed by the owner, ADR-014.)
 
 **Minimum OS and channels (ADR-023):** macOS 14+, Ubuntu 22.04 / Debian 12 families (X11 guaranteed), Android 12+, iOS 18+; distribution per [`../docs/PLATFORM/01-PLATFORM-SUPPORT.md`](../docs/PLATFORM/01-PLATFORM-SUPPORT.md). A spike or implementation card states in its result which OS versions it actually tested.
 
 **Goal:** Bring Drape to macOS, Linux and, if the design card says it is in scope at all, Android and iOS, without breaking the Windows product or the architecture rules.
 
 **Ground rules for this phase**
-- **Every platform needs a spike and an ADR before its `Drape.Shell.<Platform>` project is implemented.** Platform behaviour listed in [`../docs/PLATFORM/01-PLATFORM-SUPPORT.md`](../docs/PLATFORM/01-PLATFORM-SUPPORT.md) is a **hypothesis** until the matching spike records it, naming the OS build, hardware and display setup.
-- **Capability-gating.** UI and Core ask `IPlatformCapabilities` (ADR-015); they never test the operating system. A platform ships only the capabilities its spike proved.
+- **Every platform needs a spike and an ADR before its `drape-shell-<platform>` project is implemented.** Platform behaviour listed in [`../docs/PLATFORM/01-PLATFORM-SUPPORT.md`](../docs/PLATFORM/01-PLATFORM-SUPPORT.md) is a **hypothesis** until the matching spike records it, naming the OS build, hardware and display setup.
+- **Capability-gating.** UI and Core ask `PlatformCapabilities` (ADR-015); they never test the operating system. A platform ships only the capabilities its spike proved.
 - **No faking.** A capability that a platform cannot provide is reported as missing in settings and docs, and Drape degrades to ordinary windows; it is never emulated to look as if it worked.
 - **Desktop-safety rules apply on every platform.** Anything that hides native icons needs a state record, a restore on every exit path and a Guard equivalent (ADR-006, ADR-008).
 - **All content here derives from the hypotheses in `docs/PLATFORM/01-PLATFORM-SUPPORT.md`.** If a spike contradicts them, the deviation protocol in [`00-TASK-CONVENTIONS.md`](./00-TASK-CONVENTIONS.md) applies: ADR first, then amend the docs.
@@ -26,13 +30,13 @@
 | **Priority** | P1 |
 | **Estimate** | 3 days |
 | **Role** | shell-engineer-mac |
-| **Depends on** | P0-06 |
+| **Depends on** | R0-07 |
 | **Spec refs** | docs/PLATFORM/01-PLATFORM-SUPPORT.md (macOS) · docs/ARCHITECTURE/00-SYSTEM-ARCHITECTURE.md · ADR-007, ADR-014, ADR-015 in MEMORY/DECISIONS.md |
 | **Spec required** | yes |
 
-**Why:** Whether an Avalonia window can sit above the wallpaper and below normal windows on macOS is unknown; promising it before testing would repeat the Windows desktop-host risk on a platform we know less about.
+**Why:** Whether a Slint window can sit above the wallpaper and below normal windows on macOS is unknown; promising it before testing would repeat the Windows desktop-host risk on a platform we know less about.
 
-Prove or refute: an Avalonia window set to the desktop-icon window level (via `CGWindowLevelForKey`) with a collection behaviour that keeps it out of Mission Control and Cmd-Tab, transparent, click-through where needed, correct on Retina and multiple displays, across Spaces and fullscreen apps. Spec (hypotheses and pass criteria) first in `MEMORY/specs/P6-01-macos-desktop-layer.md`; output is a record plus an ADR.
+Prove or refute: a Slint window set to the desktop-icon window level (via `CGWindowLevelForKey`) with a collection behaviour that keeps it out of Mission Control and Cmd-Tab, transparent, click-through where needed, correct on Retina and multiple displays, across Spaces and fullscreen apps. Spec (hypotheses and pass criteria) first in `MEMORY/specs/P6-01-macos-desktop-layer.md`; output is a record plus an ADR.
 
 **Definition of Done**
 - [ ] each of the host criteria is marked pass/fail with the macOS version, hardware (Intel/Apple silicon) and display setup named
@@ -42,7 +46,7 @@ Prove or refute: an Avalonia window set to the desktop-icon window level (via `C
 
 **Abuse cases**
 - Declaring success because the window "renders" on the developer's Mac without testing Spaces or fullscreen
-- A throwaway P/Invoke prototype copied into `Drape.Shell.Mac` unchanged
+- A throwaway native FFI prototype copied into `drape-shell-mac` unchanged
 
 ---
 
@@ -83,13 +87,13 @@ Evaluate the options (persistent Finder preference and restart, covering the ico
 | **Priority** | P1 |
 | **Estimate** | 3 days |
 | **Role** | shell-engineer-linux |
-| **Depends on** | P0-06 |
+| **Depends on** | R0-07 |
 | **Spec refs** | docs/PLATFORM/01-PLATFORM-SUPPORT.md (Linux X11) · docs/ARCHITECTURE/00-SYSTEM-ARCHITECTURE.md · ADR-007, ADR-014, ADR-015 in MEMORY/DECISIONS.md |
 | **Spec required** | yes |
 
 **Why:** X11 window-type hints behave differently per window manager and desktop environment; "works on GNOME" says nothing about KDE or XFCE.
 
-Prove or refute: an Avalonia window with `_NET_WM_WINDOW_TYPE_DESKTOP` or `_NET_WM_STATE_BELOW` plus skip-taskbar/pager hints stays above the wallpaper and below normal windows, is transparent (compositor present and absent), and handles multi-monitor and fractional scaling. Also record how native desktop icons are handled per environment (file-manager-owned) and whether hiding them is feasible at all. Spec first in `MEMORY/specs/P6-03-linux-x11-desktop-layer.md`.
+Prove or refute: a Slint window with `_NET_WM_WINDOW_TYPE_DESKTOP` or `_NET_WM_STATE_BELOW` plus skip-taskbar/pager hints stays above the wallpaper and below normal windows, is transparent (compositor present and absent), and handles multi-monitor and fractional scaling. Also record how native desktop icons are handled per environment (file-manager-owned) and whether hiding them is feasible at all. Spec first in `MEMORY/specs/P6-03-linux-x11-desktop-layer.md`.
 
 **Definition of Done**
 - [ ] a result table per desktop environment/window manager (at least GNOME-on-X11, KDE Plasma, XFCE) with versions named
@@ -112,13 +116,13 @@ Prove or refute: an Avalonia window with `_NET_WM_WINDOW_TYPE_DESKTOP` or `_NET_
 | **Priority** | P1 |
 | **Estimate** | 3 days |
 | **Role** | shell-engineer-linux |
-| **Depends on** | P0-06 |
+| **Depends on** | R0-07 |
 | **Spec refs** | docs/PLATFORM/01-PLATFORM-SUPPORT.md (Linux Wayland) · docs/ARCHITECTURE/00-SYSTEM-ARCHITECTURE.md · ADR-007, ADR-014, ADR-015 in MEMORY/DECISIONS.md |
 | **Spec required** | yes |
 
 **Why:** Wayland has no global window-level API; the panel is possible only where the compositor offers `wlr-layer-shell`, which stock GNOME does not.
 
-Determine, per compositor, whether a background-layer surface can host an Avalonia window (or whether a separate native surface is needed), how input and transparency work, and what the fallback is where it is missing. Include global-hook and hotkey implications (no global mouse hook by design; portal-based hotkeys). Spec first in `MEMORY/specs/P6-04-wayland-layer-shell.md`.
+Determine, per compositor, whether a background-layer surface can host a Slint window (or whether a separate native surface is needed), how input and transparency work, and what the fallback is where it is missing. Include global-hook and hotkey implications (no global mouse hook by design; portal-based hotkeys). Spec first in `MEMORY/specs/P6-04-wayland-layer-shell.md`.
 
 **Definition of Done**
 - [ ] a compositor feasibility table (at least wlroots-based such as Sway, KDE Plasma, GNOME/Mutter) with versions and protocol support named
@@ -133,7 +137,7 @@ Determine, per compositor, whether a background-layer surface can host an Avalon
 
 ---
 
-### P6-05 — Implement `Drape.Shell.Mac`
+### P6-05 — Implement `drape-shell-mac`
 
 | | |
 |---|---|
@@ -147,22 +151,24 @@ Determine, per compositor, whether a background-layer surface can host an Avalon
 
 **Why:** This is where the spike findings become a shipped platform layer, restricted to what the spikes proved.
 
-Implement the interfaces from Core for macOS: desktop host, icon extraction (returning `IconBitmap`), `IDesktopLocations`, `IAutostart` (login item), `IPlatformCapabilities`, and icon hiding only if P6-02 accepted it. P/Invoke/Cocoa only in `Drape.Shell.Mac`; native handles wrapped in `SafeHandle`/`IDisposable`.
+Implement the interfaces from Core for macOS: desktop host, icon extraction (returning `IconBitmap`), `DesktopLocations`, `Autostart` (login item), `PlatformCapabilities`, and icon hiding only if P6-02 accepted it. native FFI/Cocoa only in `drape-shell-mac`; native handles wrapped in RAII wrappers with the matching native release API.
 
 **Definition of Done**
 - [ ] each implemented interface has contract tests shared with the Windows implementation where behaviour is platform-neutral
-- [ ] `IPlatformCapabilities` reports exactly what the spikes proved; unsupported capabilities are reported missing and the UI degrades accordingly
-- [ ] the architecture tests pass: no Cocoa/native code outside `Drape.Shell.Mac`, no OS checks in UI/Core
+- [ ] `PlatformCapabilities` reports exactly what the spikes proved; unsupported capabilities are reported missing and the UI degrades accordingly
+- [ ] the architecture tests pass: no Cocoa/native code outside `drape-shell-mac`, no OS checks in UI/Core
 - [ ] autostart enable/disable round-trips and leaves no stray login item after disable
 - [ ] **QA matrix added:** the macOS rows defined in P6-01/P6-02 are run against this implementation
 
 **Abuse cases**
-- Reporting a capability as present in `IPlatformCapabilities` because the code exists, without the spike evidence
+- Reporting a capability as present in `PlatformCapabilities` because the code exists, without the spike evidence
 - A Windows-only assumption (case-insensitive paths, `Desktop` location) leaking into shared code
 
 ---
 
-### P6-06 — Implement `Drape.Shell.Linux`
+Activation gate: native-icon hiding remains disabled and its capability reports unavailable until the matching platform side of P6-07 has passed recovery acceptance, including Guard readiness/health loss, ownership and standalone/next-start restore. Implementing an adapter before Guard does not authorise using its hide path.
+
+### P6-06 — Implement `drape-shell-linux`
 
 | | |
 |---|---|
@@ -176,13 +182,13 @@ Implement the interfaces from Core for macOS: desktop host, icon extraction (ret
 
 **Why:** The Linux layer must work on the environments the spikes proved and say honestly that it does not on the rest.
 
-Implement the Core interfaces for Linux: X11 host and (where P6-04 says go) Wayland layer-shell host, icon extraction via the freedesktop icon theme, `IDesktopLocations` (XDG user dirs), `IAutostart` (XDG autostart), `IPlatformCapabilities`, with per-environment detection.
+Implement the Core interfaces for Linux: X11 host and (where P6-04 says go) Wayland layer-shell host, icon extraction via the freedesktop icon theme, `DesktopLocations` (XDG user dirs), `Autostart` (XDG autostart), `PlatformCapabilities`, with per-environment detection.
 
 **Definition of Done**
 - [ ] capability detection selects X11 / layer-shell / ordinary-window fallback at runtime and reports it
 - [ ] on an unsupported compositor Drape runs as ordinary windows, with the capability reported missing in settings
 - [ ] XDG user directories (including localised and redirected Desktop) are used; no hard-coded `~/Desktop`
-- [ ] architecture tests pass: no X11/Wayland/GTK code outside `Drape.Shell.Linux`
+- [ ] architecture tests pass: no X11/Wayland/GTK code outside `drape-shell-linux`
 - [ ] **QA matrix added:** the distribution x environment x compositor rows from P6-03/P6-04 are run against this implementation
 
 **Abuse cases**
@@ -190,6 +196,8 @@ Implement the Core interfaces for Linux: X11 host and (where P6-04 says go) Wayl
 - Treating the `~/Desktop` path as universal
 
 ---
+
+Activation gate: native-icon hiding remains disabled and its capability reports unavailable until the matching platform side of P6-07 has passed recovery acceptance, including Guard readiness/health loss, ownership and standalone/next-start restore. Implementing an adapter before Guard does not authorise using its hide path.
 
 ### P6-07 — Guard equivalents for macOS and Linux
 
@@ -205,7 +213,7 @@ Implement the Core interfaces for Linux: X11 host and (where P6-04 says go) Wayl
 
 **Why:** If a platform can hide native icons, a crash must not leave them hidden. A platform that cannot hide icons safely must not hide them at all.
 
-Implements the `Drape.Guard` behaviour for each platform that allows icon hiding after its spike: a tiny watchdog that restores the native icon state when the main process dies, plus the `--restore-desktop` path and the next-start recovery. Owned by `shell-engineer-mac` for macOS; the Linux side (only for environments where icon hiding was accepted) is done by `shell-engineer-linux`, and the card is closed only when both are done or the platform's spike ruled hiding out (recorded). Spec first in `MEMORY/specs/P6-07-guard-mac-linux.md`.
+Implements the `drape-guard` behaviour for each platform that allows icon hiding after its spike: a tiny watchdog that restores the native icon state when the main process dies, plus the `--restore-desktop` path and the next-start recovery. Owned by `shell-engineer-mac` for macOS; the Linux side (only for environments where icon hiding was accepted) is done by `shell-engineer-linux`, and the card is closed only when both are done or the platform's spike ruled hiding out (recorded). Spec first in `MEMORY/specs/P6-07-guard-mac-linux.md`.
 
 **Definition of Done**
 - [ ] a restore happens on normal quit, crash, kill, logout and next start, each exercised on a VM or test account
@@ -234,7 +242,7 @@ Implements the `Drape.Guard` behaviour for each platform that allows icon hiding
 
 **Why:** A platform that is not built and tested on every change rots; and unsigned or un-notarised macOS builds are blocked by the OS.
 
-Extend CI: build and test the portable projects (`Drape.Core`, `Drape.Infrastructure`, `Drape.UI`) on ubuntu and macos runners as well as windows; build the platform shells on their own runners; headless UI tests where possible. Packaging per platform with Velopack (or the Q-04 outcome), a signing and notarisation plan for macOS (hardened runtime, notarisation, key handling in CI), and a Linux packaging decision (AppImage/deb/rpm) recorded in an ADR.
+Extend CI: build and test the portable projects (`drape-core`, `drape-infrastructure`, `drape-ui`) on ubuntu and macos runners as well as windows; build the platform shells on their own runners; headless UI tests where possible. Packaging per platform after Rust integration/footprint validation (Q-22 and a platform ADR), a signing and notarisation plan for macOS (hardened runtime, notarisation, key handling in CI), and a Linux packaging decision (AppImage/deb/rpm) recorded in an ADR.
 
 **Definition of Done**
 - [ ] CI builds and tests the portable projects on windows, ubuntu and macos; a failure on any blocks merge
@@ -263,11 +271,11 @@ Extend CI: build and test the portable projects (`Drape.Core`, `Drape.Infrastruc
 
 **Why:** Mobile has no desktop layer, so "Drape" there is a different product shape. What an item *is* (app shortcut, URL, file, contact) is a product question, and no mobile code is allowed until it is answered.
 
-Detail the decision already taken in ADR-021 (mobile is a companion: named groups of launchable references — Android app/URL/picked file, iOS URL/Shortcut/picked file — with no desktop layer, widgets or sync). Verify it against store policies and platform limits, define storage, permissions, the parts shared with `Drape.Core`/`Drape.UI` and the privacy surface, and decide whether home-screen widgets stay out. The output is a spec in `MEMORY/specs/P6-09-mobile-scope.md` and, if it overturns ADR-021, a new ADR. The answer may still be "out of scope", in which case P6-10 and P6-11 become `DROPPED` with the reason.
+Detail the decision already taken in ADR-021 (mobile is a companion: named groups of launchable references — Android app/URL/picked file, iOS URL/Shortcut/picked file — with no desktop layer, widgets or sync). Verify it against store policies and platform limits, define storage, permissions, the parts shared with `drape-core`/`drape-ui` and the privacy surface, and decide whether home-screen widgets stay out. The output is a spec in `MEMORY/specs/P6-09-mobile-scope.md` and, if it overturns ADR-021, a new ADR. The answer may still be "out of scope", in which case P6-10 and P6-11 become `DROPPED` with the reason.
 
 **Definition of Done**
 - [ ] ADR-021 is confirmed or superseded, with the store-policy checks named (Android package visibility, iOS app-listing limits)
-- [ ] the spec defines item types, minimum OS versions, permissions, what is shared with `Drape.Core`/`Drape.UI`, and what is explicitly out of scope
+- [ ] the spec defines item types, minimum OS versions, permissions, what is shared with `drape-core`/`drape-ui`, and what is explicitly out of scope
 - [ ] the feature-spec and platform-support docs are amended through the deviation protocol
 - [ ] **QA matrix added (if in scope):** device classes, OS versions and permission scenarios for Android and iOS
 
@@ -286,12 +294,12 @@ Detail the decision already taken in ADR-021 (mobile is a companion: named group
 | **Estimate** | 5 days |
 | **Role** | mobile-engineer |
 | **Depends on** | P6-09 |
-| **Spec refs** | MEMORY/specs/P6-09-mobile-scope.md · docs/PLATFORM/01-PLATFORM-SUPPORT.md (Android) · docs/UI-UX/00-UI-UX-SPEC.md · ADR-012, ADR-015 in MEMORY/DECISIONS.md |
+| **Spec refs** | MEMORY/specs/P6-09-mobile-scope.md · docs/PLATFORM/01-PLATFORM-SUPPORT.md (Android) · docs/UI-UX/00-UI-UX-SPEC.md · ADR-025, ADR-015 in MEMORY/DECISIONS.md |
 | **Spec required** | no |
 
 **Why:** Android reuses Core and parts of the UI but has no desktop layer; the app is an ordinary shortcut-group manager that must say so honestly.
 
-`Drape.App.Android` entry point (Android 12 / API 31 and later, the range Avalonia supports at Tier 2 or better) with a shortcut-group management UI using shared `Drape.Core` and `Drape.UI` where sensible, and an Android implementation of the platform services. `IPlatformCapabilities` reports no desktop layer, no hide-icons, no global hook.
+`drape-app-android` entry point (Android 12 / API 31 and later, an inherited planning minimum, requiring fresh Rust/Slint backend and store-policy validation) with a shortcut-group management UI using shared `drape-core` and `drape-ui` where sensible, and an Android implementation of the platform services. `PlatformCapabilities` reports no desktop layer, no hide-icons, no global hook.
 
 **Definition of Done**
 - [ ] the app builds and runs on API 31 and a current API level; groups and items from the P6-09 spec can be created, edited and persisted
@@ -314,12 +322,12 @@ Detail the decision already taken in ADR-021 (mobile is a companion: named group
 | **Estimate** | 5 days |
 | **Role** | mobile-engineer |
 | **Depends on** | P6-09 |
-| **Spec refs** | MEMORY/specs/P6-09-mobile-scope.md · docs/PLATFORM/01-PLATFORM-SUPPORT.md (iOS) · docs/UI-UX/00-UI-UX-SPEC.md · ADR-012, ADR-015 in MEMORY/DECISIONS.md |
+| **Spec refs** | MEMORY/specs/P6-09-mobile-scope.md · docs/PLATFORM/01-PLATFORM-SUPPORT.md (iOS) · docs/UI-UX/00-UI-UX-SPEC.md · ADR-025, ADR-015 in MEMORY/DECISIONS.md |
 | **Spec required** | no |
 
 **Why:** iOS sandboxing is stricter than Android's; what an item can be is limited by the platform, and the UI must not promise more.
 
-`Drape.App.iOS` entry point (iOS 18 and later, the range Avalonia supports at Tier 2 or better) with a shortcut-group management UI using shared `Drape.Core` and `Drape.UI` where sensible, and an iOS implementation of the platform services. `IPlatformCapabilities` reports no desktop layer, no hide-icons, no global hook. Home-screen widgets (WidgetKit) are separate native work and stay out unless P6-09 adds them.
+`drape-app-ios` entry point (iOS 18 and later, an inherited planning minimum, requiring fresh Rust/Slint backend and store-policy validation) with a shortcut-group management UI using shared `drape-core` and `drape-ui` where sensible, and an iOS implementation of the platform services. `PlatformCapabilities` reports no desktop layer, no hide-icons, no global hook. Home-screen widgets (WidgetKit) are separate native work and stay out unless P6-09 adds them.
 
 **Definition of Done**
 - [ ] the app builds and runs on iOS 18 and a current iOS version; groups and items from the P6-09 spec can be created, edited and persisted

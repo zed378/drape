@@ -23,11 +23,11 @@ Code uses `Drape` for the panel concept as well ([ADR-020](../../MEMORY/DECISION
 
 ## Project Licence
 
-**MIT**, free of charge — owner decision ([ADR-019](../../MEMORY/DECISIONS.md), closes Q-02). The `LICENSE` file is created in P0-01. MIT carries no patent grant and no trademark grant. Dependency licences must stay compatible with MIT distribution.
+**MIT**, free of charge — owner decision ([ADR-019](../../MEMORY/DECISIONS.md), closes Q-02). The existing `LICENSE` remains MIT and is not changed by the documentation migration. MIT carries no patent grant and no trademark grant. Dependency licences must stay compatible with MIT distribution.
 
 ## Dependencies and Licences
 
-- Only permissively licensed packages (MIT, Apache-2.0, BSD) with no obligations that conflict with the distribution plan. Avalonia is MIT-licensed; verify the exact licence of each package when versions are locked in P0-01.
+- Prefer MIT/Apache-2.0/BSD dependencies. Explicit ADR-025 exception: Slint under its royalty-free desktop/mobile/web application licence, not MIT. Preserve its notices and attribution obligations; verify the exact pinned version at R0-02 and before release.
 - Avoid packages that move to commercial licences or add usage restrictions.
 - Maintain `THIRD_PARTY_NOTICES.md`, generated from the package list at release.
 - Fonts and icons (e.g. Segoe Fluent Icons) are used only per Microsoft's and each platform's licence; check restrictions before bundling.
@@ -49,3 +49,7 @@ If the project accepts contributions: use the DCO (`Signed-off-by`) or a CLA; co
 - [ ] `LICENSE` (MIT) present and dependency licences checked against it.
 - [ ] Short privacy statement (no telemetry) and a statement that data is local.
 - [ ] Legal review if the release is commercial.
+
+## Slint attribution
+
+The [royalty-free licence 2.0](https://github.com/slint-ui/slint/blob/master/LICENSES/LicenseRef-Slint-Royalty-free-2.0.md), reviewed 2026-11-25, requires either AboutSlint in an accessible About/splash route or its specified badge on a public webpage. Plan AboutSlint through top-level Settings/About and include dependency notices. Drape remains MIT; that does not relicense Slint. Recheck exact shipped terms/dependencies before publishing.

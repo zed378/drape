@@ -1,6 +1,10 @@
 # Phase 3 — Customisation and UX
 
-**Status:** TODO (planning phase; no code yet)
+> Estimates in retained cards are provisional legacy planning allowances, not Rust delivery commitments. Re-estimate/split at claim time after the Rust spikes; follow actual per-card prerequisites.
+
+> Rust + Slint target (ADR-025). R0/R1 dependencies refer to [Rust migration cards](./RUST-MIGRATION.md), not historical P0/P1 results. These implementation tasks remain unstarted; no code is authorised by the documentation update.
+
+**Status:** TODO (Rust target work not started; legacy C# code retained)
 
 **Goal:** Drape is comfortable for daily use and can be tailored: rollup, full styling, themes, snap, lock, the platform's own item context menu, ordering, a complete settings window and keyboard/screen-reader accessibility. Spec: `docs/PLAN/02-FEATURE-SPECIFICATION.md` (F-14..F-19), `docs/UI-UX/00-UI-UX-SPEC.md`.
 
@@ -43,13 +47,13 @@ Double-click on the title rolls up/unrolls. Options: auto-rollup, and unroll on 
 | **Priority** | P1 |
 | **Estimate** | 3 days |
 | **Role** | ui-engineer |
-| **Depends on** | P0-06, P2-12 |
+| **Depends on** | R0-07, P2-12 |
 | **Spec refs** | docs/PLAN/02-FEATURE-SPECIFICATION.md (F-15) · docs/ARCHITECTURE/02-DATA-MODEL.md · docs/PLATFORM/01-PLATFORM-SUPPORT.md · ADR-015 in MEMORY/DECISIONS.md |
 | **Spec required** | no |
 
 **Why:** Style is the feature users notice first; it must degrade gracefully where blur is not available.
 
-The `Style` model and a per-Drape settings UI plus a global default, with live preview. Blur goes through `IBlurEffect` (from P0-06); whether blur may be used is decided by `IPlatformCapabilities`, never by an OS version check.
+The `Style` model and a per-Drape settings UI plus a global default, with live preview. Blur goes through `BlurEffect` (from R0-07); whether blur may be used is decided by `PlatformCapabilities`, never by an OS version check.
 
 **Definition of Done**
 - [ ] every `Style` property can be changed and is persisted
@@ -57,7 +61,7 @@ The `Style` model and a per-Drape settings UI plus a global default, with live p
 - [ ] no `OperatingSystem.Is*` call in UI/Core (architecture test stays green)
 
 **Abuse cases**
-- Checking "Windows 11 build >= X" in the ViewModel instead of asking `IPlatformCapabilities`
+- Checking "Windows 11 build >= X" in the ViewModel instead of asking `PlatformCapabilities`
 - Applying the fallback only on the settings preview, not on the real Drape window
 
 ---
@@ -76,7 +80,7 @@ The `Style` model and a per-Drape settings UI plus a global default, with live p
 
 **Why:** A panel over an arbitrary wallpaper is unreadable unless text contrast is actively managed.
 
-A `ThemeService` built on Avalonia theme variants follows the system theme, accent and high-contrast state at runtime (through the platform service, gated by capabilities). Option "Ensure contrast".
+A `ThemeService` built on shared Slint theme components/tokens follows the system theme, accent and high-contrast state at runtime (through the platform service, gated by capabilities). Option "Ensure contrast".
 
 **Definition of Done**
 - [ ] a system theme/accent/high-contrast change applies without restart
@@ -97,7 +101,7 @@ A `ThemeService` built on Avalonia theme variants follows the system theme, acce
 | **Priority** | P2 |
 | **Estimate** | 2 days |
 | **Role** | core-engineer |
-| **Depends on** | P1-06 |
+| **Depends on** | R1-03 |
 | **Spec refs** | docs/PLAN/02-FEATURE-SPECIFICATION.md (F-16) · docs/ARCHITECTURE/00-SYSTEM-ARCHITECTURE.md |
 | **Spec required** | no |
 
@@ -154,13 +158,14 @@ A locked Drape cannot be moved or resized; an option allows adding items to it.
 | **Spec refs** | docs/PLAN/02-FEATURE-SPECIFICATION.md (F-18) · docs/PLATFORM/00-WINDOWS-INTEGRATION.md · docs/SECURITY/00-SECURITY-AND-PRIVACY.md |
 | **Spec required** | yes |
 
-**Why:** Third-party shell extensions run inside our process when we host the native menu; a slow or crashing handler must never freeze the desktop panel.
+**Why:** Third-party native handlers can block or crash the process. Responsiveness, resource lifetime and recovery must be explicit; moving a handler to another thread is not crash containment.
 
-`IShellContextMenu` implemented with `IContextMenu2/3` on a separate STA thread with a timeout; Drape's own commands are added; a minimal fallback menu is used when the native one fails. Spec first in `MEMORY/specs/P3-06-shell-context-menu.md`.
+`ShellContextMenu` uses apartment-correct `IContextMenu2/3` and message routing behind the shell adapter, with bounded pending requests and a measured responsiveness policy. A timeout does not cancel a native call or permit unsafe thread termination/unloading. Show a minimal fallback only when reentrancy/lifetimes are safe; Guard remains armed. Any separate-process containment needs its own design/ADR. Spec first in `MEMORY/specs/P3-06-shell-context-menu.md`.
 
 **Definition of Done**
 - [ ] submenus (Send to, Open with) work
-- [ ] a slow or crashing third-party handler does not freeze the UI (test with a deliberately slow fake handler and a timeout)
+- [ ] a deliberately slow handler does not block the Slint loop or create unbounded abandoned work; native crash recovery is tested with Guard and is not misreported as thread isolation
+- [ ] destructive verbs (delete/rename/move, including third-party verbs) require explicit confirmation before side effects; OS/Recycling Bin confirmation is not assumed. Unclassifiable destructive behaviour is not invoked through an unreviewed path; test cancellation and extension handlers against the shared non-destructive contract
 - [ ] the menu is correct at 150% DPI and in dark theme
 - [ ] all COM objects and PIDLs are released (leak test over repeated open/close)
 - [ ] "Delete" uses the platform's own confirmation and Recycle Bin (never a direct delete)
@@ -179,7 +184,7 @@ A locked Drape cannot be moved or resized; an option allows adding items to it.
 | **Priority** | P1 |
 | **Estimate** | 2 days |
 | **Role** | ui-engineer |
-| **Depends on** | P1-09 |
+| **Depends on** | R1-04 |
 | **Spec refs** | docs/PLAN/02-FEATURE-SPECIFICATION.md (F-19) · docs/ARCHITECTURE/02-DATA-MODEL.md |
 | **Spec required** | no |
 
@@ -217,7 +222,7 @@ Tabs: General, Default Drape, Desktop, Advanced (diagnostics without paths), Abo
 **Definition of Done**
 - [ ] every setting applies immediately and is persisted
 - [ ] "Copy diagnostic info" contains no user path, user name or file name (test with a fixture that has a path-bearing config)
-- [ ] settings that the current platform cannot honour are hidden or disabled based on `IPlatformCapabilities`, with an explanation
+- [ ] unsupported settings remain visible but disabled by `PlatformCapabilities`, with a concise accessible reason; do not hide them inconsistently with the UI spec
 
 **Abuse cases**
 - Diagnostics that "mask" paths by truncating them but still leak the user name
@@ -239,16 +244,16 @@ Tabs: General, Default Drape, Desktop, Advanced (diagnostics without paths), Abo
 
 **Why:** A desktop surface that only works with a mouse excludes a whole class of users.
 
-Keyboard focus, arrow-key navigation, Avalonia `AutomationProperties` and automation peers, visible focus ring, "Focus a Drape" hotkey (prototype).
+Keyboard-accessible notification-area/tray entry and Settings Drape chooser establish focus without a mouse or the optional global hotkey. Arrow navigation, move/resize modes, menus/rollup and supported Slint roles/labels/actions are verified with UIA/Narrator. Do not assume Tab transfers focus between separate native windows; an optional global focus hotkey is additional.
 
 **Definition of Done**
-- [ ] every core function (open, select, move between Drapes, context menu, rollup, settings) is reachable by keyboard
+- [ ] every core function (tray/settings entry, choose/focus/create/move/resize/rename/delete Drape, open/select/move items, context menu, rollup) is reachable by keyboard without initial mouse focus or optional global hotkey
 - [ ] an Accessibility Insights scan reports no critical issues
 - [ ] Narrator announces each Drape's name and each item's name and type
 - [ ] focus ring contrast meets the theme requirements in P3-03, including high-contrast mode
 
 **Abuse cases**
-- Setting `AutomationProperties.Name` to the file path or to a generic "item"
+- Setting the accessible label to the file path or to a generic "item"
 - Tab order that works only after the mouse has focused the window once
 
 ---

@@ -1,32 +1,32 @@
 # 04 — Risk Register
 
-Project and platform risks. Risks are `PR-<n>`. Severity is the consequence if it happens; likelihood is a judgement, stated so it can be argued with. Nothing has been built yet, so every status below is **open** unless stated; a status changes only through a record in [`../../MEMORY/records/`](../../MEMORY/README.md).
+Project and platform risks. Risks are `PR-<n>`. Severity is the consequence if it happens; likelihood is a judgement, stated so it can be argued with. An early C# implementation exists, but no Rust migration evidence exists; each risk remains **open** unless recorded otherwise; a status changes only through a record in [`../../MEMORY/records/`](../../MEMORY/README.md).
 
 ## Critical
 
 ### PR-1 — The desktop window structure changes between Windows builds
 
-**Severity:** critical · **Likelihood:** medium · **Status:** open — spike P0-03
+**Severity:** critical · **Likelihood:** medium · **Status:** open — spike R0-04
 
 Drape sits on the desktop layer by relying on the internal arrangement of `Progman` / `WorkerW` / `SHELLDLL_DefView`, which is undocumented and has changed across Windows 10 and 11 (including 24H2).
 
-**Mitigation:** dynamic discovery instead of a hard-coded hierarchy; a layered host strategy with a fallback (strategy B, a bottom-of-z-order window) behind `IDesktopHost` ([ADR-007](../../MEMORY/DECISIONS.md)); a degraded mode that shows Drapes as plain windows.
+**Mitigation:** dynamic discovery instead of a hard-coded hierarchy; a layered host strategy with a fallback (strategy B, a bottom-of-z-order window) behind `DesktopHost` ([ADR-007](../../MEMORY/DECISIONS.md)); a degraded mode that shows Drapes as plain windows.
 
 **Watch:** each Insider/GA build; any change in the six host criteria.
 
 ### PR-2 — Hiding native icons leaves the user stuck
 
-**Severity:** critical · **Likelihood:** medium · **Status:** open — spike P0-04
+**Severity:** critical · **Likelihood:** medium · **Status:** open — spike R0-05
 
 The icon toggle is undocumented and is a *toggle*, not a setter. If the app dies while icons are hidden, the user sees an empty desktop.
 
 **Mitigation:** read state before and after every change; record it in `state.json`; Guard process; `--restore-desktop`; tray command "Restore desktop icons"; restore on the next start; uninstall restores icons ([ADR-006](../../MEMORY/DECISIONS.md), [ADR-008](../../MEMORY/DECISIONS.md)). **This mitigation may not be cut for schedule.**
 
-**Watch:** any new exit path; any code that calls the toggle.
+**Watch:** any new exit path; any code that calls the toggle, including quick-hide. Guard readiness and durable intent precede mutation; App/Guard/CLI serialise per-session generation ownership. Guard death while App survives triggers restoration/no rehide until rearmed. Explicit restore must not be undone by a live session. Missing hardware or a hosted runner is not a safety waiver.
 
 ### PR-3 — A global mouse hook is flagged by antivirus or abused
 
-**Severity:** high · **Likelihood:** medium · **Status:** open — spike P0-07
+**Severity:** high · **Likelihood:** medium · **Status:** open — spike R0-08
 
 A low-level hook looks like a keylogger-class technique to some products.
 
@@ -36,25 +36,25 @@ A low-level hook looks like a keylogger-class technique to some products.
 
 ## High
 
-### PR-4 — Avalonia may not behave as a desktop-layer window
+### PR-4 — Slint may not behave as a desktop-layer window
 
-**Severity:** high · **Likelihood:** medium · **Status:** open — spikes P0-03, P0-06
+**Severity:** high · **Likelihood:** medium · **Status:** open — spikes R0-04, R0-07
 
-Re-parenting an Avalonia top-level window's native handle into the desktop host, per-pixel transparency, acrylic/Mica and 20 simultaneous windows are all unproven together. The owner chose Avalonia for cross-platform reach ([ADR-012](../../MEMORY/DECISIONS.md)); the cost of being wrong is rewriting the window layer.
+Re-parenting a Slint top-level window's native handle into the desktop host, per-pixel transparency, acrylic/Mica and 20 simultaneous windows are all unproven together. The owner chose Rust + Slint for resource usage, performance, memory safety and size ([ADR-025](../../MEMORY/DECISIONS.md)); the cost of being wrong is rewriting the window layer.
 
-**Mitigation:** early spikes on real hardware with 20 windows; `IDesktopHost` and `IBlurEffect` keep the platform specifics out of the UI; a native-window fallback for the host layer only.
+**Mitigation:** early spikes on real hardware with 20 windows; `DesktopHost` and `BlurEffect` keep the platform specifics out of the UI; a native-window fallback for the host layer only.
 
-### PR-5 — Memory and CPU budgets with .NET + Avalonia
+### PR-5 — Memory, CPU and distribution budgets with Rust + Slint
 
-**Severity:** high · **Likelihood:** medium · **Status:** open — P0-08 baseline
+**Severity:** high · **Likelihood:** medium · **Status:** open — R0-09 baseline
 
-< 100 MB with 20 transparent windows and < 0.5% idle CPU are tight for a managed runtime and a GPU-composited UI.
+< 100 MB with 20 transparent windows and < 0.5% idle CPU are unproved for the selected Slint backend/renderer, caches, native resources and Guard; Rust alone does not establish either budget.
 
-**Mitigation:** measure at P0-08 and every phase; GC settings, shared resources, icon cache limits; consider fewer layered windows or a trimmed build (Phase 5).
+**Mitigation:** measure at R0-09 and every phase; bounded caches/queues/workers, shared assets and no idle redraw; compare renderers and measured LTO/stripping profiles in Phase 5. A change to one-window-per-Drape needs a new ADR.
 
 ### PR-6 — Virtual and redirected folders
 
-**Severity:** medium · **Likelihood:** high · **Status:** open — spike P0-05
+**Severity:** medium · **Likelihood:** high · **Status:** open — spike R0-06
 
 Virtual icons (This PC, Recycle Bin) and OneDrive-redirected Desktop folders cause missing or duplicated items. Reading icons must not trigger OneDrive file hydration.
 
@@ -78,11 +78,11 @@ macOS, Linux and mobile each have a different (or missing) desktop-layer story. 
 
 **Severity:** medium · **Likelihood:** high · **Status:** open — owner decision ADR-023
 
-Microsoft ended Windows 10 support on 14 October 2025; consumer Extended Security Updates run to 12 October 2027 (Windows 10 22H2 only). After that, users who did not enrol run an unpatched OS, yet Drape promises to support it. Windows 10 also lacks Windows 11 visual APIs (Mica/system backdrop), so every visual feature needs two paths.
+Windows 10 normal support ended on 14 October 2025. Extended Security Updates eligibility/duration depend on programme, edition, region and enrolment; verify current [Microsoft lifecycle information](https://learn.microsoft.com/lifecycle/products/windows-10-home-and-pro) before release. Do not infer patch coverage from Drape's supported minimum. The old fixed consumer-ESU end date is not a universal guarantee. Windows 10 lacks Windows 11 visual APIs (Mica/system backdrop), so effects need tested fallbacks.
 
-**Mitigation:** both OSes are in every release gate; the Windows 10 paths are tested, not assumed; visual features fall back through `IBlurEffect`; revisit the minimum by ADR when Windows 10 usage drops or a needed API is Windows 11-only. The owner set no sunset date.
+**Mitigation:** both OSes are in every release gate; the Windows 10 paths are tested, not assumed; visual features fall back through `BlurEffect`; revisit the minimum by ADR when Windows 10 usage drops or a needed API is Windows 11-only. The owner set no sunset date.
 
-**Watch:** a feature that requires a Windows 11-only API; StatCounter share of Windows 10; the 12 October 2027 ESU end.
+**Watch:** Windows 11-only APIs, toolchain/backend OS minimums and current lifecycle/ESU terms. Drape's owner-set minimum has no sunset date and is not silently changed by upstream lifecycle policy.
 
 ## Traps Worth Remembering
 
@@ -96,5 +96,17 @@ Carried over from the planning phase (formerly "lessons learned"); they are stru
 | Using `%USERPROFILE%\Desktop` | Wrong on OneDrive-redirected machines; use the Known Folder API |
 | Dropping from an elevated process into a non-elevated app | Blocked by UIPI; document it, never escalate |
 | A slow global mouse-hook callback | The OS disables the hook and input is affected system-wide |
-| Test libraries that change to commercial licences | Check every package licence; Shouldly is used for assertions |
+| Test libraries that change to commercial licences | Check pinned dependency licences, including Slint attribution requirements |
 | Returning platform image types from Core | Breaks the portability rule; return neutral pixel data |
+
+### PR-10 — Rust native unsafe and recovery assumptions
+
+Severity high; likelihood medium; open. Incorrect native pointer/handle lifetime, COM apartment use or FFI unwind can still corrupt memory or abort the app. Drop/panic hooks do not handle forced termination. Mitigate with narrow reviewed unsafe wrappers, correct RAII, no FFI unwinding and independently armed Guard/durable recovery before hiding (R0-05).
+
+### PR-11 — Slint licence, accessibility and integration gaps
+
+Severity high; likelihood medium; open. Slint is not MIT; exact attribution/dependency terms must be checked at pinning/distribution. Native UI does not prove Windows UIA, OLE drag/drop, transparent child-window compatibility or mobile support. R0-02/R0-04/R0-07 and Phase 6 spikes establish evidence; do not invent API equivalence to Avalonia.
+
+### PR-12 — Migration is mistaken for completed Rust work
+
+Severity high; likelihood medium; open. Legacy DONE cards, 98 reported tests and C# measurements can falsely imply a Rust baseline. Preserve dated history, fresh R0/R1 tasks, explicit parity mapping and new named tests. No schema break, old-code deletion, CI rewrite or implementation occurs in the documentation-only change.

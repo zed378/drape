@@ -1,6 +1,10 @@
 # Phase 2 — Desktop Integration (MVP)
 
-**Status: TODO** — planning phase; no card in this file has started. The phase waits for Phase 1 (and P0-07, P0-08 for the cards that name them).
+> Estimates in retained cards are provisional legacy planning allowances, not Rust delivery commitments. Re-estimate/split at claim time after the Rust spikes; follow actual per-card prerequisites.
+
+> Rust + Slint target (ADR-025). R0/R1 dependencies refer to [Rust migration cards](./RUST-MIGRATION.md), not historical P0/P1 results. These implementation tasks remain unstarted; no code is authorised by the documentation update.
+
+**Status: TODO** — Rust target work not started. The phase waits for R1-06 and R0-10 (plus per-card prerequisites).
 
 **Goal:** Drape replaces the desktop icons safely: native icons are hidden and always restored, the desktop stays in sync, and quick-hide works.
 
@@ -10,7 +14,7 @@
 
 ---
 
-### P2-01 — Production `IDesktopIcons`: read state, hide, show
+### P2-01 — Production `DesktopIcons`: read state, hide, show
 
 | | |
 |---|---|
@@ -18,13 +22,13 @@
 | **Priority** | P0 |
 | **Estimate** | 2 days |
 | **Role** | shell-engineer-windows |
-| **Depends on** | P1-05 |
+| **Depends on** | R0-10 |
 | **Spec refs** | ADR-006 in [MEMORY/DECISIONS.md](../MEMORY/DECISIONS.md) · [docs/PLATFORM/00-WINDOWS-INTEGRATION.md](../docs/PLATFORM/00-WINDOWS-INTEGRATION.md) §3 |
 | **Spec required** | yes |
 
 **Why:** A wrong state read flips the user's desktop. This is the call that can strand a user, so it must never behave like a blind toggle.
 
-Implement the technique chosen in P0-04 / ADR-006 with state read before and after, detection of changes made by the user, and no accidental inversion.
+Implement the technique chosen in R0-05 / ADR-006 with state read before and after, detection of changes made by the user, and no accidental inversion.
 
 **Definition of Done**
 - [ ] Idempotent: calling `Hide` twice does not flip the state
@@ -54,11 +58,11 @@ Implement the technique chosen in P0-04 / ADR-006 with state read before and aft
 
 **Why:** If the app dies with icons hidden, the next start is the second line of defence. A marker that is never cleared would restore icons the user chose to hide.
 
-Record `iconsHiddenByDrape`, the PID and the version in `state.json`. On start, if the flag is set but the previous process is gone, restore the icons.
+Version and atomically persist original visibility, change ownership/intent and validated OS process identity in state.json before mutation. Arm and acknowledge Guard before hiding; verify state afterwards. On next start, recover owned unfinished changes, including compatible legacy records. PID alone is insufficient. Clear recovery state only after verified restoration.
 
 **Definition of Done**
 - [ ] A forced reboot while icons are hidden: the next start restores them
-- [ ] The flag is always cleared on a normal exit
+- [ ] Recovery ownership is cleared only after restoration succeeds; failure retains retryable state
 - [ ] A stale PID that now belongs to another process is not mistaken for a live Drape (tested)
 - [ ] `state.json` is written atomically (same mechanism as the config store)
 
@@ -82,7 +86,7 @@ Record `iconsHiddenByDrape`, the PID and the version in `state.json`. On start, 
 
 **Why:** This is the user's manual escape hatch. It must work when nothing else does, including when called by the installer or uninstaller.
 
-A CLI mode that restores the icons and exits without starting the UI. It is safe to run at any time.
+A renderer-independent CLI mode acquires/coordinates the per-session recovery protocol, verifies active generation/process identity, asks a live App to suspend rehide and restores owned changes idempotently. It does not blindly flip unknown state or require a healthy Slint startup.
 
 **Definition of Done**
 - [ ] Runs without the main app running
@@ -97,7 +101,7 @@ A CLI mode that restores the icons and exits without starting the UI. It is safe
 
 ---
 
-### P2-04 — `Drape.Guard`
+### P2-04 — `drape-guard`
 
 | | |
 |---|---|
@@ -111,13 +115,15 @@ A CLI mode that restores the icons and exits without starting the UI. It is safe
 
 **Why:** In-process handlers die with the process. The Guard is the only recovery path that survives a hard kill.
 
-A small UI-less process that waits on the main process handle and restores the icons when it ends. The app launches it when it hides icons. The Guard is non-elevated, like the app.
+A small UI-less process that waits on the validated main process handle and restores owned icon changes when it ends. Durably record intent and launch/acknowledge Guard before hiding icons. Guard has no Slint/renderer dependency and is non-elevated, like App.
 
 **Definition of Done**
-- [ ] Kill `Drape.App.Desktop` and the icons come back in under 2 seconds (measured; method stated)
-- [ ] The Guard exits by itself after restoring, or when the app exits normally
-- [ ] A failure to launch the Guard does not take the app down; a warning is shown and logged
-- [ ] The Guard does not restore icons the user had already chosen to show
+- [ ] Kill `drape-app` and the icons come back in under 2 seconds (measured; method stated)
+- [ ] Guard exits only after verified restoration or explicit disarm following successful App restoration; failures retain retryable state
+- [ ] Guard launch/readiness failure keeps native icons visible; App may continue with a clear warning
+- [ ] Guard preserves icons already hidden by the user and never toggles icons already visible; runtime user changes are reconciled without fighting them
+- [ ] Guard death while App is alive triggers prompt owned-state restore and disables rehide until a new Guard is authenticated/ready
+- [ ] Test readiness-before-hide race, stale/replayed IPC, simultaneous startup/restore/shutdown, corrupt state and hung/missing Explorer; no blind toggle or false success
 - [ ] Feature spec written first in `MEMORY/specs/`
 
 **Abuse cases**
@@ -140,16 +146,16 @@ A small UI-less process that waits on the main process handle and restores the i
 
 **Why:** An unhandled exception is the most common way an app ends unexpectedly. It must not leave the user's desktop empty.
 
-Handlers on `AppDomain.UnhandledException` and the Avalonia UI-thread unhandled-exception hook restore the icons; the tray menu gets a "Restore desktop icons" item.
+Controlled error/panic paths attempt best-effort restoration; independent Guard handles abort/kill, durable state handles next start, and standalone --restore-desktop bypasses renderer startup. The tray exposes restoration. Never unwind across FFI or assume Drop/panic hooks run on every exit.
 
 **Definition of Done**
-- [ ] A deliberate exception on the UI thread restores the icons before the process exits
-- [ ] A deliberate exception on a background thread restores the icons before the process exits
+- [ ] A controlled Rust UI error/panic has a documented best-effort restore path; if in-process recovery cannot complete, Guard performs recovery within the measured acceptance window
+- [ ] A worker error/panic is surfaced to lifecycle handling; abort/forced kill is recovered independently by Guard, not assumed to unwind
 - [ ] The tray button restores the icons and gives visible feedback
-- [ ] The handlers themselves cannot throw out of the restore step (tested)
+- [ ] Recovery failure returns an explicit result, cannot unwind across FFI, and retains Guard/durable retry responsibility (tested)
 
 **Abuse cases**
-- Only the UI-thread hook is covered; background-thread and task exceptions are untested
+- Only controlled UI errors are covered; worker panic, abort and forced kill are untested
 - The restore runs after the process has started tearing down, and "worked on my machine" because timing was lucky
 
 ---
@@ -162,19 +168,19 @@ Handlers on `AppDomain.UnhandledException` and the Avalonia UI-thread unhandled-
 | **Priority** | P0 |
 | **Estimate** | 3 days |
 | **Role** | core-engineer |
-| **Depends on** | P1-11, P2-13 |
+| **Depends on** | R1-05, P2-13 |
 | **Spec refs** | [docs/PLAN/02-FEATURE-SPECIFICATION.md](../docs/PLAN/02-FEATURE-SPECIFICATION.md) F-07 · [docs/PLATFORM/00-WINDOWS-INTEGRATION.md](../docs/PLATFORM/00-WINDOWS-INTEGRATION.md) §4 · ADR-006 in [MEMORY/DECISIONS.md](../MEMORY/DECISIONS.md) |
 | **Spec required** | no |
 
 **Why:** The desktop changes constantly and from outside. Without batching and rename tracking, a Drape either thrashes or loses its members.
 
-Production `IDesktopItemSource` over Desktop plus Public Desktop (locations from `IDesktopLocations`), a watcher with a 250 ms debounce, batching, rename tracking by file ID, and a grace period for missing items.
+Production `DesktopItemSource` over Desktop plus Public Desktop (locations from `DesktopLocations`), a watcher with a 250 ms debounce, batching, rename tracking by file ID, and a grace period for missing items.
 
 **Definition of Done**
 - [ ] 1,000 consecutive changes produce only a few batches
 - [ ] A rename within the same volume keeps Drape membership
 - [ ] A OneDrive-redirected Desktop is tested (setup named)
-- [ ] Locations come from `IDesktopLocations`, never from a hard-coded path
+- [ ] Locations come from `DesktopLocations`, never from a hard-coded path
 
 **Abuse cases**
 - Debounce tested with a fake clock and a fake watcher, never with a real directory under load
@@ -217,13 +223,13 @@ An Inbox Drape per page; new items land in the Inbox (or in a Drape chosen by ru
 | **Priority** | P1 |
 | **Estimate** | 3 days |
 | **Role** | shell-engineer-windows |
-| **Depends on** | P0-07, P2-01 |
+| **Depends on** | R0-08, P2-01 |
 | **Spec refs** | [docs/PLAN/02-FEATURE-SPECIFICATION.md](../docs/PLAN/02-FEATURE-SPECIFICATION.md) F-09 · [docs/PLATFORM/00-WINDOWS-INTEGRATION.md](../docs/PLATFORM/00-WINDOWS-INTEGRATION.md) §7 · [docs/SECURITY/00-SECURITY-AND-PRIVACY.md](../docs/SECURITY/00-SECURITY-AND-PRIVACY.md) · ADR-010 in [MEMORY/DECISIONS.md](../MEMORY/DECISIONS.md) |
 | **Spec required** | yes |
 
 **Why:** A global hook that is slow, or that leaks input, harms the whole system and is exactly what users distrust.
 
-Production `IInputHook` on a dedicated thread; empty-desktop hit-test; toggle Drape visibility; per-Drape exclusion; 150 ms fade that respects the system animation setting. The hook callback stays minimal and stores no input.
+Production `InputHook` on a dedicated thread; empty-desktop hit-test; toggle Drape visibility; per-Drape exclusion; 150 ms fade that respects the system animation setting. The hook callback stays minimal and stores no input.
 
 **Definition of Done**
 - [ ] Does not trigger over a native item, a Drape, or another window
@@ -273,13 +279,13 @@ A rectangle preview while right-dragging; on release a "Create Drape here" menu;
 | **Priority** | P0 |
 | **Estimate** | 3 days |
 | **Role** | shell-engineer-windows |
-| **Depends on** | P1-10, P2-01 |
+| **Depends on** | R1-03, P2-01 |
 | **Spec refs** | [docs/PLATFORM/00-WINDOWS-INTEGRATION.md](../docs/PLATFORM/00-WINDOWS-INTEGRATION.md) §10 · ADR-007 in [MEMORY/DECISIONS.md](../MEMORY/DECISIONS.md) · ADR-006 in [MEMORY/DECISIONS.md](../MEMORY/DECISIONS.md) |
 | **Spec required** | no |
 
 **Why:** Explorer restarts and session changes happen to every user. Each one can drop the host or reset the icon state.
 
-Handle `TaskbarCreated`, `SessionSwitch`, `PowerModeChanged` and `WM_DISPLAYCHANGE`; verify the host and the icon state after each event.
+Handle verified native session/power/display notifications behind the shell adapter: registered `TaskbarCreated`, WTS session notifications, `WM_POWERBROADCAST` and display/DPI messages as supported by pinned bindings. These are not .NET `SessionSwitch`/`PowerModeChanged` callbacks. Invalidate stale host generations and verify ownership/icon state before reattachment or any rehide.
 
 **Definition of Done**
 - [ ] Restarting `explorer.exe` (manually, in a VM or test account) restores the Drapes and the icon state
@@ -302,22 +308,22 @@ Handle `TaskbarCreated`, `SessionSwitch`, `PowerModeChanged` and `WM_DISPLAYCHAN
 | **Priority** | P1 |
 | **Estimate** | 2 days |
 | **Role** | ui-engineer |
-| **Depends on** | P0-08, P2-13 |
+| **Depends on** | R0-09, P2-13 |
 | **Spec refs** | [docs/PLAN/02-FEATURE-SPECIFICATION.md](../docs/PLAN/02-FEATURE-SPECIFICATION.md) F-12 · [docs/UI-UX/00-UI-UX-SPEC.md](../docs/UI-UX/00-UI-UX-SPEC.md) |
 | **Spec required** | no |
 
 **Why:** Autostart written to the wrong place, or one that needs admin, is a support burden and a trust problem.
 
-Autostart via `IAutostart`; settings for "Hide desktop icons", Inbox, quick-hide and language; a minimal settings window.
+Autostart via `Autostart`; settings for "Hide desktop icons", Inbox, quick-hide and language; a minimal settings window.
 
 **Definition of Done**
-- [ ] Autostart can be turned on and off, needs no admin, and goes through `IAutostart` only
+- [ ] Autostart can be turned on and off, needs no admin, and goes through `Autostart` only
 - [ ] Settings changes are saved and apply immediately
 - [ ] The settings UI does not call any native or registry API directly
 - [ ] Turning off "Hide desktop icons" restores the icons
 
 **Abuse cases**
-- The view-model writes the registry key directly because `IAutostart` was "not ready yet"
+- The view-model writes the registry key directly because `Autostart` was "not ready yet"
 - "Applies immediately" shown only for the toggle's own state, not for the behaviour it controls
 
 ---
@@ -341,7 +347,7 @@ Run the full manual checklist (kill, forced reboot, Explorer restart, display ch
 **Definition of Done**
 - [ ] All five MVP criteria in `docs/PLAN/01-PRODUCT-REQUIREMENTS.md` are met and documented with named tests or checklist entries
 - [ ] Every icon-restore path (normal exit, exception, kill, Guard, next start, `--restore-desktop`, forced reboot) has a recorded test result
-- [ ] No blocker or major bug open in the Shell area
+- [ ] No blocker or major bug open in safety, data durability, accessibility or any required MVP functionality, regardless of component label
 - [ ] An internal alpha build exists; known limitations are listed
 - [ ] The results name the Windows builds, DPI settings and monitor setups used
 
@@ -351,7 +357,7 @@ Run the full manual checklist (kill, forced reboot, Explorer restart, display ch
 
 ---
 
-### P2-13 — Windows `IDesktopLocations` and `IAutostart`
+### P2-13 — Windows `DesktopLocations` and `Autostart`
 
 | | |
 |---|---|
@@ -359,20 +365,20 @@ Run the full manual checklist (kill, forced reboot, Explorer restart, display ch
 | **Priority** | P1 |
 | **Estimate** | 1 day |
 | **Role** | shell-engineer-windows |
-| **Depends on** | P1-02 |
+| **Depends on** | R1-01 |
 | **Spec refs** | ADR-015 in [MEMORY/DECISIONS.md](../MEMORY/DECISIONS.md) · [docs/PLATFORM/00-WINDOWS-INTEGRATION.md](../docs/PLATFORM/00-WINDOWS-INTEGRATION.md) §4 · [docs/ARCHITECTURE/00-SYSTEM-ARCHITECTURE.md](../docs/ARCHITECTURE/00-SYSTEM-ARCHITECTURE.md) |
 | **Spec required** | no |
 
 **Why:** Desktop paths and autostart are platform facts. Putting them behind interfaces keeps Core and UI portable, and using the Known Folder API keeps them right on machines where the Desktop is redirected.
 
-Implement the Windows versions of `IDesktopLocations` (Known Folder API: `FOLDERID_Desktop` and `FOLDERID_PublicDesktop`) and `IAutostart` (the `HKCU` Run key) in `Drape.Shell.Windows`, behind the Core interfaces.
+Implement the Windows versions of `DesktopLocations` (Known Folder API: `FOLDERID_Desktop` and `FOLDERID_PublicDesktop`) and `Autostart` (the `HKCU` Run key) in `drape-shell-windows`, behind the Core interfaces.
 
 **Definition of Done**
-- [ ] `IDesktopLocations` returns the correct Desktop on a OneDrive-redirected machine (test or manual run, setup named)
-- [ ] `IAutostart` enables, disables and reports the state through `HKCU` only; no admin is required (tested non-elevated)
-- [ ] COM and native memory are released (no leak; `IDisposable` or `SafeHandle` used)
+- [ ] `DesktopLocations` returns the correct Desktop on a OneDrive-redirected machine (test or manual run, setup named)
+- [ ] `Autostart` enables, disables and reports the state through `HKCU` only; no admin is required (tested non-elevated)
+- [ ] COM and native memory are released (no leak; RAII wrappers with the matching native release API used)
 - [ ] The Windows implementations are registered only by the composition root; no other project references them directly
 
 **Abuse cases**
 - Hard-coding `%USERPROFILE%\Desktop` and testing only on a machine without OneDrive redirection
-- `IAutostart` writing to `HKLM` or a Startup shortcut folder with elevated rights during testing, so "no admin" is never actually exercised
+- `Autostart` writing to `HKLM` or a Startup shortcut folder with elevated rights during testing, so "no admin" is never actually exercised

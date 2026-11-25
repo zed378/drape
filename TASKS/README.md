@@ -6,7 +6,7 @@ Nothing here invents architecture. Every task points back to the `docs/` documen
 
 ## Read This First
 
-This project is in the **planning phase**: there is no code, no repository history and no solution yet. The first task is [P0-01](./PHASE-0-FOUNDATION.md). The board will track *remaining* work from then on; it must never list shipped work as TODO. If you find it does, the board is wrong, not the code — fix the board.
+The repository contains early C# code and dated task records. Rust + Slint is the new target (ADR-025); no Rust implementation is claimed. [RUST-MIGRATION](./RUST-MIGRATION.md) defines fresh R0/R1 replacement tasks. P0/P1 cards are frozen historical snapshots; P2–P6 remain future product work with Rust dependencies. The subsequent owner request on 2026-11-25 authorises R0-02 implementation; see the active progress board.
 
 ## Files
 
@@ -15,8 +15,9 @@ This project is in the **planning phase**: there is no code, no repository histo
 | [`00-TASK-CONVENTIONS.md`](./00-TASK-CONVENTIONS.md) | Task IDs, statuses, card anatomy, branches, commits, the global Definition of Done, deviation protocol |
 | [`PROGRESS.md`](./PROGRESS.md) | **The single status board.** What is in progress, what is next, what is done |
 | [`BACKLOG.md`](./BACKLOG.md) | Open Questions (`Q-n`) and deliberate deferrals (`B-n`) |
-| [`PHASE-0-FOUNDATION.md`](./PHASE-0-FOUNDATION.md) | Solution, CI, Windows spikes, app skeleton, ADRs |
-| [`PHASE-1-DRAPE-CORE.md`](./PHASE-1-DRAPE-CORE.md) | Domain, config store, Drape window, items, layout, persistence |
+| [`RUST-MIGRATION.md`](./RUST-MIGRATION.md) | Active Rust replacement foundation/core cards, R0/R1 |
+| [`PHASE-0-FOUNDATION.md`](./PHASE-0-FOUNDATION.md) | Historical C# foundation and spike cards |
+| [`PHASE-1-DRAPE-CORE.md`](./PHASE-1-DRAPE-CORE.md) | Historical C# core/UI cards; Rust equivalents are R1 |
 | [`PHASE-2-DESKTOP-INTEGRATION.md`](./PHASE-2-DESKTOP-INTEGRATION.md) | Hide icons safely, Guard, Desktop sync, Inbox, quick-hide, session resilience (MVP) |
 | [`PHASE-3-CUSTOMIZATION.md`](./PHASE-3-CUSTOMIZATION.md) | Rollup, style, themes, snap, lock, shell menu, accessibility |
 | [`PHASE-4-ADVANCED.md`](./PHASE-4-ADVANCED.md) | Portals, rules, pages, snapshots, export/import, tabs, search, hotkeys |
