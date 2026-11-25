@@ -1,95 +1,84 @@
 # 00 — Coding Standards
 
-Applies to every project under `src/` and `tests/`. Violations are caught by analyzers, `dotnet format`, architecture tests and review. Rules are numbered so a review can cite them (`CS-n`).
+Target Rust + Slint per [ADR-025](../../MEMORY/DECISIONS.md). Applies to future Rust crates/tests; existing C# is not ported by this document. CS rule IDs remain stable for review references.
 
-## Language
+## Language and structure
 
-- **CS-1** Code, identifiers, code comments, branch names and commit messages: English.
-- **CS-2** Documentation in `docs/`, `MEMORY/`, `TASKS/`: English.
-- **CS-3** User-visible text lives in resources (id-ID, en-US), never hard-coded.
-- **CS-4** The conversation with the project owner follows the owner's language (currently Indonesian). It does not affect repository content.
+- **CS-1** Code, identifiers, comments, branches and commits are English.
+- **CS-2** Repository documentation is English.
+- **CS-3** Localisable Slint translations/resources for id-ID and en-US; verify pinned workflow.
+- **CS-4** Conversation follows the owner's language (Indonesian).
+- **CS-5** Cohesive Rust modules; one type per file is not mandatory.
+- **CS-6** Packages kebab-case (drape-core), imports/modules snake_case (drape_core::layout); follow target workspace.
+- **CS-7** Types/traits UpperCamelCase; functions/fields/modules snake_case; constants SCREAMING_SNAKE_CASE. Follow rustfmt/Rust API Guidelines.
+- **CS-8** Traits omit C# I prefix: FileSystem, Clock, DesktopHost. PlatformCapabilities is neutral data. Concrete adapters use descriptive names.
+- **CS-9** No Async suffix requirement. Define cancellation/work bounds/shutdown; add async runtime only if needed.
+- **CS-10** Domain panel is Drape in code/UI/docs; explicit Rust imports, no old C# namespace-alias rule.
 
-## Structure and Naming
+## Rust policy
 
-- **CS-5** One public type per file; file name = type name.
-- **CS-6** Namespace follows folder: `Drape.Core.Layout`, `Drape.Shell.Windows.Desktop`, … File-scoped namespaces.
-- **CS-7** `PascalCase` for types and public members, `camelCase` for parameters and locals, `_camelCase` for private fields.
-- **CS-8** Interfaces start with `I`. Platform implementations have descriptive names (`WorkerWDesktopHost`), not `DesktopHostImpl`.
-- **CS-9** Async: `Async` suffix; I/O operations take a `CancellationToken`.
-- **CS-10** Domain term: the panel is a `Drape` in code, UI and docs ([ADR-020](../../MEMORY/DECISIONS.md)). The entity `Drape` shares its name with the root namespace `Drape`, so import `Drape.Core.Model` explicitly and use an alias where the simple name is ambiguous (`using DrapeEntity = global::Drape.Core.Model.Drape;`). Suppress CA1724 for that one type, with a comment pointing here.
+- **CS-11** Pin stable toolchain/application lockfile; Clippy denies warnings; supported feature matrix, not unconditional --all-features.
+- **CS-12** Structs/enums, only needed derives; validate constructors/transitions. Prefer borrowing over needless cloning.
+- **CS-13** No mutable globals/hand-rolled singletons; explicit ownership/injection/synchronisation; avoid reference cycles.
+- **CS-14** Typed Result for failures; no swallowed errors; context and recovery decision required.
+- **CS-15** No unwrap/expect/panic on external data/environment failures. Tests may use them for setup failures.
+- **CS-16** Never block Slint loop on I/O/worker/lock; no held locks across callbacks or suspension.
 
-## Language Features and Analyzers
+## Architecture
 
-- **CS-11** `Nullable=enable`, `TreatWarningsAsErrors=true`, `LangVersion=latest`, `ImplicitUsings=enable`.
-- **CS-12** `record` for immutable data models; `init` for set-once properties.
-- **CS-13** No mutable `static` state. No hand-rolled singletons; use DI.
-- **CS-14** No `catch (Exception)` that swallows errors without logging. Catch specific types; a general catch must log and take an explicit decision.
-- **CS-15** No `async void` except UI event handlers.
-- **CS-16** No `.Result` / `.Wait()` on the UI thread.
+- **CS-17** drape-core has no UI/native OS/network/filesystem/process/environment or wall-clock access. Inject FileSystem/Clock. Core tests first.
+- **CS-18** Native calls/unsafe only in matching shell adapters; Guard uses minimal recovery API. Prefer windows bindings over manual extern declarations.
+- **CS-19** UI never imports shell types; App connects ports/window lifetimes.
+- **CS-20** Tests inspect actual Cargo edges/shared-source boundaries and include a forbidden-dependency mutation check. Core cannot depend on Slint/native crates; UI/Infrastructure cannot depend on shell crates or call native bindings directly. Approved Slint/neutral I/O dependencies may have transitive platform internals; document those edges rather than banning every transitive native dependency. App injects platform-specific FileSystem implementations from Shell into Infrastructure through Core ports.
+- **CS-21** Shared Core/UI use PlatformCapabilities, never cfg(target_os)/OS checks. Selection only in adapters/composition roots.
+- **CS-22** Neutral owned IconBitmap, never slint::Image, native handles or borrowed OS buffers in Core models.
 
-## Architecture Boundaries
+## Native interop
 
-- **CS-17** `Drape.Core` references no UI framework, no Win32/Cocoa/GTK and no direct `System.IO` file-system operations. Use `IFileSystem` and `IClock`.
-- **CS-18** P/Invoke and COM only in `Drape.Shell.<Platform>` (and `Drape.Guard`'s icon-restore part). On Windows use CsWin32 (`NativeMethods.txt`). Manual `DllImport` is forbidden unless CsWin32 does not provide the API, with a comment giving the reason and a follow-up task.
-- **CS-19** View-models reference no platform or Shell type; platform behaviour arrives through interfaces from Core, injected by the App.
-- **CS-20** `Drape.UI` and `Drape.Core` must not reference `System.Windows`, `Microsoft.Win32`, `Windows.*` or any `Drape.Shell.*`. An architecture test (`Drape.Core.Tests/ArchitectureTests`) checks project and assembly references so the rule cannot drift silently.
-- **CS-21** Features that depend on a platform are gated with `IPlatformCapabilities`, never with `#if`, `OperatingSystem.IsWindows()` or similar in UI or Core ([ADR-015](../../MEMORY/DECISIONS.md)).
-- **CS-22** Core returns neutral data (`IconBitmap`), never UI-framework image types.
+- **CS-23** Correct release API per owned handle/PIDL/COM allocation via RAII. Distinguish owned/borrowed lifetimes; never close Slint-owned HWND; respect COM apartments/thread affinity.
+- **CS-24** HRESULT/Win32 failures become contextual typed errors. Distinguish zero-success returns correctly.
+- **CS-25** Slow native calls: bounded apartment-correct workers, explicit timeout/cancellation; never unsafe thread termination. Cancellation does not mean native execution has stopped: retain resources until completion and reject stale generation-tagged responses. Port contracts state thread/apartment/lifetime requirements; do not require Send + Sync of thread-affine services merely for executor convenience.
+- **CS-26** Correct FFI ABI/lifetime/state registration; never unwind across FFI; explicit queue-full/error behaviour. Core/shared UI forbid unsafe; native unsafe blocks need SAFETY comments on pointer/lifetime/thread invariants.
+- **CS-27** Undocumented techniques tagged UNDOCUMENTED with ADR/spec and verified Windows builds.
+- **CS-28** Hook callbacks: no I/O/logging/significant allocation/blocking; bounded preallocated enqueue, no input history.
 
-## Native Interop
+## UI (Slint)
 
-- **CS-23** Every handle, PIDL and COM object is wrapped in `SafeHandle`/`IDisposable`; release with `Marshal.ReleaseComObject` or an equivalent wrapper.
-- **CS-24** Turn `HRESULT` and `GetLastError` into typed exceptions at the Shell boundary. Do not leak raw codes upwards.
-- **CS-25** Calls that can block for long (context menu, icons) run off the UI thread with a timeout.
-- **CS-26** Native callbacks (hooks, WndProc) keep a reference so they are not garbage collected (`GCHandle` or an instance field).
-- **CS-27** Every undocumented technique is tagged `// UNDOCUMENTED:` with a reference to the ADR/doc that explains it.
-- **CS-28** Global-hook callbacks: no allocation to speak of, no I/O, no long locks; hand work to another thread.
+- **CS-29** Compiled .slint components, Rust adapters, models/callbacks; domain state stays in Core/services.
+- **CS-30** No business rules in markup/callbacks; native plumbing behind ports/App.
+- **CS-31** Shared Slint theme components/tokens for colours/sizes/states; no XAML/Avalonia API assumptions.
+- **CS-32** Accessible roles/labels/states/actions via supported properties; verify Windows UIA/Narrator.
+- **CS-33** slint::invoke_from_event_loop or verified equivalent; weak UI references; handle closure/failure. Component/model/image interaction on UI thread.
+- **CS-34** One Slint window per Drape; detach/unregister borrowed handles before destruction.
 
-## UI (Avalonia)
+## Errors, logging and performance
 
-- **CS-29** MVVM with CommunityToolkit.Mvvm (`[ObservableProperty]`, `[RelayCommand]`).
-- **CS-30** No business logic in code-behind; code-behind only for view-specific things (hit-testing, window plumbing).
-- **CS-31** Use resource dictionaries/styles for colours, brushes and sizes; no magic numbers in XAML. Prefer compiled bindings.
-- **CS-32** Every interactive control has an `AutomationProperties.Name`.
-- **CS-33** Marshal to the UI thread with `Dispatcher.UIThread.InvokeAsync`; avoid synchronous `Invoke` on hot paths.
-- **CS-34** One Avalonia window per Drape ([ADR-007](../../MEMORY/DECISIONS.md)).
+- **CS-35** Validate config/drop/path boundaries and resource limits before allocation; missing files/icons degrade safely; invariant failures explicit. Preserve literal/lossless paths and roots; per-filesystem comparison/case rules live in platform adapters. Never expand environment-variable syntax inside an already stored/enumerated path or silently drop unknown config values.
+- **CS-36** Structured tracing fields; no eagerly formatted hot-path logs.
+- **CS-37** Paths only at Debug/opt-in sharing; no filenames in normal diagnostics.
+- **CS-38** Drop/panic hooks cannot replace Guard/durable state. Guard readiness + durable intent precede hiding. Restore cannot depend on config save; abort/kill/reboot need external/next-start recovery. App/Guard/restore CLI serialize ownership with authenticated generation-scoped IPC and bounded parsing; validate live session ownership before startup restoration. Guard loss causes restoration and disables native-icon mutation until rearmed; readiness-to-hide races and corrupt/unsupported state fail closed against new hiding.
+- **CS-39** Bound allocations/queues/caches/workers; avoid needless idle redraw.
+- **CS-40** Virtualise grids above 200 items; verify support and measure.
+- **CS-41** Decode/cache owned pixels off-thread, image conversion on UI thread, cache byte limit.
+- **CS-42** Measure Release App + Guard RAM/CPU/GPU/startup/distribution size, backend/build/DPI/monitors/cache state recorded.
 
-## Error Handling and Logging
+## Tests, git and documentation
 
-- **CS-35** Fail fast on contract violations (`ArgumentNullException.ThrowIfNull`); be tolerant of environmental failure (missing file, icon failure).
-- **CS-36** Structured logging with message templates: `_logger.LogInformation("Drape {DrapeId} moved", id)`. No string interpolation in log messages.
-- **CS-37** File paths appear only at Debug level. Never log user file names at Information or above.
-- **CS-38** Unhandled exceptions → the global handler restores icons (see [`../ARCHITECTURE/00-SYSTEM-ARCHITECTURE.md`](../ARCHITECTURE/00-SYSTEM-ARCHITECTURE.md)).
+- **CS-43** Descriptive snake_case tests, e.g. restore_preserves_user_hidden_icons.
+- **CS-44** One behaviour, meaningful negative/error branches, hand-written migration fixtures.
+- **CS-45** No sleep-based correctness tests; fake clocks and explicit synchronisation. Benchmarks separate.
+- **CS-46** Follow testing strategy; name tests, never reuse C# results as Rust evidence.
+- **CS-47** One task/branch/PR, {type}/{task-id}-{slug}; fresh Rust foundation/core R0/R1 IDs.
+- **CS-48** Conventional Commits with scope/task ID, English, explain why.
+- **CS-49** PR: spec refs, validation, risks, waiver author if any, anything not determined. Owner-requested docs migrations can exceed usual small-PR guideline.
+- **CS-50** Squash merge; preserve historical records/IDs; no incidental source retirement.
+- **CS-51** No credentials/personal paths/user configs; secret scanning.
+- **CS-52** Comments explain why and safety invariants.
+- **CS-53** Public Rust APIs use rustdoc, error/safety contracts and useful doc tests.
+- **CS-54** Windows-version behaviour names verified build/DPI/monitors.
+- **CS-55** Review workspace dependencies/features; commit Cargo.lock; audit licences/advisories. Slint royalty-free licence is an explicit documented exception to MIT/Apache/BSD-only dependencies, with attribution.
+- **CS-56** Prefer standard library; new runtime/backend justifies resource and distribution cost.
 
-## Performance
+## Generated Slint exception (ADR-028)
 
-- **CS-39** Avoid allocations on hot paths (item rendering, hook callbacks).
-- **CS-40** Virtualise item lists above 200 items per Drape.
-- **CS-41** Decode icons off the UI thread and cache them; bound the cache.
-- **CS-42** Measure before optimising; include the measurement in the PR.
-
-## Tests
-
-- **CS-43** Naming: `MethodUnderTest_Condition_ExpectedResult`.
-- **CS-44** One behaviour per test; clear arrange/act/assert.
-- **CS-45** No `Thread.Sleep` in tests; use a fake `IClock` and explicit synchronisation.
-- **CS-46** Details in [`../TESTING/00-TESTING-STRATEGY.md`](../TESTING/00-TESTING-STRATEGY.md). Name your tests when you claim they passed.
-
-## Git and Pull Requests
-
-- **CS-47** Branch: `{type}/{task-id}-{kebab-description}` (e.g. `feat/P1-04-drape-window`). Types: `feat`, `fix`, `refactor`, `docs`, `chore`, `test`. One task, one branch, one PR.
-- **CS-48** Commit: Conventional Commits with the project scope **and the task ID**: `feat(core): P1-01 add domain records`. Scopes: `core`, `shell`, `ui`, `app`, `infra`, `guard`, `docs`, `ci`. The body explains *why*, not what.
-- **CS-49** PRs are small (ideally < 400 diff lines) with: purpose, changes, how tested (named tests), risks, task link, anything waived and who agreed, anything not determined.
-- **CS-50** Squash merge; the final message follows Conventional Commits.
-- **CS-51** No secrets, personal paths or user config in the repository. CI runs secret scanning.
-
-## Comments and Code Documentation
-
-- **CS-52** Comments explain *why*, not *what*.
-- **CS-53** Public Core APIs carry XML doc.
-- **CS-54** Behaviour that depends on a Windows version carries a comment with the build number it was tested on.
-
-## Dependencies
-
-- **CS-55** Add packages through `Directory.Packages.props`; check licence and maintenance.
-- **CS-56** Do not add a package for something a few lines of code can do.
+Core and hand-written shared UI forbid unsafe. Slint 1.13.1 generated glue requires unsafe internals: drape-ui denies unsafe at its root, allows it only inside its private compiler-generated module, and forbids it in presentation adapters. See [ADR-028](../../MEMORY/DECISIONS.md). This does not permit hand-written unsafe or native bindings in shared UI.

@@ -1,5 +1,8 @@
 # P0-05 Runbook — jalankan di VM Windows
 
+> Historical C#/.NET/Avalonia baseline, frozen 2026-11-25. Commands, task states and measurements below describe legacy work only; they do not prove Rust/Slint behaviour. Rust replacement work uses fresh R0/R1 IDs in [Rust migration tasks](../../TASKS/RUST-MIGRATION.md). No code was ported or removed by the documentation update.
+
+
 ## Persiapan
 
 1. Siapkan folder uji di Desktop VM: 500 file campuran (`.txt`, `.png`, `.lnk`, beberapa folder).

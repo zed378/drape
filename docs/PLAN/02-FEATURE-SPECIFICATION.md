@@ -2,7 +2,7 @@
 
 Requirements: [`01-PRODUCT-REQUIREMENTS.md`](./01-PRODUCT-REQUIREMENTS.md). Visuals: [`../UI-UX/00-UI-UX-SPEC.md`](../UI-UX/00-UI-UX-SPEC.md). Windows mechanics: [`../PLATFORM/00-WINDOWS-INTEGRATION.md`](../PLATFORM/00-WINDOWS-INTEGRATION.md). Other platforms: [`../PLATFORM/01-PLATFORM-SUPPORT.md`](../PLATFORM/01-PLATFORM-SUPPORT.md).
 
-Release column: **MVP** (end of Phase 2), **v1** (end of Phase 5), **Later** (after v1). Every feature below is specified for Windows first; where a feature depends on a platform capability it is gated by `IPlatformCapabilities` ([ADR-015](../../MEMORY/DECISIONS.md)), never by OS checks in UI or Core.
+Release column: **MVP** (end of Phase 2), **v1** (end of Phase 5), **Later** (after v1). Every feature below is specified for Windows first; where a feature depends on a platform capability it is gated by `PlatformCapabilities` ([ADR-015](../../MEMORY/DECISIONS.md)), never by OS checks in UI or Core.
 
 ## Feature Matrix
 
@@ -44,7 +44,7 @@ Release column: **MVP** (end of Phase 2), **v1** (end of Phase 5), **Later** (af
 - Default names: "Drape 1", "Drape 2", … ; unique within a page.
 - Minimum size 120 × 80 DIP. Default size 320 × 240 DIP.
 - Does not appear in the taskbar or Alt+Tab (or the platform equivalent).
-- One Avalonia window per Drape ([ADR-007](../../MEMORY/DECISIONS.md)).
+- One Slint window per Drape ([ADR-007](../../MEMORY/DECISIONS.md)).
 
 ### F-02 Move and resize
 - Move: drag the title. Resize: drag an edge or corner. All coordinates are in DIP, stored per monitor.
@@ -62,8 +62,9 @@ Release column: **MVP** (end of Phase 2), **v1** (end of Phase 5), **Later** (af
 ### F-04 Open and remove items
 - Double-click or Enter: open with the default handler (Windows: `ShellExecute`).
 - Delete or the "Remove from Drape" menu: removes the reference, **not** the file.
-- "Delete file" exists only in the shell context menu (F-18), using the platform's own confirmation and trash/Recycle Bin.
+- Physical file deletion is available only through the reviewed shell-menu route (F-18); reference removal never deletes a file. Confirmation and permanent/recyclable behaviour follow the safety requirements below, not an assumption that the OS always asks.
 - An item whose file is gone is shown dimmed with a warning badge and is kept for 24 hours before the reference is dropped.
+- Destructive shell verbs require explicit confirmation before dispatch. Do not assume Explorer always asks or every target supports Recycle Bin; identify permanent/non-recyclable operations. P3-06 must prove how the native menu, including third-party verbs, meets this safety contract before those verbs are exposed; a menu extension is not a waiver.
 
 ### F-05 Persistence
 - Changes are saved with a 500 ms debounce. Format and schema: [`../ARCHITECTURE/02-DATA-MODEL.md`](../ARCHITECTURE/02-DATA-MODEL.md).
@@ -74,7 +75,8 @@ Release column: **MVP** (end of Phase 2), **v1** (end of Phase 5), **Later** (af
 - While Drape is active and "Hide desktop icons" is on, the native icons are hidden.
 - On normal exit, crash or kill, icons are restored (F-11).
 - If the user toggles "Show desktop icons" through the OS menu, Drape detects it and adapts rather than fighting.
-- Gated by `IPlatformCapabilities.CanHideNativeIcons`.
+- Gated by `PlatformCapabilities.CanHideNativeIcons`.
+- Safe host readiness, durable intent and acknowledged independent Guard precede any visibility change. If recovery cannot be armed, keep native icons visible and explain degraded mode. Restore only Drape-owned changes, preserving prior hidden state and later explicit user choices.
 
 ### F-07 Desktop folder sync
 - Watches the user's Desktop and the shared/public Desktop. 250 ms debounce, processed in batches.
@@ -91,19 +93,21 @@ Release column: **MVP** (end of Phase 2), **v1** (end of Phase 5), **Later** (af
 - "Empty" = no native item and no Drape at the click point, determined by hit-test, never by guessing coordinates.
 - A Drape can be excluded from quick-hide in its settings.
 - 150 ms fade; honours the OS "reduce animations" setting.
-- Gated by `IPlatformCapabilities.HasGlobalMouseHook`.
+- Gated by `PlatformCapabilities.HasGlobalMouseHook`.
+- Any quick-hide change to remaining native icons uses the same capability, durable ownership, armed Guard and recovery coordinator as F-06; no separate unguarded toggle. Showing Drapes does not reveal user-hidden icons or undo explicit restoration.
 
 ### F-10 Create a Drape by right-drag
 - Press and drag the right button on empty desktop; a preview rectangle appears; on release a "Create Drape here" menu is shown.
 - A plain right-click (no drag) still shows the OS context menu. Drape must never break that menu.
 
 ### F-11 Emergency recovery
-- `Drape.App.Desktop --restore-desktop`: restores icons and exits. Does not require the main app to be running.
-- `Drape.Guard`: a tiny process that waits for the main process; however it ends, Guard restores the icons.
+- `drape-app --restore-desktop`: restores Drape-owned changes and exits without requiring the main app or renderer to be running.
+- `drape-guard`: an independent minimal process that watches the validated App generation and attempts/verifies restoration of Drape-owned changes after its termination. Failed restoration remains retryable and visible, not reported as success.
 - `state.json` records that Drape is hiding icons, for recovery after a hard reboot.
+- Recovery commands coordinate with an active generation before any change. --restore-desktop bypasses renderer startup and a live App cannot immediately undo its explicit restore. Guard loss while App stays alive triggers restoration/no further hiding until rearmed. Unknown/corrupt/stale state is not permission to guess/toggle; preserve it and follow the documented safe recovery route.
 
 ### F-12 Autostart
-- A setting. Mechanism per platform behind `IAutostart` (Windows: HKCU `Run` key — non-elevated; never an elevated scheduled task).
+- A setting. Mechanism per platform behind `Autostart` (Windows: HKCU `Run` key — non-elevated; never an elevated scheduled task).
 
 ### F-13 Multi-monitor and DPI
 - Per-Monitor DPI Awareness v2 on Windows. Positions are stored relative to a monitor (device ID + work area), not raw virtual-screen coordinates.
@@ -134,6 +138,7 @@ Release column: **MVP** (end of Phase 2), **v1** (end of Phase 5), **Later** (af
 ### F-20 Folder portal
 - A Drape linked to a folder; its contents are mirrored and kept up to date. Portal items are not stored in config — only the folder path and options (recursive, filter).
 - Dropping onto a portal copies or moves the file into the folder, after confirmation.
+- P4-01 must specify portal projection identity versus normal stored membership, duplicates across portals and rule/Inbox participation before implementation. The one-item/one-Drape rule cannot silently discard mirrored entries or mutate files to deduplicate them.
 
 ### F-21 Auto-sort rules
 - Rule: condition (extension, name pattern glob/regex, file age, size, type) → action (put into Drape X). Priority is orderable. Rules run on new items; "Apply now" runs them on existing items.
@@ -141,12 +146,14 @@ Release column: **MVP** (end of Phase 2), **v1** (end of Phase 5), **Later** (af
 
 ### F-22 Desktop pages
 - Several pages; one active. Switch via screen edge, hotkey or tray menu. A Drape can be "pinned" to all pages.
+- P4-04 must specify persistence of one pinned Drape, its relation to pageId and Inbox ownership, and compatibility/migration before adding fields. The abbreviated current schema has no pin-to-all-pages representation; do not invent a breaking one.
 
 ### F-23 Snapshots
 - Saved with a name and time; contents are position, size, style and membership. Restore with a preview and confirmation.
 
 ### F-24 Tabs in a Drape
 - A Drape holds several tabs; each tab is an item list or a portal. Drag an item onto a tab title to move it.
+- P4-07 must specify tab identity/order/active-tab/portal membership and legacy-schema compatibility before implementation; the tabs? placeholder is not a complete schema.
 
 ### F-25 Search
 - Typing while a Drape has focus filters its items by name.

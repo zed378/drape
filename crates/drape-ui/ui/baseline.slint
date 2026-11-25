@@ -1,0 +1,20 @@
+import { AboutSlint, Button, VerticalBox } from "std-widgets.slint";
+
+export component BaselineWindow inherits Window {
+    title: "Drape — Rust foundation";
+    preferred-width: 460px;
+    preferred-height: 420px;
+    in-out property <bool> show-about: false;
+    VerticalBox {
+        padding: 24px;
+        spacing: 16px;
+        Text { text: "Drape"; font-size: 28px; }
+        Text {
+            text: "Rust + Slint foundation. Desktop integration is not available yet.";
+            wrap: word-wrap;
+        }
+        if root.show-about: AboutSlint { }
+        Button { text: "About Slint"; clicked => { root.show-about = !root.show-about; } }
+    }
+
+}

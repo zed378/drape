@@ -1,5 +1,8 @@
 # Phase 1 Performance Baseline
 
+> Historical C#/.NET/Avalonia baseline, frozen 2026-11-25. Commands, task states and measurements below describe legacy work only; they do not prove Rust/Slint behaviour. Rust replacement work uses fresh R0/R1 IDs in [Rust migration tasks](../../TASKS/RUST-MIGRATION.md). No code was ported or removed by the documentation update.
+
+
 **Date:** 2026-10-25 · **Machine:** dev machine (Windows 11) · **Build:** Release, `Drape.dll` from `Drape.slnx`
 
 ## Coverage

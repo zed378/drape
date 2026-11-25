@@ -13,7 +13,7 @@
 
 *One or two sentences that tell a future reader whether this is the record they need. Not a summary: the surprising part.*
 
-*Good: "Restoring icons after a killed process worked only when the Guard was started before the mutex was taken, so a second instance silently hid the icons for good."*
+*Good: "The duplicate-start test restored a live App's icons because recovery ran before ownership validation; the corrected protocol serializes App, Guard and CLI by session/generation."*
 
 *Bad: "Implemented the Guard."*
 
@@ -52,7 +52,7 @@
 - Unit:
 - Integration:
 - UI / headless:
-- E2E (FlaUI) / manual checklist items run:
+- E2E (verified UIA harness) / manual checklist items run:
 - **Desktop-safety test** (required for anything that hides icons, hosts a window or installs a hook): which test, and the result
 - **Mutation check** (did you break the thing and watch the right test fail?):
 
@@ -76,10 +76,10 @@
 *Per `TASKS/00-TASK-CONVENTIONS.md`. Tick what passed. **Name what was waived and who agreed.***
 
 - [ ] Meets the card's acceptance criteria
-- [ ] Build with warnings as errors, `dotnet format --verify-no-changes` clean, tests green
+- [ ] Applicable Rust gates: locked Release build, rustfmt, denied-warning Clippy, named tests; for docs-only work, link/consistency/whitespace/scope checks instead
 - [ ] Architecture rules respected (Core free of platform references, native calls only in Shell, handles wrapped)
 - [ ] Desktop-safety rules respected (see below)
-- [ ] Tested on Windows 11 and at least one DPI other than 100%
+- [ ] For native/UI implementation: required Windows 10/11 build, DPI through 300% and one-to-four-monitor coverage recorded; mark unavailable environments explicitly
 - [ ] Documentation and `TASKS/PROGRESS.md` updated
 - [ ] ADR added for any decision
 - [ ] This record written
@@ -94,9 +94,10 @@
 
 - **Icon hide path** (what can leave icons hidden):
 - **Restore paths exercised** (normal exit / unhandled exception / Guard / next start / `--restore-desktop`):
-- **Handles** (every native handle wrapped in `SafeHandle` or `IDisposable`?):
+- **Handles** (matching RAII ownership/releaser, borrowed HWND lifetime and COM apartment cleanup?):
 - **Hook callback** (stays minimal: no large allocation, no I/O, no long lock?):
-- **Capability gating** (new behaviour behind `IPlatformCapabilities`, not an OS check?):
+- **Capability gating** (new behaviour behind `PlatformCapabilities`, not an OS check?):
+- **Recovery protocol** (per-session identity/generation, authenticated IPC, durable intent, Guard readiness/health loss, stale/corrupt state and no rehide after explicit restore?):
 - **Config** (schema version bump? migration and fixture added? atomic write unchanged?):
 - **Privacy** (new network call, new data collected, anything written to logs that is a user path?):
 

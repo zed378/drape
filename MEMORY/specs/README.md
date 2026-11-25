@@ -1,11 +1,15 @@
 # MEMORY/specs/
 
+> Existing P0/P1 specs are historical C# implementation contracts. New Rust tasks write new specs before implementation; [Rust migration specification](../../docs/ARCHITECTURE/03-RUST-MIGRATION.md) covers R0-01. Do not reinterpret checked legacy acceptance as Rust proof.
+
 Feature specs, written **before** implementation, for tasks marked `Spec required: yes` in [`../../TASKS/`](../../TASKS/README.md).
 
 Template: [`../templates/FEATURE-SPEC-TEMPLATE.md`](../templates/FEATURE-SPEC-TEMPLATE.md).
 Naming: `<task-id>-<slug>.md`, for example `P2-03-desktop-host.md`.
 
-**Current list: empty.** No task has started and no code exists.
+Rust baseline spec: [R0-02 workspace](./R0-02-rust-workspace.md). Legacy P0/P1 specs remain historical.
+
+Rust native-handle diagnostic spec: [R0-04 Slint desktop-host boundary](./R0-04-slint-desktop-host.md). Only read-only acquisition is implemented; native hosting and the Windows matrix remain pending.
 
 ---
 

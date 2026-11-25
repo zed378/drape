@@ -31,18 +31,19 @@
 
 ## Layering and Interfaces
 
-- [ ] Which project owns each piece (`Drape.Core`, `Infrastructure`, `Shell.Windows`, `UI`, `App.Desktop`, `Guard`)?
+- [ ] Which crate owns each piece (`drape-core`, `drape-infrastructure`, `drape-shell-windows`, `drape-ui`, `drape-app`, `drape-guard`)?
 - [ ] New or changed interfaces in Core (name, members). Core stays free of platform, UI and direct I/O references.
-- [ ] Does anything cross a boundary with a platform type (`HWND`, `ImageSource`)? It must not.
-- [ ] Is any native handle created? Wrapped in `SafeHandle` / `IDisposable`, and who disposes it?
-- [ ] Is behaviour gated by `IPlatformCapabilities` rather than an OS check?
+- [ ] Does a domain/UI port expose platform/image types (`HWND`, `slint::Image`)? It must not. The App's private handle adapter may bridge a borrowed HWND to Shell with documented registration lifetime; Core models remain neutral.
+- [ ] Is any native handle created? Wrapped in RAII wrappers with the matching native release API, and who disposes it?
+- [ ] Is behaviour gated by `PlatformCapabilities` rather than an OS check?
 
 ---
 
 ## Desktop Safety
 
 - [ ] **Icon hide path:** can this feature leave native icons hidden? Under what failure?
-- [ ] **Restore paths:** normal exit / unhandled exception / `Drape.Guard` / next start via `state.json` / `--restore-desktop`. Which does this feature touch, and how is each tested?
+- [ ] Serialize App/Guard/CLI ownership/generation, write durable intent, acknowledge/revalidate Guard before hiding. Guard death, corrupt state and live-owner restore races tested? Quick-hide native mutations use the same protocol.
+- [ ] **Restore paths:** normal exit / unhandled exception / `drape-guard` / next start via `state.json` / `--restore-desktop`. Which does this feature touch, and how is each tested?
 - [ ] Non-destructive: does anything move, rename or delete a user file? It needs explicit confirmation or must not exist.
 - [ ] **Hook minimalism** (if a global hook is involved): the callback does no large allocation, no I/O and takes no long lock; the work moves to another thread. Time budget?
 - [ ] Explorer restart, Win+D / peek, display change, session lock: what happens to this feature?
@@ -55,7 +56,7 @@
 | Field | Type | Default | Notes |
 |---|---|---|---|
 
-- [ ] Does it change the config schema? Schema version bump, migration step and a fixture per old version?
+- [ ] Does it change the config schema? Compatible additions retain their version only when forward/backward handling is verified; incompatible changes require a version bump, migration and hand-written fixtures. A language-only rewrite does not bump schema.
 - [ ] Writes stay atomic (temporary file, flush, replace); unknown properties preserved?
 - [ ] Is anything derived stored where it can disagree with its inputs?
 - [ ] Does it touch `state.json`?
@@ -75,8 +76,8 @@
 |---|---|---|
 | Windows 11 (23H2, 24H2+) | | |
 | Windows 10 22H2 (minimum) | | |
-| DPI 100% and one of 125/150/200% | | |
-| Multiple monitors, mixed DPI, monitor unplug | | |
+| DPI 100/125/150/200/300%, text scaling | | |
+| One to four monitors, mixed DPI, negative origins, unplug | | |
 | macOS / Linux / Android / iOS | not applicable until Phase 6 | |
 
 ---
@@ -85,7 +86,7 @@
 
 - [ ] Any network call? Default is none (ADR-010); update checks are opt-in (ADR-017).
 - [ ] Any new data written to disk or logs; does it include user file paths or names?
-- [ ] Any process, DLL or injection into another process? Not allowed (ADR-006).
+- [ ] Process creation or native modules? Guard launch and reviewed OS shell-handler loading are legitimate documented boundaries; no code/DLL injection into Explorer/another process. Record executable/module source, process identity, trust and crash/timeout limits.
 - [ ] Any elevation needed? The app stays non-elevated (ADR-008).
 
 ---
@@ -107,7 +108,7 @@
 - Unit (Core, written first):
 - Integration (Infrastructure, with a fake file system / `FakeDesktopHost`):
 - UI / headless:
-- E2E (FlaUI) or manual checklist items from `docs/TESTING/00-TESTING-STRATEGY.md`:
+- E2E (verified Windows UIA harness) or manual checklist items from `docs/TESTING/00-TESTING-STRATEGY.md`:
 - Negative cases (the positive case alone proves little):
 - Mutation check planned (which test should fail if the safety rule is broken):
 

@@ -9,4 +9,4 @@ Everything that depends on the operating system: how Drape sits on the desktop, 
 
 **Every technique in these documents is a hypothesis until a spike proves it on the target OS build.** Spike results are written as records in [`../../MEMORY/records/`](../../MEMORY/README.md) and, when they decide something, as ADRs in [`../../MEMORY/DECISIONS.md`](../../MEMORY/DECISIONS.md); this folder is then amended through the deviation protocol.
 
-Document `00` covers Windows only; the code it describes lives only in `Drape.Shell.Windows` (and `Drape.Guard`).
+Document `00` covers Windows only; the code it describes lives only in `drape-shell-windows` (and `drape-guard`).

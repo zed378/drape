@@ -1,0 +1,31 @@
+import { AboutSlint, Button, VerticalBox } from "std-widgets.slint";
+
+export component HandleProbe inherits Window {
+    title: "R0-04 — Slint handle diagnostic";
+    preferred-width: 540px;
+    preferred-height: 520px;
+    background: #26364cdd;
+    in property <string> observation;
+    callback sample();
+    callback finish();
+
+    VerticalBox {
+        padding: 20px;
+        spacing: 12px;
+        Text { text: "Borrowed native-handle probe"; color: white; font-size: 22px; }
+        Text {
+            text: "Normal top-level diagnostic window. Desktop host strategies are not implemented.";
+            color: white;
+            wrap: word-wrap;
+        }
+        Text { text: root.observation; color: white; wrap: word-wrap; }
+        Rectangle {
+            min-height: 45px;
+            background: #ffffff55;
+            Text { text: "Transparency sample — verify visually"; horizontal-alignment: center; }
+        }
+        Button { text: "Sample current borrowed handle"; clicked => { root.sample(); } }
+        Button { text: "Close probe"; clicked => { root.finish(); } }
+        AboutSlint { }
+    }
+}

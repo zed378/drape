@@ -6,7 +6,7 @@
 
 > Save to `MEMORY/records/YYYY-MM-DD-phase-<n>-summary.md`.
 >
-> A phase is complete only when every task is `DONE`, every `DONE` task has a record, and this summary exists. See `docs/PLAN/03-IMPLEMENTATION-ROADMAP.md` for exit criteria.
+> A phase is complete only when every required release/exit-criterion task is DONE, each DONE task has a record, and this summary exists. List explicitly optional Later cards as not shipped; do not claim them completed or silently defer mandatory scope. See `docs/PLAN/03-IMPLEMENTATION-ROADMAP.md` for exit criteria.
 
 ---
 
@@ -26,7 +26,7 @@
 | Deviation | ADR | Why |
 |---|---|---|
 
-**If this table is empty, check again.** A phase that implemented a specification with no surprises is unusual.
+An empty table is valid when no deviation was found. Record evidence honestly; do not invent decisions to fill a template.
 
 ---
 
@@ -50,7 +50,7 @@
 
 *Approaches abandoned, tests that did not pass, budgets missed (memory, CPU), safety checks that did not fire.*
 
-**This is the highest-value section.** A phase summary with an empty one is a summary nobody will trust.
+Record failures that occurred. If none occurred in the exercised scope, say so and state scope/limits; do not invent a failure.
 
 ---
 
@@ -61,6 +61,8 @@
 | Control | Test | Result |
 |---|---|---|
 | Icons restored when the process is killed | *name the test* | |
+| Guard health loss while App lives restores owned changes | | |
+| Concurrent App/Guard/CLI respects live ownership/generation | | |
 | Icons restored after a forced reboot (`state.json`) | | |
 | `--restore-desktop` works with the app not running | | |
 | Window host survives an Explorer restart | | |
@@ -77,6 +79,7 @@
 |---|---|---|
 | Idle memory budget | | |
 | Idle CPU budget | | |
+| App + Guard installed/download footprint | | |
 | Mixed-DPI correctness | | |
 | Windows 10 22H2 behaviour (minimum supported) | | |
 
@@ -92,7 +95,7 @@
 
 ## Definition of Done
 
-- [ ] Every task in the phase file is `DONE`
+- [ ] Every required phase/exit-criterion task is DONE; explicitly optional Later cards are listed as not shipped
 - [ ] Every `DONE` task has a record in `MEMORY/records/`
 - [ ] The global Definition of Done is satisfied for each, or the waiver is recorded with **who agreed**
 - [ ] This summary exists
@@ -116,7 +119,7 @@
 | ADRs written | |
 | Specification gaps found | |
 | Defects found **after** a task was marked done | |
-| Test count and coverage of `Drape.Core` at phase close | |
+| Test count and coverage of `drape-core` at phase close | |
 
 A defect found after `DONE` is a gap in the Definition of Done, not just a bug. Ask what would have caught it.
 
@@ -126,4 +129,4 @@ A defect found after `DONE` is a gap in the Definition of Done, not just a bug. 
 
 *What is unblocked now, what is still blocked and by what.*
 
-**Never build a Phase N+1 feature while Phase N is incomplete.**
+Per-card prerequisites and accepted contracts govern ordering. Pure R1 work may follow R0-02 where explicitly permitted; authorised off-critical-path platform spikes do not bypass Windows release gates. A phase-complete claim still requires its mandatory exit criteria.

@@ -12,8 +12,8 @@ Do not copy rules into this file. Duplicated rules drift, and an instruction tha
 ## The five rules that matter most
 
 1. **Desktop safety is unwaivable.** Every path that hides icons has a restore on every exit path; `--restore-desktop` always works; never kill `explorer.exe` in scripts or tests.
-2. **`Drape.Core` is platform-free.** Native code only in `Drape.Shell.*`.
-3. **Capability gating.** Ask `IPlatformCapabilities`; never OS checks in UI or Core.
+2. **`drape-core` is platform-free.** Native code only in `drape-shell-*`.
+3. **Capability gating.** Ask `PlatformCapabilities`; never OS checks in UI or Core.
 4. **Name the test.** "Tests passed" with no test named is not evidence.
 5. **Record before `DONE`.** No task is done without its `MEMORY/records/` entry and `TASKS/PROGRESS.md` updated in the same commit.
 

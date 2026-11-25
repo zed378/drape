@@ -1,5 +1,8 @@
 # Feature Spec — P1-03 ConfigStore: Atomic Save, Backup, Quarantine, Migration
 
+> Historical C#/.NET/Avalonia baseline, frozen 2026-11-25. Commands, task states and measurements below describe legacy work only; they do not prove Rust/Slint behaviour. Rust replacement work uses fresh R0/R1 IDs in [Rust migration tasks](../../TASKS/RUST-MIGRATION.md). No code was ported or removed by the documentation update.
+
+
 **Written:** 2026-10-25 — **after** implementation (retrospective; the card's DoD requires the spec, and the implementation already exists from 2026-10-23)
 **Task:** P1-03
 **Author:** code agent

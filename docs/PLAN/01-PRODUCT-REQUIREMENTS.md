@@ -1,6 +1,6 @@
 # 01 — Product Requirements (PRD)
 
-Status: draft, 2026-10-09; revised 2026-10-10 (English, cross-platform scope). Priorities use MoSCoW: **M**ust, **S**hould, **C**ould, **W**on't (this version).
+Status: target requirements, revised 2026-11-25 for Rust + Slint (ADR-025). Priorities use MoSCoW: **M**ust, **S**hould, **C**ould, **W**on't (this version).
 
 ## Personas
 
@@ -68,19 +68,19 @@ Behaviour of each feature: [`02-FEATURE-SPECIFICATION.md`](./02-FEATURE-SPECIFIC
 
 | ID | Requirement | Target / how measured |
 |---|---|---|
-| NFR-01 | Idle CPU | Average < 0.5% over 10 idle minutes (Performance Monitor) |
-| NFR-02 | Memory | < 100 MB working set with 20 Drapes × 20 items |
-| NFR-03 | Startup | Drapes visible < 1.5 s after process start (SSD) |
-| NFR-04 | Data durability | No config loss on crash/power loss; rolling backups |
+| NFR-01 | Idle CPU | App + Guard combined, machine-normalised average < 0.5% over 10 idle minutes; raw counter/convention reported |
+| NFR-02 | Memory | < 100 MB combined App + Guard working set with 20 Drapes × 20 items, measured after 30 min; also report private bytes and GPU memory |
+| NFR-03 | Startup | Median < 1.5 s from process start to all configured Drapes visible/interactive, required host attached and Guard ready on SSD; cold/warm profiles measured separately |
+| NFR-04 | Data durability | The last successfully committed config survives process failure; atomic replace, validated backups and OS-supported durable flushes protect writes. Uncommitted changes within the 500 ms debounce may be lost on abrupt termination; normal shutdown flushes them. Power-loss guarantees are bounded by filesystem/storage flush semantics, not an absolute claim |
 | NFR-05 | Privacy | No telemetry and no network by default; update checks are opt-in ([ADR-017](../../MEMORY/DECISIONS.md)) |
-| NFR-06 | Accessibility | Full keyboard navigation, high contrast, UIA names for controls |
-| NFR-07 | Compatibility | v1: **minimum Windows 10 22H2 (build 19045), fully supported** ([ADR-023](../../MEMORY/DECISIONS.md)); Windows 11 is the primary development target; x64 only; x64 only; DPI 100–300%; 1–4 monitors. Later: see [`../PLATFORM/01-PLATFORM-SUPPORT.md`](../PLATFORM/01-PLATFORM-SUPPORT.md) |
+| NFR-06 | Accessibility | Full keyboard operation including entry/focus/move/resize through tray/Settings without optional global hotkeys, high contrast, meaningful UIA roles/names/actions/focus verified with Narrator |
+| NFR-07 | Compatibility | v1: **minimum Windows 10 22H2 (build 19045), fully supported** ([ADR-023](../../MEMORY/DECISIONS.md)); Windows 11 is the primary development target; x64 only; DPI 100–300%; 1–4 monitors. Later: see [`../PLATFORM/01-PLATFORM-SUPPORT.md`](../PLATFORM/01-PLATFORM-SUPPORT.md) |
 | NFR-08 | Localisation | id-ID and en-US from v1; strings in resources, never hard-coded |
 | NFR-09 | Privileges | Runs non-elevated |
 | NFR-10 | Session resilience | Survives Explorer restart, sleep/resume, lock/unlock, display change, RDP |
 | NFR-11 | Security | See [`../SECURITY/00-SECURITY-AND-PRIVACY.md`](../SECURITY/00-SECURITY-AND-PRIVACY.md) |
 | NFR-12 | Quality | Warning-free build, green tests, Core coverage ≥ 80% |
-| NFR-13 | Portability | `Drape.Core`, `Drape.Infrastructure` and `Drape.UI` contain no platform-specific code; verified by architecture tests |
+| NFR-13 | Portability | `drape-core`, `drape-infrastructure` and `drape-ui` contain no platform-specific code; verified by architecture tests |
 
 ## Constraints and Assumptions
 
@@ -88,7 +88,7 @@ Behaviour of each feature: [`02-FEATURE-SPECIFICATION.md`](./02-FEATURE-SPECIFIC
 - The Desktop folder may be redirected (OneDrive Known Folder Move); always obtain its location from the platform API, never from a hard-coded path.
 - Virtual items (This PC, Recycle Bin, Network) are deferred; the MVP handles real files, folders and shortcuts only.
 - An item belongs to exactly one Drape in v1 ([ADR-011](../../MEMORY/DECISIONS.md)).
-- Stack: C# / .NET / Avalonia UI — confirmed by the owner ([ADR-012](../../MEMORY/DECISIONS.md)).
+- Stack: Rust + Slint, no WebView/browser engine — owner decision ([ADR-025](../../MEMORY/DECISIONS.md)); benefits must be measured.
 
 ## Product-Level Acceptance Criteria (MVP, end of Phase 2)
 
@@ -97,3 +97,9 @@ Behaviour of each feature: [`02-FEATURE-SPECIFICATION.md`](./02-FEATURE-SPECIFIC
 3. A file newly created on the desktop appears in the default Drape in < 2 s.
 4. Layout survives a resolution change and plugging/unplugging a monitor.
 5. Drapes stay visible after Win+D and after Explorer is restarted.
+
+## Rust resource acceptance
+
+NFR-14: distribution footprint must be measured for App, Guard, compressed portable download, installed files and runtime prerequisites. A numeric size gate and any tighter RAM goal are open Q-20, settled after R0-09 measurements. Existing CPU/RAM/startup ceilings remain gates, not claimed outcomes.
+
+NFR-15: memory safety uses safe Rust in Core/shared UI, reviewed narrow native unsafe adapters, RAII and no FFI unwinding. Rust does not eliminate native API, deadlock, resource-leak or desktop-recovery risks. Record backend/renderer, toolchain/lockfile, hardware, Windows build, DPI, monitors, cache state and blur setting for each measurement. No renderer/web/Qt runtime may be added without documenting its footprint and the architecture decision.

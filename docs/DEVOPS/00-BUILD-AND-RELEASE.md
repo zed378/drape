@@ -1,86 +1,75 @@
 # 00 — Build, CI and Release
 
-Status: plan. Distribution is direct — GitHub Releases, a Velopack per-user installer, a portable zip and a winget manifest ([ADR-022](../../MEMORY/DECISIONS.md)); the Store/MSIX path is deferred (B-09). v1.0 ships for Windows only ([ADR-014](../../MEMORY/DECISIONS.md)).
+Target Rust + Slint, [ADR-025](../../MEMORY/DECISIONS.md). Existing .NET build/CI files remain untouched. Rust commands become valid after R0-02; Rust CI is R0-03. v1: Windows x64, minimum Windows 10 22H2; Windows 11 primary.
 
-## Development Environment
+## Environment and controls
 
-1. Windows 11, .NET SDK per `global.json` (verified in P0-01).
-2. IDE: Visual Studio or Rider (".NET desktop development" workload), or VS Code with C# Dev Kit.
-3. `dotnet restore && dotnet build Drape.sln && dotnet test Drape.sln`.
-4. Hyper-V VMs for Windows 11 and Windows 10 for risky tests (Explorer restart, display changes). Take a checkpoint before each test.
+- Exact stable Rust toolchain selected/pinned in rust-toolchain.toml at R0-02; Windows MSVC build/link tools and SDK as required.
+- rust-analyzer + Slint language-server/editor integration; no .NET workload for future Rust app.
+- Cargo.toml: workspace, dependencies/features/measured profiles. Cargo.lock committed. Compatible Slint compiler/runtime versions.
+- Supported Windows target/backend/renderer; no Qt or WebView in baseline. Document actual CRT/deployment prerequisites.
+- PerMonitorV2/longPathAware/supported OS/asInvoker metadata as applicable to App/Guard.
+- Risky tests in checkpointed VMs; never automate killing Explorer.
 
-## Build Configuration
+## Future commands and gates
 
-- `global.json`: pins the SDK (`rollForward: latestFeature`).
-- `Directory.Build.props`: `Nullable`, `TreatWarningsAsErrors`, `LangVersion`, analyzers, `Deterministic`, `ContinuousIntegrationBuild` in CI.
-- `Directory.Packages.props`: Central Package Management.
-- `.editorconfig`: code style and analyzer severity.
-- Version derived from Git tags (MinVer or equivalent): `v0.1.0`, `v0.2.0-beta.1`.
+Valid only after R0-02, not Rust evidence today:
 
-## CI (GitHub Actions) — plan
+```bash
+rtk cargo build --workspace --release --locked
+rtk cargo fmt --all -- --check
+rtk cargo clippy --workspace --all-targets --locked -- -D warnings
+rtk cargo test --workspace --locked
+rtk cargo run -p drape-app
+rtk cargo run -p drape-app -- --restore-desktop
+```
 
-Workflow `ci.yml` on `push` and `pull_request`, runner `windows-latest`:
+No --all-features by default: backend/platform combinations can conflict. Documentation-only changes require links/consistency/whitespace/scope checks, not unrelated legacy builds.
 
-1. Checkout, set up .NET per `global.json`.
-2. Cache NuGet.
-3. `dotnet restore --locked-mode`.
-4. `dotnet build -c Release --no-restore -warnaserror`.
-5. `dotnet format --verify-no-changes`.
-6. `dotnet test -c Release --no-build --collect:"XPlat Code Coverage"` (without E2E).
-7. Upload coverage and test results.
-8. Secret scan (e.g. gitleaks) and package vulnerability check (`dotnet list package --vulnerable`).
+## CI plan (R0-03)
 
-Portable projects (`Core`, `Infrastructure`, `UI`) and their tests are also built and run on `ubuntu-latest` and `macos-latest` once Phase 6 starts, to keep portability honest. Until then the architecture tests are the portability guard.
+1. Checkout, exact toolchain/approved Windows SDK/link tools.
+2. Cargo cache keyed by toolchain/target/lockfile/features/backend, trusted-cache policies.
+3. Locked Release build, rustfmt, denied-warning Clippy, unit/architecture/integration/doc/supported headless tests. Demonstrate deliberate warning/format failures.
+4. Core coverage >=80% using validated tooling such as cargo-llvm-cov; publish reports, not empty-suite metrics.
+5. Advisory/licence checks (candidate cargo-audit/cargo-deny), secret scan, reviewed updates. Slint allowlisting retains attribution obligations.
+6. UIA/E2E/desktop-host tests on interactive local/self-hosted VMs; do not assume hosted runners have desktop access.
 
-Workflow `release.yml` on tag `v*`: build Release, publish, build installer, sign, compute SHA-256, create a GitHub Release with change notes.
+Pin versions of CI helper tools and packaging/signing tools as well as rustc/crates. Validate lockfiles and build metadata, archive test/coverage/resource reports and third-party notices with artefacts, and prevent untrusted pull requests from accessing signing credentials or poisoning trusted release caches. Tag releases build from a reviewed commit and locked dependencies; source/tag identity and hashes travel together. Do not use credentials or broaden network permissions to bypass a missing release prerequisite.
 
-Dependabot (or Renovate) for NuGet and GitHub Actions, weekly.
+Phase 6 adds portable-crate builds and native adapters on their OS runners after validation. Existing workflow edits belong to implementation.
 
-## Publish
+## Publish and measurement
 
-- Self-contained, `win-x64`, ReadyToRun. Native `win-arm64` follows v1.0 (B-02); until then Windows 11 on ARM runs the x64 build by emulation (unverified).
-- Trimming / NativeAOT: evaluate in Phase 5 (Avalonia supports them with compiled bindings; measure size, startup and breakage before enabling).
-- Single-file only if startup time and extraction behaviour are acceptable; measure in Phase 5.
-- Artifacts: `Drape-<version>-win-x64-setup.exe` (installer), `Drape-<version>-win-x64.zip` (portable), `SHA256SUMS.txt`.
+Ship native drape-app.exe and drape-guard.exe together, including MVP. Artefacts: Drape-<version>-win-x64.zip, Drape-<version>-win-x64-setup.exe, SHA256SUMS.txt. Sign both binaries and installer.
 
-## Installer and Updates (proposal)
+Measure download/installed/individual binary sizes and prerequisites separately. Compare LTO/codegen units/stripping/renderer before selecting profiles. Embedded Slint figures are not Windows application RAM/size promises. Record panic strategy; abort/native crash/forced kill cannot depend on Drop/panic hooks.
 
-- Velopack: per-user install without admin, delta updates, small launcher. Alternatives rejected for v1.0: MSIX/Store (packaged apps redirect HKCU writes, so the `Run` key autostart would not work; Store policy on global hooks is unverified) and WiX/MSI. Update source: GitHub Releases; auto-apply on startup disabled (ADR-022).
-- The winget manifest declares `MinimumOSVersion: 10.0.19045.0` (Windows 10 22H2, [ADR-023](../../MEMORY/DECISIONS.md)). Hyper-V VMs for **both** Windows 10 22H2 and Windows 11 are required for release testing.
-- Autostart is set from inside the app (HKCU Run key), not by the installer.
-- Uninstall: remove the app and, at the user's choice, the data in `%LOCALAPPDATA%\Drape`. **Uninstall must restore desktop icons** (run `--restore-desktop` before removal).
-- Updates: **off by default** ([ADR-017](../../MEMORY/DECISIONS.md)). The user may enable manual or periodic checks; no telemetry; download only from the official release channel; signed packages only.
+SemVer tags define versions. Reproducibility records: commit/toolchain/target/Cargo.lock/features/renderer/linker/SDK/packaging versions; distinguish unsigned reproducibility from signing/timestamps. Native ARM64 after v1; x64-on-ARM unverified.
 
-## Code Signing
+## Installer and updates
 
-- Code-signing certificate (OV/EV) or a managed signing service; keys never in the repository.
-- Sign `Drape.exe`, `Drape.Guard.exe` and the installer. Important for reducing SmartScreen warnings and antivirus false positives, since the app uses a global hook.
-- Before a certificate exists: release betas with a clear warning and checksums.
+Direct GitHub Releases, per-user installer, portable zip and winget remain the channels. Velopack was selected for C#. P5-03/Q-22 evaluates Rust integration, runtime footprint, Windows minimum, signing, silent switches, rollback and recovery. Do not silently switch installer or promise delta updates; a replacement needs an ADR.
 
-## Release Channels
+- winget MinimumOSVersion 10.0.19045.0; installer/portable testing on Windows 10 22H2 and Windows 11.
+- Autostart chosen in app, never silently enabled by installer.
+- Updates off by default, manual/periodic only with opt-in; official HTTPS, authenticated/signed packages, hashes/rollback; no telemetry/default auto-apply.
+- Coordinate App/Guard before replacement/removal; restore icons first. Never remove active recovery binaries. Data deletion requires user choice; never delete Desktop files.
+- Include Slint attribution/notices; planned route AboutSlint in top-level Settings/About.
 
-| Channel | Contents | Audience |
-|---|---|---|
-| `dev` | Build of every merge to `main` (CI artifact, unsigned) | Developers |
-| `beta` | `-beta.N` tags | Volunteer testers |
-| `stable` | Release tags | Everyone |
+### Required update/install failure cases
 
-## Versioning and Changelog
+- Verify the manifest/package signature with a defined trust root before extraction or execution; a hash fetched from the same compromised source is not authentication. Reject invalid signature, wrong target architecture, unsupported OS and path traversal in archives.
+- Download/stage without changing the running installation. On disk-full, permission failure, interrupted download, invalid package or failed installation, keep the prior working App + Guard pair and durable recovery state. Never start an old Guard with a new App unless their versioned recovery protocol is explicitly compatible.
+- Before committing an update or uninstall, request normal shutdown and verify icon restoration; if restoration cannot be verified, retain the recovery binaries/state, explain the failure and leave manual recovery available. Do not report success while an obsolete Guard still watches a replaced process.
+- Rollback cannot overwrite a newer config schema. Preserve a validated pre-update backup; an older executable opens newer schema read-only. Test settings/data-path continuity for installer versus portable mode and prohibit simultaneous conflicting instances across modes.
+- Portable mode is a packaging format, not permission to write alongside an executable in a protected directory. Use the documented data location unless an explicitly specified portable-data option is designed and tested.
+- Show update/download failures without silently enabling periodic checks. Version checks disclose normal network metadata (for example IP address and HTTP headers) as well as requested release information; no personal paths or usage telemetry are sent.
 
-- SemVer. Before 1.0, config schema changes must still migrate.
-- User-visible and operationally significant changes are recorded in [`../../MEMORY/CHANGELOG.md`](../../MEMORY/CHANGELOG.md) (Keep a Changelog style: Added, Changed, Fixed, Removed, Security), updated in every PR that affects users. A release `CHANGELOG.md` for end users is generated from it at Phase 5.
+## Signing, release and incidents
 
-## Release Checklist
+Credentials live in CI secrets/signing service, never source. Missing credentials are not bypassed. Sign App/Guard/installer; unsigned internal development experiments explicitly labelled and checksummed; formal public beta/stable distributions require signed App, Guard and installer, with no missing-credentials bypass.
 
-- [ ] All phase tasks `DONE` with records; no open blocker/major bug.
-- [ ] Manual checklist ([`../TESTING/00-TESTING-STRATEGY.md`](../TESTING/00-TESTING-STRATEGY.md)) complete, recorded per Windows build.
-- [ ] Performance tests pass.
-- [ ] Migration from the previous version tested with a real (anonymised) config.
-- [ ] Uninstall restores desktop icons.
-- [ ] Changelog and user docs updated.
-- [ ] Tag created, artifacts signed, checksums published.
-- [ ] Release notes state known limitations.
+Channels: dev CI artefacts, beta prerelease tags, stable tags. Release gates: supported CI/Core coverage, named manual safety matrix, App + Guard performance, legacy-schema compatibility, UIA/keyboard/high contrast, installer/update/uninstall recovery, licence/notices, docs/changelog, signed checksums and known limitations.
 
-## Post-Release Incident Recovery
-
-If a release leaves desktop icons unrestored or Drapes not showing: pull the release (mark pre-release), publish the `--restore-desktop` instructions and the manual steps (right-click desktop → View → Show desktop icons), ship a fix, and write a short post-mortem record in `MEMORY/records/`.
+If icons are stranded: withdraw release, publish standalone --restore-desktop and manual Windows instructions, fix and record incident. See [testing](../TESTING/00-TESTING-STRATEGY.md), [security](../SECURITY/00-SECURITY-AND-PRIVACY.md) and [migration](../ARCHITECTURE/03-RUST-MIGRATION.md).

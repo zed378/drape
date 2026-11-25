@@ -1,0 +1,27 @@
+[workspace]
+members = ["crates/*"]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.90"
+license = "MIT"
+publish = false
+
+[workspace.dependencies]
+drape-core = { path = "crates/drape-core" }
+drape-infrastructure = { path = "crates/drape-infrastructure" }
+drape-shell-windows = { path = "crates/drape-shell-windows", default-features = false }
+drape-ui = { path = "crates/drape-ui" }
+slint = { version = "=1.13.1", default-features = false, features = ["std", "backend-winit", "renderer-software", "accessibility", "compat-1-2"] }
+slint-build = "=1.13.1"
+
+[workspace.lints.rust]
+unsafe_code = "deny"
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+# Unwinding supports ordinary cleanup; it never replaces independent Guard recovery.
+panic = "unwind"

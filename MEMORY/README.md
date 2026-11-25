@@ -6,7 +6,7 @@
 
 Agents and contributors do not retain memory between sessions. `MEMORY/` is the mechanism for continuity, which is why writing to it is part of a task rather than a summary appended afterwards.
 
-**Phase note:** the project is in the planning phase and there is no code yet. Right now this folder holds decisions and two records about the documentation itself. It will grow as soon as tasks reach `DONE`.
+**Phase note (2026-11-25):** early C# code and implementation records exist. Rust + Slint is the target under ADR-025, with no Rust implementation yet. Historical records remain intact; the new migration record explains the change. The board distinguishes legacy completion from fresh R0/R1 work.
 
 ---
 

@@ -1,4 +1,7 @@
-﻿# Phase 0 — Foundation and Spikes
+# Phase 0 — Foundation and Spikes
+
+> Historical C#/.NET/Avalonia baseline, frozen 2026-11-25. Commands, task states and measurements below describe legacy work only; they do not prove Rust/Slint behaviour. Rust replacement work uses fresh R0/R1 IDs in [Rust migration tasks](./RUST-MIGRATION.md). No code was ported or removed by the documentation update.
+
 
 **Status: TODO** — planning phase; no card in this file has started and no code exists yet.
 
