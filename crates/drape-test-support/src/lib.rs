@@ -5,14 +5,14 @@ pub mod config_fs;
 pub mod config_store;
 
 use drape_core::PlatformCapabilities;
-use drape_core::domain::IconBitmap;
+use drape_core::domain::{IconBitmap, PathKey};
 use drape_core::ports::{
     Cancellation, DesktopEntry, DesktopItemSource, DesktopLocations, DesktopSnapshot, IconProvider,
-    IconRequest, IconResponse, OperationId, PortError,
+    IconRequest, IconResponse, OperationId, PathKeys, PortError,
 };
 use std::cell::RefCell;
 use std::collections::VecDeque;
-use std::ffi::OsString;
+use std::ffi::{OsStr, OsString};
 
 /// Explicit capability data for tests; the default keeps every feature disabled.
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
@@ -25,6 +25,32 @@ impl FakePlatformCapabilities {
 
     pub fn capabilities(&self) -> PlatformCapabilities {
         self.0
+    }
+}
+
+/// Keys equal to the literal path, so different spellings stay distinct.
+#[derive(Debug, Default, Clone, Copy)]
+pub struct FakePathKeys {
+    failure: Option<PortError>,
+}
+
+impl FakePathKeys {
+    pub fn failing(error: PortError) -> Self {
+        Self {
+            failure: Some(error),
+        }
+    }
+}
+
+impl PathKeys for FakePathKeys {
+    fn path_key(&self, path: &OsStr) -> Result<PathKey, PortError> {
+        if let Some(error) = self.failure {
+            return Err(error);
+        }
+        let literal = path
+            .to_str()
+            .map_or_else(|| format!("{path:?}"), str::to_owned);
+        PathKey::new(literal).map_err(|_| PortError::Unavailable)
     }
 }
 

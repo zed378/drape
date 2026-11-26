@@ -14,6 +14,12 @@ pub const WM_LBUTTONDOWN: u32 = 0x0201;
 pub const WM_LBUTTONUP: u32 = 0x0202;
 pub const WM_RBUTTONDOWN: u32 = 0x0204;
 pub const WM_RBUTTONUP: u32 = 0x0205;
+pub const WM_MBUTTONDOWN: u32 = 0x0207;
+pub const WM_MBUTTONUP: u32 = 0x0208;
+pub const WM_MOUSEWHEEL: u32 = 0x020A;
+pub const WM_XBUTTONDOWN: u32 = 0x020B;
+pub const WM_XBUTTONUP: u32 = 0x020C;
+pub const WM_MOUSEHWHEEL: u32 = 0x020E;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct NativeButtonMessage {
@@ -101,6 +107,18 @@ impl HookCallback {
         let Some(message) = message else {
             return Admission::Dropped;
         };
+        if matches!(
+            message.message,
+            WM_MBUTTONDOWN
+                | WM_MBUTTONUP
+                | WM_MOUSEWHEEL
+                | WM_XBUTTONDOWN
+                | WM_XBUTTONUP
+                | WM_MOUSEHWHEEL
+        ) {
+            self.queue.mark_discontinuity();
+            return Admission::Dropped;
+        }
         let event = match message.message {
             WM_LBUTTONDOWN => ButtonEvent::LeftDown,
             WM_LBUTTONUP => ButtonEvent::LeftUp,
@@ -180,6 +198,30 @@ mod tests {
         let callback = callback();
         assert_eq!(callback.handle(0, Some(msg(0x1234)), || 4), 4);
         assert_eq!(callback.queue().poll(), QueuePoll::Empty);
+    }
+
+    #[test]
+    fn other_button_and_wheel_messages_break_left_click_sequences() {
+        for message in [
+            WM_MBUTTONDOWN,
+            WM_MBUTTONUP,
+            WM_MOUSEWHEEL,
+            WM_XBUTTONDOWN,
+            WM_XBUTTONUP,
+            WM_MOUSEHWHEEL,
+        ] {
+            let callback = callback();
+            for button_message in [WM_LBUTTONDOWN, WM_LBUTTONUP] {
+                assert_eq!(callback.handle(0, Some(msg(button_message)), || 5), 5);
+                assert!(matches!(callback.queue().poll(), QueuePoll::Event(_)));
+            }
+            assert_eq!(callback.handle(0, Some(msg(message)), || 6), 6);
+            assert_eq!(callback.queue().poll(), QueuePoll::Reset);
+            for button_message in [WM_LBUTTONDOWN, WM_LBUTTONUP] {
+                assert_eq!(callback.handle(0, Some(msg(button_message)), || 7), 7);
+                assert!(matches!(callback.queue().poll(), QueuePoll::Event(_)));
+            }
+        }
     }
 
     #[test]

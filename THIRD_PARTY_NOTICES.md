@@ -2,6 +2,8 @@
 
 Drape's original code is MIT; see [LICENSE](./LICENSE). This is an internal R0-02 baseline, not a public release or complete distribution notice bundle.
 
+`serde_json` 1.0.154 (MIT or Apache-2.0) is a runtime dependency of the persistence adapter.
+
 Slint runtime/compiler/build crates are pinned to **1.13.1**. Copyright © SixtyFPS GmbH and contributors. Drape selects the **Slint Royalty-free Desktop, Mobile, and Web Applications License 2.0** permitted by ADR-025. The exact text from the downloaded version is retained in [licenses/slint](./licenses/slint/LicenseRef-Slint-Royalty-free-2.0.md). Slint is not relicensed as MIT. The baseline window exposes the provided AboutSlint widget via its About Slint button; production Settings/About and keyboard/UIA verification remain future work.
 
 The target-filtered [dependency inventory](./docs/ENGINEERING/R0-02-DEPENDENCIES.md) records locked package versions, declared licences and Rust minimums, including host/build dependencies. Permissive alternatives are selected where a declaration offers MIT/Apache/BSD/ISC/Zlib/BSL/Unicode/CC0; Slint uses the explicitly accepted royalty-free exception. This metadata review is not a security advisory audit or proof of every transitive copyright notice. A public release must gather each shipped dependency's exact required copyright/licence/font/asset notices and revalidate the selected licence obligations before distribution. Guard's dependency closure contains only the three Drape crates, with no Slint runtime or renderer.

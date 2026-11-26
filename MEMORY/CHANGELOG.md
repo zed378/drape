@@ -8,6 +8,12 @@ Format loosely follows Keep a Changelog. Dates are absolute. There is no release
 
 ## Unreleased
 
+### 2026-11-26 - R1-02 persistence service ([record](./records/2026-11-26-R1-02-persistence-service.md))
+
+- **Added:** lossless schema-1 load and save with bounded parsing, quarantine, backup recovery and pruning, verified against the filesystem fake; `PathKeys` port.
+- **Fixed:** middle, X-button and wheel messages break a click sequence; the icon doc comment no longer promises an error on a cache miss; the icon worker is testable and stops polling.
+- **Pending:** native filesystem adapter, application wiring and Windows evidence.
+
 ### 2026-11-26 - Icon worker and deferred callback read ([record](./records/2026-11-26-parallel-r0-06-r0-08-worker-callback.md))
 
 - **Added:** bounded serial shell icon worker returning raw DIB data; callback data read only after the hook code check. Native integration and Windows VM evidence remain pending.

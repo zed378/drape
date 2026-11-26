@@ -1,0 +1,31 @@
+{
+  "futureRoot": { "big": 9007199254740993, "precise": 1.00000000000000000000001, "nested": [null, true, { "k": "v" }] },
+  "schemaVersion": 1,
+  "settings": { "quickHide": { "enabled": true, "futureDelay": 250 }, "futureSetting": "keep" },
+  "pages": [
+    { "id": "6f1c2b8e-0000-4000-8000-000000000001", "name": "Main", "order": 0, "futurePage": 18446744073709551617 }
+  ],
+  "drapes": [
+    {
+      "id": "6f1c2b8e-0000-4000-8000-000000000010",
+      "pageId": "6f1c2b8e-0000-4000-8000-000000000001",
+      "title": "Reports",
+      "kind": "Normal",
+      "portal": null,
+      "bounds": { "monitorId": "M1", "x": 40.50, "y": 60, "width": 320, "height": 240, "dpi": 144, "futureBounds": 1 },
+      "style": { "tint": "#3A6EA5", "blur": "acrylic", "labelMode": "two-lines", "futureStyle": {} },
+      "state": { "futureState": 2 },
+      "items": [
+        { "id": "6f1c2b8e-0000-4000-8000-000000000100", "path": "C:\\Users\\example\\Desktop\\a.txt", "addedAt": "2026-10-09T07:43:00.000000001Z", "futureItem": [1, 2] }
+      ]
+    },
+    {
+      "id": "6f1c2b8e-0000-4000-8000-000000000020",
+      "pageId": "6f1c2b8e-0000-4000-8000-000000000001",
+      "title": "Second",
+      "bounds": { "monitorId": "M1", "x": 400, "y": 60, "width": 320, "height": 240 },
+      "items": []
+    }
+  ],
+  "rules": [ { "id": "r1", "futureRule": 1e400 } ]
+}

@@ -14,6 +14,8 @@ drape-core = { path = "crates/drape-core" }
 drape-infrastructure = { path = "crates/drape-infrastructure" }
 drape-shell-windows = { path = "crates/drape-shell-windows", default-features = false }
 drape-ui = { path = "crates/drape-ui" }
+drape-test-support = { path = "crates/drape-test-support" }
+serde_json = { version = "=1.0.154", features = ["arbitrary_precision", "preserve_order"] }
 slint = { version = "=1.13.1", default-features = false, features = ["std", "backend-winit", "renderer-software", "accessibility", "compat-1-2"] }
 slint-build = "=1.13.1"
 

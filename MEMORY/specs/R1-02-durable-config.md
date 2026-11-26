@@ -65,6 +65,72 @@ Calls run on the selected synchronous persistence worker, with cooperative cance
 
 Parser budgets, alias-conflict handling, lossless wire representation, ConfigStore service types and the native adapter remain later prerequisites. No numeric parser defaults, JSON dependencies, schema fields or recovery-state protocol are selected by these interfaces.
 
+## Implementation decisions, 2026-11-26
+
+Written before the persistence service. The owner authorised R1-02 to start against the ConfigStore and FileSystem subsets of R1-01; native R1-01 ports stay open. See [ADR-031](../DECISIONS.md). The native Windows adapter is a later slice, so this slice is verified against the in-memory fake only.
+
+### Injected inputs
+
+| Input | Where defined | Purpose |
+|---|---|---|
+| `FileSystem` | Core | All storage access |
+| `PathKeys` | Core, new | Platform comparison key for a stored literal path. Deterministic; no lookup or hydration. Two different literals share a key only when equivalence is proven without lookup, otherwise their keys differ. App passes the same provider to enumeration and drop. A failure fails the load without moving anything |
+| `GuidSource` | Infrastructure | Temporary, backup and quarantine identities |
+| Fallback `Page` | Caller | Used only when a document has no pages |
+
+### Lossless representation
+
+The store keeps the parsed JSON value of the loaded document with property order preserved and numbers held as their original text. A save compares each known field of the new `DomainConfig` with the value read from that same stored element, matched by identity, and rewrites the field only if it differs. Unknown properties, `rules`, timestamp precision, offsets and accepted spellings of unchanged fields therefore survive. Removing an item or Drape removes its element, including unknown properties inside it. Layout whitespace and a byte order mark are not preserved. Before publishing, the store re-reads the produced bytes and requires them to project back to exactly the saved config with no repair and no unsupported value.
+
+### Accepted forms
+
+| Field | Accepted | Written for new or changed values |
+|---|---|---|
+| quick-hide | `settings.quickHideEnabled` or `settings.quickHide.enabled` | every form already present; `quickHideEnabled` if neither |
+| `labelMode` | `none`, `oneline`, `one-line`, `twolines`, `two-lines` | `none`, `oneline`, `twolines` |
+| `sortMode` | `manual`, `name`, `type`, `dateadded` | same |
+| timestamps | RFC 3339 with `Z` or numeric offset, any fraction length | UTC with `Z`, milliseconds only when non-zero |
+
+Enum values are matched ignoring ASCII case. Absent or `null` optional properties take the legacy writer's defaults.
+
+### Classification of a stored document
+
+| Condition | Result |
+|---|---|
+| Not JSON, root not an object, `schemaVersion` absent or not a positive integer, wrong JSON type, missing required property, malformed or duplicate identity, one item identity naming two paths | corrupt |
+| `schemaVersion` greater than 1, matched ignoring property case | read-only, newer schema; never quarantined |
+| Duplicate property name, unpaired surrogate escape, property name starting `$serde_json::private::` | read-only, no projection |
+| Known property spelled with different case, conflicting quick-hide forms, unknown enum or discriminator, `virtual` item | read-only; the projection shows a default for that field |
+| Well-typed value the domain rejects: blank name, empty path, number outside its range or beyond `f64`, bounds under the minimum | read-only; the projection clamps or substitutes and the stored value is untouched |
+| Missing or unreadable `addedAt` | read-only |
+| Two references to one path or identity inside one Drape | read-only; the projection keeps the first |
+| Duplicate memberships whose timestamps differ only below one millisecond | read-only |
+| A limit below is exceeded | `TooLarge`; bytes untouched |
+
+An absent page name or Drape title takes the legacy default, which is empty, so it is a blank name. A duplicate property in a document that does not parse is corrupt; an unpaired surrogate or a reserved parser name keeps the document read-only even when it does not parse, because neither can be told apart from a parser rejection. A required property spelled with different case projects its stored value, since no safe default exists.
+
+Required properties are `schemaVersion`, `pages`, each `id`, each Drape `pageId` and `bounds` with `monitorId`, `x`, `y`, `width` and `height`, and each item `path`. Unknown pages and duplicate memberships across Drapes are repaired by Core reconciliation and reported.
+
+### Limits
+
+| Limit | Value |
+|---|---|
+| Document bytes, load and save | 16 MiB |
+| Nesting depth | 64 |
+| Raw bytes in one string, escapes included | 256 KiB |
+| JSON values in one document | 200,000 |
+| Managed backups listed | 1,024 |
+
+The string limit exceeds a 32,767 unit Windows path written entirely as six byte escapes. A test builds the 50 by 50 legacy profile and requires it to stay under one quarter of the byte and value limits.
+
+### Load and save rules
+
+- A missing current document falls back to backups. A corrupt one is quarantined first. Backups are tried newest first; a corrupt backup is skipped, a read-only one is returned read-only, and a read failure stops recovery.
+- A quarantine notice is held until a load succeeds.
+- After recovery the next save creates the current document and does not overwrite one that appeared meanwhile.
+- Cancellation is checked before quarantine and before commit.
+- Pruning runs only after a commit with confirmed durability. It reads the bounded listing, newest first, and counts valid backups only. While fewer than ten valid backups exist nothing is removed. Otherwise it deletes valid backups after the tenth and corrupt ones older than the tenth. A newer-schema or unsupported backup is never removed. Any listing or read failure stops pruning before the first removal and is reported as cleanup.
+
 ## Desktop Safety
 
 - Icon hiding: none. This task never calls desktop-host or icon-visibility APIs.

@@ -1,2 +1,4 @@
-//! Persistence adapters arrive in R1-02, after their FileSystem contract is reviewed.
+//! Persistence adapters behind Core ports. No native or direct filesystem access.
 #![forbid(unsafe_code)]
+
+pub mod config;

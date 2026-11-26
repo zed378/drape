@@ -10,13 +10,15 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 ALLOWED = {
     "drape-core": set(),
-    "drape-infrastructure": {"drape-core"},
+    "drape-infrastructure": {"drape-core", "serde_json"},
     "drape-ui": {"drape-core", "slint", "slint-build"},
     "drape-shell-windows": {"drape-core", "windows"},
     "drape-test-support": {"drape-core"},
     "drape-guard": {"drape-core", "drape-shell-windows"},
     "drape-app": {"drape-core", "drape-infrastructure", "drape-shell-windows", "drape-ui"},
 }
+# Allowed only as development dependencies (ADR-031).
+DEV_ONLY = {"drape-infrastructure": {"drape-test-support"}}
 # The pinned windows 0.61.3 binding's reviewed transitive closure, not a general
 # windows-* allowance. Direct native dependencies remain forbidden in Guard and
 # every shared crate. Adding another package requires review of actual metadata.
@@ -47,6 +49,9 @@ def violations(graph):
         # Includes all build/dev/optional/target declarations, even if inactive
         # on this host. Later tasks amend this strict baseline under review.
         for dependency in package["dependencies"]:
+            if (dependency["kind"] == "dev"
+                    and dependency["name"] in DEV_ONLY.get(name, set())):
+                continue
             if dependency["name"] not in ALLOWED.get(name, set()):
                 failures.append(f"{name}: forbidden dependency {dependency['name']}")
     nodes = {node["id"]: node for node in graph["resolve"]["nodes"]}
@@ -123,6 +128,13 @@ class CargoBoundaries(unittest.TestCase):
         failures = violations(self.mutation_graph("drape-infrastructure",
             '\n[build-dependencies]\ndrape-shell-windows.workspace = true\n'))
         self.assertIn("drape-infrastructure: forbidden dependency drape-shell-windows", failures)
+
+    def test_fake_adapters_are_rejected_as_a_production_dependency(self):
+        failures = violations(self.mutation_graph("drape-infrastructure",
+            '\n[target.\'cfg(windows)\'.dependencies]\n'
+            'drape-test-support.workspace = true\n'))
+        self.assertIn(
+            "drape-infrastructure: forbidden dependency drape-test-support", failures)
 
     def test_native_binding_dependency_is_rejected_in_shared_crates(self):
         for crate in ("drape-core", "drape-ui", "drape-infrastructure", "drape-guard"):

@@ -737,3 +737,15 @@ Alternatives considered: a single `Result<(), Error>` hides whether bytes were p
 Costs and limitations: implementers must validate opaque token provenance, revision consistency and temporary eligibility, and consumers must handle an explicit stopped-save fault state. Indeterminate publication requires later native reconciliation design and tests; no real filesystem or process-failure experiment is claimed. Numeric parser budgets, alias-conflict handling and lossless wire representation remain prerequisites. Native acceptance, supported Windows builds and power-loss limits are not established by interface compilation or an in-memory fake.
 
 Architecture-check maintenance in the same continuation recognizes the already pinned Windows binding only as a direct dependency of `drape-shell-windows` and its enumerated transitive packages in Guard's closure. It does not allow direct native dependencies in Core, UI, Infrastructure or Guard. Actual-metadata mutation tests retain those boundaries; no broad `windows-*` exception is introduced.
+
+## ADR-031: Lossless schema-1 persistence in Infrastructure
+
+Date: 2026-11-26. Status: accepted for implementation; native adapter evidence pending.
+
+Authority: the owner asked for R1-02 to start while the native R1-01 ports wait for spike evidence. The R1-02 dependency is narrowed to the reviewed `ConfigStore` and `FileSystem` contracts. No schema, data location or product scope change.
+
+Decision: `drape-infrastructure` parses with `serde_json` 1.0.154, already locked through the Slint build graph, with `preserve_order` and `arbitrary_precision`. The stored JSON value is the lossless document; a save rewrites only known fields whose domain value changed, then re-reads its own output before publishing. A separate bounded scan enforces limits and detects duplicate properties and unpaired surrogates before the parser runs. Core gains one port, `PathKeys`. The architecture check allows `serde_json` for Infrastructure and `drape-test-support` as an Infrastructure development dependency only. Accepted forms, classification and limits are specified in [the R1-02 spec](./specs/R1-02-durable-config.md). New documents use the legacy writer's flat `quickHideEnabled` and unhyphenated label modes, because that writer is the only implementation that has produced files.
+
+Alternatives considered: serializing domain structs directly loses unknown values and precision. Typed wire structs with flattened extension maps keep unknown properties but still rewrite accepted spellings and timestamp precision. A hand-written JSON parser adds untested code at the trust boundary.
+
+Costs and limitations: the whole document is held twice in memory during a save. Comparing field by field needs a mapping that must be kept in step with the domain model; the re-read check turns a missed field into a refused save rather than silent loss. `preserve_order` and `arbitrary_precision` apply wherever Cargo unifies this `serde_json` build. Numbers beyond `f64` in known fields are read as invalid.

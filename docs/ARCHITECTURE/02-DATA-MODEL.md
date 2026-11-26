@@ -1,6 +1,6 @@
 # 02 — Data Model
 
-Status: Rust target contract, ADR-005 and ADR-025. The language migration preserves schema version 1, field names, enum values and existing data locations. Implementation is future R1-02 work.
+Status: Rust target contract, ADR-005 and ADR-025. The language migration preserves schema version 1, field names, enum values and existing data locations. The R1-02 persistence service is implemented against the filesystem fake ([ADR-031](../../MEMORY/DECISIONS.md)); the native adapter is not.
 
 ## File Locations
 
@@ -85,6 +85,8 @@ The entity is `Drape` in Rust and UI ([ADR-020](../../MEMORY/DECISIONS.md)); pac
   "rules": []
 }
 ```
+
+The example shows `quickHide.enabled` and `two-lines`. Both are accepted; new documents are written with `quickHideEnabled` and `twolines`, and stored spellings are kept while unchanged ([R1-02 spec](../../MEMORY/specs/R1-02-durable-config.md)).
 
 Paths in the example are fictional. Never put real user paths or configs in the repository.
 

@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "settings": {
+    "language": "id-ID",
+    "theme": "dark",
+    "hideIconsWhenActive": true,
+    "quickHideEnabled": false,
+    "autostart": true,
+    "inboxEnabled": true,
+    "dropMode": "reference",
+    "logLevel": "Information",
+    "updateCheck": "manual"
+  },
+  "pages": [
+    { "id": "6f1c2b8e-0000-4000-8000-000000000001", "name": "Utama", "order": 0 }
+  ],
+  "drapes": [
+    {
+      "id": "6f1c2b8e-0000-4000-8000-000000000010",
+      "pageId": "6f1c2b8e-0000-4000-8000-000000000001",
+      "title": "Laporan \u672a",
+      "kind": "normal",
+      "bounds": { "monitorId": "\\\\?\\DISPLAY#EXAMPLE#1", "x": 40, "y": 60, "width": 320, "height": 240, "dpi": 144, "fx": 0.021, "fy": 0.056, "fw": 0.167, "fh": 0.222 },
+      "style": { "opacity": 0.45, "cornerRadius": 8, "titleSize": 13, "iconSize": 48, "iconSpacing": 12, "labelMode": "oneline" },
+      "state": { "rolledUp": false, "locked": true, "sortMode": "dateadded" },
+      "quickHideExcluded": true,
+      "items": [
+        { "id": "6f1c2b8e-0000-4000-8000-000000000100", "kind": "file", "path": "C:\\Users\\example\\Desktop\\Q3.xlsx", "order": 0, "addedAt": "2026-10-09T14:43:00.1234567+07:00", "pinnedByUser": true },
+        { "id": "6f1c2b8e-0000-4000-8000-000000000101", "kind": "shortcut", "path": "\\\\server\\share\\Desktop\\app.lnk", "order": 1, "addedAt": "2026-10-09T07:44:00+00:00", "pinnedByUser": false, "missingSince": "2026-10-10T00:00:00+00:00" }
+      ]
+    }
+  ]
+}

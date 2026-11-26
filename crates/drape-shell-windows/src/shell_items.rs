@@ -68,7 +68,9 @@ pub struct ShellIconDib {
 }
 
 /// Obtains only an icon available in memory and copies its DIB bytes before native
-/// owners are released. A cache miss returns an error rather than loading the file.
+/// owners are released. With `SIIGBF_MEMORYONLY`, the shell may return a per-class
+/// icon when the item's own icon is not cached; callers cannot distinguish it, so
+/// they must not cache this result as the item's own icon.
 ///
 /// Synchronous and STA-affine for the duration of the call; run on a bounded icon
 /// worker. No thumbnail, cache, background executor, UI conversion or overlay claim.

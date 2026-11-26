@@ -165,6 +165,7 @@ struct State {
     stopped: bool,
     failures: VecDeque<FakeFailure>,
     operations: Vec<FileSystemStage>,
+    cancel_on_acquire: Option<Rc<Cancellation>>,
 }
 
 impl State {
@@ -221,6 +222,34 @@ impl FakeFileSystem {
             order: generation,
         });
         Ok(revision)
+    }
+
+    /// Fixture control: a managed backup newer than everything seeded before it.
+    pub fn seed_backup(
+        &mut self,
+        id: Guid,
+        bytes: Vec<u8>,
+    ) -> Result<FakeRevision, FileSystemError> {
+        let mut state = self.state.borrow_mut();
+        let generation = state.next_generation()?;
+        let revision = FakeRevision {
+            root: self.root.clone(),
+            generation,
+        };
+        state.backups.insert(
+            id,
+            StoredFile {
+                bytes,
+                revision: revision.clone(),
+                order: generation,
+            },
+        );
+        Ok(revision)
+    }
+
+    /// Cancels the given request while the next writer acquisition succeeds.
+    pub fn cancel_on_acquire(&self, cancellation: Rc<Cancellation>) {
+        self.state.borrow_mut().cancel_on_acquire = Some(cancellation);
     }
 
     pub fn inject(&self, failure: FakeFailure) {
@@ -529,6 +558,9 @@ impl FileSystem for FakeFileSystem {
         let mut state = self.state.borrow_mut();
         let generation = state.next_generation()?;
         state.writer = Some(generation);
+        if let Some(cancellation) = state.cancel_on_acquire.take() {
+            cancellation.cancel();
+        }
         Ok(FakeWriter {
             root: self.root.clone(),
             generation,

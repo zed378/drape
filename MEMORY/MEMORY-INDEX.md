@@ -10,6 +10,8 @@ Current status is in [`../TASKS/PROGRESS.md`](../TASKS/PROGRESS.md), not here.
 
 | Date | Task | Record | Hook |
 |---|---|---|---|
+| 2026-11-26 | R1-02 | [Lossless schema-1 persistence service](./records/2026-11-26-R1-02-persistence-service.md) | Parallel small Codex tasks; 181 workspace tests, 8 mutations, two review rounds; fake filesystem only; partial REVIEW. |
+| 2026-11-26 | R0-05 | [Recovery spec review](./records/2026-11-26-R0-05-spec-review.md) | Five open safety findings and a proposed Core state table; ACCEPT WITH CHANGES. |
 | 2026-11-26 | R1-01 | [ConfigStore contract, save gate and fake](./records/2026-11-26-R1-01-config-store-contract.md) | Saves bound to their load baseline; architect review ACCEPT after three fixes; 126 workspace tests, six mutations; partial REVIEW. |
 | 2026-11-26 | Review | [Cross-review of the uncommitted continuation](./records/2026-11-26-claude-cross-review.md) | Gates pass (110 tests); open findings on icon fallback, worker shutdown, desktop root guard, gesture buttons and task state. |
 | 2026-11-26 | R0-06 / R0-08 | [Icon worker and deferred callback read](./records/2026-11-26-parallel-r0-06-r0-08-worker-callback.md) | Bounded serial icon worker with raw DIB output; callback reads data only after the hook code check; 110 workspace tests; partial REVIEW. |
@@ -48,6 +50,7 @@ Full text in [`DECISIONS.md`](./DECISIONS.md). Part II (2026-10-10) says what ch
 
 | ID | Date | Decision | Status |
 |---|---|---|---|
+| ADR-031 | 2026-11-26 | Lossless schema-1 persistence in Infrastructure with bounded `serde_json` | Implemented against the fake; native adapter pending |
 | ADR-030 | 2026-11-25 | Root-confined filesystem tokens and explicit config mutation uncertainty | Interface design; native implementation/acceptance pending |
 | ADR-029 | 2026-11-25 | Parallel local continuation; one sequential validation owner | Accepted owner-authorised execution policy |
 | ADR-028 | 2026-11-25 | Isolate compiler-generated Slint unsafe glue; hand-written UI/Core forbid unsafe | Implementation decision; review pending |

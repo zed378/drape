@@ -6,7 +6,7 @@
 
 use crate::domain::{Guid, IconBitmap, ItemKind, PathKey};
 use std::cell::Cell;
-use std::ffi::OsString;
+use std::ffi::{OsStr, OsString};
 use std::fmt;
 
 /// Caller-issued session/request identity. Consumers must discard stale responses.
@@ -101,6 +101,15 @@ pub trait DesktopItemSource {
         entry_limit: usize,
         cancellation: &Cancellation,
     ) -> Result<DesktopSnapshot, PortError>;
+}
+
+/// Platform comparison keys for stored literal paths.
+///
+/// Deterministic, without lookup or hydration. Two different literals share a
+/// key only when equivalence is proven without lookup; otherwise their keys
+/// differ. Enumeration, drops and persistence receive the same provider.
+pub trait PathKeys {
+    fn path_key(&self, path: &OsStr) -> Result<PathKey, PortError>;
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
