@@ -76,6 +76,14 @@ Things the documents state but nobody has proven. Each is settled by a card; unt
 
 No code retirement, schema change or product feature removal is implied by the documentation request. Exact toolchain/crate versions and backend/rendering APIs are intentionally unselected until R0-02/spike evidence. Slint is an explicit royalty-free dependency-policy exception requiring attribution; Drape remains MIT. Preserve old C# records and use fresh R0/R1 tasks. Former Phase 0/1 status contradictions are preserved as historical snapshots, not counted as active WIP. Old OS minimums outside Windows remain planning targets requiring Rust/Slint validation.
 
+## R0-06 enumeration integration prerequisites — 2026-11-25
+
+The [passive enumeration continuation](../MEMORY/records/2026-11-25-enumeration-persistence-contracts.md) retains raw literal paths rather than inventing Windows comparison keys. Before implementing `DesktopItemSource`, review case-sensitive directories, extended/UNC paths, duplicate private/public roots and verified Explorer visibility settings. Caller-supplied enumeration budgets are probe inputs, not selected production defaults. No native hydration/timing acceptance is inferred from metadata-only source code.
+
+## R1-02 compatibility prerequisites — 2026-11-25
+
+Source review found that the legacy writer's flat quick-hide property and enum spellings differ from the abridged documentation example. Default assumption: retain both supported representations losslessly, preserve timestamp precision, and refuse ambiguous/conflicting aliases until their handling is specified. No schema change is implied. The architect and Core/Infrastructure implementers must settle these cases, filesystem operation signatures and parser resource budgets in [the R1-02 spec](../MEMORY/specs/R1-02-durable-config.md) before persistence implementation. Limits need hand-written sanitized fixtures for both the 500-desktop-item matrix and the legacy 2,500-reference serialization profile; no numeric cap is inferred from either profile. See the [continuation record](../MEMORY/records/2026-11-25-icon-cache-validation-continuation.md).
+
 ## Parallel continuation assumption — 2026-11-25
 
 The owner explicitly authorised parallel implementation and one sequential testing agent. R0-03 and R1-01 continue locally against the R0-02 REVIEW baseline; QA independently reviews that baseline before dependent acceptance. Work remains on the existing feat/R0-03-rust-ci branch to preserve the dirty shared workspace; no commit, merge or DONE is implied. Native desktop spikes retain their VM/safety prerequisites.

@@ -82,6 +82,7 @@ macOS/Linux adapters/mobile entry points wait for Phase 6 evidence; do not scaff
 | C# test/marketing runtime figure used as Rust evidence | False parity/performance claim |
 | Treating a thread as native crash isolation | Native handler can still kill App |
 | Borrowed HWND wrapped as owned | Double destruction/use-after-free |
+| Native rename/replace error treated as proof the namespace is unchanged | Preserve evidence and stop retry/prune on indeterminate commit/quarantine; [contract record](./MEMORY/records/2026-11-25-enumeration-persistence-contracts.md), ADR-030 |
 | Unbounded icons/queues or idle redraw | Resource goals missed despite Rust |
 
 Found a new trap: update here and task conventions, with evidence/record.

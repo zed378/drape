@@ -1,6 +1,7 @@
 //! Platform-free domain data and adapter contracts.
 #![forbid(unsafe_code)]
 
+pub mod config_store;
 pub mod domain;
 pub mod layout;
 pub mod ports;

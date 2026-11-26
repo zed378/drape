@@ -213,6 +213,10 @@ Slint 1.13.1 generated glue requires a private compiler-output unsafe exception 
 
 Drop/panic hooks do not recover from abort/kill/reboot. Guard readiness and durable intent precede icon hiding; Guard health loss while App lives requires immediate best-effort restoration and no rehide until rearmed. App/Guard/CLI serialize recovery ownership; duplicate startup must not restore a live owner's changes. Restore must not depend on config/log success. Slint owns its HWNDs; shell registrations borrow them and expire before destruction. C# test counts and old measurements never count as Rust evidence.
 
+## Native namespace uncertainty trap
+
+A native replace/rename error does not by itself prove that no namespace mutation occurred. Commit and quarantine contracts must distinguish verified non-mutation from indeterminate outcomes, retain all recovery evidence and prevent automatic retry, backup pruning or temporary cleanup until reconciliation. A revision check is not an OS compare-and-swap against uncooperative external writers. See [ADR-030](../MEMORY/DECISIONS.md) and the [interface review record](../MEMORY/records/2026-11-25-enumeration-persistence-contracts.md); native adapter acceptance remains pending.
+
 ## Security scanner compatibility trap
 
 A pinned scanner can become incompatible with its current advisory database before checking any dependency. R0-03 reproduced cargo-deny 0.18.3 rejecting CVSS 4.0 advisory data. Update to an explicitly pinned compatible helper and rerun the complete audit; never delete an advisory or add an ignore solely to make parsing pass. See the [R0-03 record](../MEMORY/records/2026-11-25-R0-03-rust-ci.md).

@@ -8,6 +8,37 @@ Format loosely follows Keep a Changelog. Dates are absolute. There is no release
 
 ## Unreleased
 
+### 2026-11-26 - Icon worker and deferred callback read ([record](./records/2026-11-26-parallel-r0-06-r0-08-worker-callback.md))
+
+- **Added:** bounded serial shell icon worker returning raw DIB data; callback data read only after the hook code check. Native integration and Windows VM evidence remain pending.
+
+### 2026-11-26 - R1-01 configuration store contract ([record](./records/2026-11-26-R1-01-config-store-contract.md))
+
+- **Added:** platform-free `ConfigStore` port, a shared save gate that refuses stale, read-only and indeterminate saves, and a scripted fake.
+- **Reviewed:** different-role architect review; open findings on other slices are in the [cross-review](./records/2026-11-26-claude-cross-review.md). No native store or Windows behaviour is claimed.
+
+### 2026-11-26 - Bounded shell adapter QA checkpoint ([record](./records/2026-11-26-parallel-r0-06-r0-08-follow-up.md))
+
+- R0-06 metadata-to-snapshot and R0-08 callback-policy slices pass focused and workspace QA. The callback reset-order test now observes the enable Reset before a later sample; both tasks remain partial until native integration and Windows VM evidence.
+
+### 2026-11-26 - Metadata budget and pure consumer follow-up ([record](./records/2026-11-26-parallel-r0-06-r0-08-follow-up.md))
+- **Fixed:** every observed metadata entry consumes scan budget before filename validation; pre-context hook samples are discarded before recognition.
+- **Added:** explicit serialized consumer cancellation/reset and final enabled/generation revalidation coverage.
+- **Verified:** independent QA, 99 workspace tests, three behavioral guard mutations, locked Release, formatting and denied-warning Clippy. Native performance, hook installation and Windows matrix remain pending.
+
+### 2026-11-26 - Parallel continuation validation ([record](./records/2026-11-25-autonomous-continuation.md))
+- **Verified:** filesystem fake and pure hook-state subsets; Release, format, Clippy, 88 tests, seven architecture checks, 89.27% Core coverage and offline dependency audit pass.
+- **Clarified:** concurrent discontinuity ordering and consumer stale-intent checks; native hook and VM evidence remain pending.
+
+### 2026-11-25 — Passive enumeration and persistence contracts ([record](./records/2026-11-25-enumeration-persistence-contracts.md))
+- **Added:** bounded read-only Windows desktop metadata enumeration and platform-neutral root-confined filesystem contract declarations.
+- **Pending:** sequential QA results, native enumeration matrix, comparison-key integration, lossless config parser/service and native filesystem adapter.
+
+### 2026-11-25 — Icon cache and snapshot continuation ([record](./records/2026-11-25-icon-cache-validation-continuation.md))
+- **Added:** worker-owned icon LRU cache with pixel-byte and entry-count limits, size/revision keys, atomic oversize rejection and item invalidation.
+- **Reviewed:** immutable snapshot domain values and actual legacy JSON spellings/timestamp precision as persistence-fixture prerequisites.
+- **Pending:** final sequential QA results in the record; native enumeration, hydration/alpha, Windows matrix and runtime cache integration remain unverified.
+
 ### 2026-11-25 — Parallel Rust layout and host diagnostics ([record](./records/2026-11-25-parallel-layout-host-continuation.md))
 - **Added:** pure monitor-relative layout, snap and recovery development over the reviewed domain subset, plus an isolated safe Slint native-handle diagnostic.
 - **Verified locally:** locked Release build, formatting, denied-warning Clippy, 38 workspace tests, 86.75% Core coverage, a real no-drift mutation check and current advisory/licence/source audit; sole QA records named evidence.

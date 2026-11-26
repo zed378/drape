@@ -1116,6 +1116,7 @@ name = "drape-shell-windows"
 version = "0.1.0"
 dependencies = [
  "drape-core",
+ "windows 0.61.3",
 ]
 
 [[package]]

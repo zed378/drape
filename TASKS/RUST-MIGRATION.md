@@ -58,7 +58,7 @@ Acceptance: strategies A/B/C tested with actual Slint windows and the public API
 
 | Field | Value |
 |---|---|
-| Status | TODO |
+| Status | WIP — orchestrator, 2026-11-26; recovery protocol spec written before implementation; native decision evidence remains required |
 | Priority / role | P0 / shell-engineer-windows |
 | Depends on | R0-02 |
 | Spec refs | PLATFORM/00 section 3; ARCHITECTURE/00,03; SECURITY/00 |
@@ -72,7 +72,7 @@ Required protocol cases: serialize App/Guard/CLI ownership per user/session with
 
 | Field | Value |
 |---|---|
-| Status | TODO |
+| Status | REVIEW (partial) — shell-enumeration, 2026-11-26; bounded STA icon worker returns raw DIB with request identity; 23 related shell tests, 50 shell tests, 110 workspace tests, locked build/format/Clippy and 7 boundary tests pass; pixel semantics/provider/UI and VM matrix pending |
 | Priority / role | P1 / shell-engineer-windows |
 | Depends on | R0-02 |
 | Spec refs | PLATFORM/00 section 4; ARCHITECTURE/02; TESTING/00 |
@@ -98,7 +98,7 @@ Keyboard acceptance includes entering tray/settings and choosing/focusing any Dr
 
 | Field | Value |
 |---|---|
-| Status | TODO |
+| Status | REVIEW (partial) — hook-consumer, 2026-11-26; callback data is deferred until non-negative hook codes; 27 hook tests, 50 shell tests, 110 workspace tests, locked build/format/Clippy and 7 boundary tests pass; native WH_MOUSE_LL/API and VM matrix pending |
 | Priority / role | P1 / shell-engineer-windows |
 | Depends on | R0-02 |
 | Spec refs | PLATFORM/00 section 7; SECURITY/00 |
@@ -138,8 +138,8 @@ Each card requires a parity matrix of relevant legacy behaviours and new named R
 
 | ID / title | Status / role | Depends on | Spec refs | Acceptance / abuse case |
 |---|---|---|---|---|
-| R1-01 Domain models and platform-free ports | REVIEW (partial) / core-engineer, 2026-11-25; architect-approved subset, 18 targeted Core/test-support tests pass; remaining acceptance in record | R0-02 | ARCHITECTURE/00,02,03; ENGINEERING/00 | Owned domain structs/enums, validation, capabilities and deterministic fakes; no platform/UI handles or I/O; tests for invalid IDs, dimensions and duplicate membership. Do not merely translate records. |
-| R1-02 Durable config and legacy schema compatibility | TODO / core-engineer | R1-01 | ARCHITECTURE/02; TESTING/00 | Spec first; atomic writes and failure injection, versioned hand-written fixtures, unknown fields/legacy values preserved, quarantine/backups/newer-version read-only. Do not generate fixtures with the migrator itself. |
+| R1-01 Domain models and platform-free ports | REVIEW (partial) / core-engineer, 2026-11-26; ConfigStore contract and fake passed architect review, 126 workspace tests ([record](../MEMORY/records/2026-11-26-R1-01-config-store-contract.md)); native port contracts pending spikes | R0-02 | ARCHITECTURE/00,02,03; ENGINEERING/00 | Owned domain structs/enums, validation, capabilities, deterministic fakes and immutable Snapshot values; no platform/UI handles or I/O; tests for invalid IDs, dimensions, duplicate membership and snapshot validity. Rule condition/action semantics remain P4-02 scope and must not be invented here. |
+| R1-02 Durable config and legacy schema compatibility | REVIEW (spec only) / architect, 2026-11-25; implementation waits for R1-01 acceptance and reviewed interfaces/limits | R1-01 | ARCHITECTURE/02; TESTING/00; [spec](../MEMORY/specs/R1-02-durable-config.md) | Atomic writes and failure injection, versioned hand-written fixtures, unknown fields/legacy values preserved, quarantine/backups/newer-version read-only. Do not generate fixtures with the migrator itself. |
 | R1-03 Layout, snap and monitor recovery | REVIEW (pure subset) / core-engineer (layout), 2026-11-25; 14 new tests, 86.75% Core coverage and mutation pass; integration pending | R1-01 | PLAN/02; ARCHITECTURE/02; TESTING/00 | Stored-position math, DPI cycles without drift, monitor removal/return with ambiguous-ID/reconnect fallback, deterministic negative tests and >=80% Core coverage. Do not hide drift with rounding in tests. |
 | R1-04 Slint panel, item grid, keyboard and native drops | TODO / ui-engineer, shell adapter handoff | R0-06, R0-10, R1-01, R1-03 | UI-UX/00; PLATFORM/00; PLAN/02 | Create/move/resize/rename/delete, one window per Drape, bounded asynchronous icons, item open/remove/reorder/drop, UIA/keyboard including tray/settings/Drape entry without optional hotkey, correct explicit focus and DPI through 300%/four monitors; no filesystem mutation for membership. A rendering screenshot alone is not acceptance. |
 | R1-05 Config and application-service integration | TODO / ui-engineer, core service handoff | R0-09, R1-02, R1-04 | ARCHITECTURE/00,02; PLAN/01,02 | 500 ms save debounce, flush on normal shutdown without blocking recovery, load/reconcile, commands/tray, single instance, safe default/degraded behaviour; named integration tests. A fake host does not prove desktop attachment. |
@@ -157,3 +157,66 @@ Each card requires a parity matrix of relevant legacy behaviours and new named R
 ### R1-01 partial implementation checkpoint — 2026-11-25
 
 The [domain record](../MEMORY/records/2026-11-25-R1-01-domain-models.md) lists approved validated data, three read-only ports, deterministic fakes and the legacy parity matrix. QA alone ran tests-first red phases and 18 targeted passing Core/test-support tests. Remaining FileSystem/ConfigStore/native lifecycle and other contracts/fakes are not implemented; integrated gates and full parity are pending. This partial REVIEW does not satisfy dependent-task acceptance or imply merge/DONE.
+
+### Handoff architect → core-engineer / shell-engineer-windows · 2026-11-25
+
+- Context: owner requested continued parallel implementation after the cache/snapshot checkpoint.
+- Done: R1-01 now declares root-confined FileSystem contracts; shell source review corrected external-writer exclusion and quarantine uncertainty, with ADR-030/spec updates.
+- Not done: deterministic filesystem fake, ConfigStore/parser, alias/lossless-wire/limit evidence, native filesystem adapter and full R1-01 acceptance.
+- Contract/interface changed: FileSystem and typed commit/quarantine outcomes in crates/drape-core/src/ports.rs; no native handles or direct I/O in Core.
+- How to verify: sole QA queue runs locked workspace gates and actual Cargo boundary mutations; named evidence in the [continuation record](../MEMORY/records/2026-11-25-enumeration-persistence-contracts.md).
+- Risks / surprises: revision checks are not compare-and-swap against arbitrary external editors; indeterminate mutations retain evidence and stop saves/recovery until reconciliation.
+
+### Handoff shell-engineer-windows → qa / ui-engineer · 2026-11-25
+
+- Context: R0-06 passive metadata probe extends the prior icon/cache subset.
+- Done: bounded Known Folder desktop metadata enumeration, lossless literal UTF-16 paths, visibility inputs, cancellation and FindClose RAII; architect static review passed.
+- Not done: Windows comparison keys, complete DesktopItemSource, Explorer visibility acquisition, worker/UI integration and native hydration/performance matrix.
+- Contract/interface changed: shell-local raw metadata probe in crates/drape-shell-windows/src/enumeration.rs; no Core native/source interface change.
+- How to verify: metadata_* shell library tests; final QA evidence in the [continuation record](../MEMORY/records/2026-11-25-enumeration-persistence-contracts.md).
+- Risks / surprises: root preflight has native race windows; metadata-only calls do not establish no-hydration behavior on every provider.
+
+### Handoff core-engineer → architect / qa · 2026-11-26
+
+- Context: R1-01's root-confined FileSystem declarations needed a deterministic consumer fake before persistence implementation could proceed.
+- Done: staged in-memory fake, opaque root-bound tokens, failure injection for precommit and indeterminate outcomes, and named failure-preservation tests; architect review and sequential workspace QA passed.
+- Not done: native filesystem adapter, ConfigStore/parser, lossless wire/alias handling and numeric parser limits; these remain implementation prerequisites for R1-02.
+- Contract/interface changed: none in this handoff; fake implements `drape_core::ports::FileSystem` and does not use real I/O.
+- How to verify: `scripts/cargo-windows.cmd test --workspace --locked` → 88 tests; Core coverage 89.27%; see the [continuation record](../MEMORY/records/2026-11-25-autonomous-continuation.md).
+- Risks / surprises: revision checks do not prove native compare-and-swap against arbitrary external writers; indeterminate outcomes stop automatic mutation and preserve evidence.
+
+### Handoff shell-engineer-windows → architect / qa · 2026-11-26
+
+- Context: R0-08's reviewed scope was limited to pure bounded queue and transient double-click state, with no live hook installation.
+- Done: 12 named queue/recognizer tests, overflow-reset and cross-generation mutation checks; architect reviewed the clarified in-flight discontinuity ordering and dispatch guard.
+- Not done: native callback/message loop, hit testing, drag handling, latency/antivirus observations or Windows VM matrix.
+- Contract/interface changed: no Rust type/API change; the spec requires one serialized consumer to process Reset before later samples and revalidate enabled state plus host/session generation before dispatch.
+- How to verify: `scripts/cargo-windows.cmd test --workspace --locked` → 88 tests; named mutations and full gate evidence are in the [continuation record](../MEMORY/records/2026-11-25-autonomous-continuation.md).
+- Risks / surprises: a poll already past its loss check may yield one event ordered before the concurrent discontinuity; the future consumer must apply the specified stale-intent guard.
+
+### Handoff shell-engineer-windows → qa / orchestrator · 2026-11-26
+
+- Context: owner requested parallel continuation of R0-06 bounded metadata and R0-08 pure consumer slices.
+- Done: scan accounting before malformed-name validation, initial consumer queue reset, explicit immediate cancellation reset, context/generation dispatch guards; independent QA accepted the subsets, 99 workspace tests and three behavioral mutations pass.
+- Not done: DesktopItemSource/PathKey, worker/UI/native enumeration matrix, native callback/hit-test/lifecycle and hook latency/AV/Windows matrix.
+- Contract/interface changed: shell-local HookConsumer only; no Core interface or capability change. See the clarified R0-08 spec.
+- How to verify: locked workspace Release/format/Clippy/tests; named tests and exact evidence in the [follow-up record](../MEMORY/records/2026-11-26-parallel-r0-06-r0-08-follow-up.md).
+- Risks / surprises: serialized owner must deliver timeout/movement/disable commands even when no button event arrives; pending queue loss permits one already-claimed sample under the documented ordering. No native acceptance or merge/DONE is implied.
+
+### Handoff shell-engineer-windows → qa / orchestrator · 2026-11-26
+
+- Context: owner requested the next bounded R0-06/R0-08 continuation after the reviewed pure subsets.
+- Done: R0-06 adds a fail-closed metadata-to-`DesktopSnapshot` adapter requiring caller-supplied comparison-key cardinality; R0-08 adds a callback policy adapter for negative hook codes, eligible button mapping, bounded admission and discontinuity resets.
+- Not done: Windows key provider/worker/UI integration, actual `WH_MOUSE_LL` installation/message loop, hit testing, latency/AV observations and VM matrix.
+- Contract/interface changed: shell-local `attach_comparison_keys`/`WindowsDesktopItemSource` and `hook_callback` module; no Core interface change.
+- How to verify: sequential QA should run focused enumeration and callback tests, then locked workspace gates and source-boundary checks.
+- Risks / surprises: both adapters deliberately fail closed and do not establish native safety or icon recovery acceptance; new files were untracked at handoff.
+
+### Handoff shell-engineer-windows → qa / orchestrator · 2026-11-26
+
+- Context: the owner requested parallel continuation; QA found one callback test needed to consume the enable Reset before expecting a later event.
+- Done: R0-06 metadata-to-snapshot adapter and R0-08 callback policy adapter passed focused checks; callback test ordering now matches the queue reset contract; rustfmt was applied to the two shell modules.
+- Not done: Windows key provider/worker/UI integration, actual `WH_MOUSE_LL` installation/message loop, hit testing, icon extraction/hydration proof, latency/AV observations or VM matrix.
+- Contract/interface changed: none in Core; shell-local fail-closed adapters only.
+- How to verify: Release build, format check, Clippy, workspace tests and all seven boundary tests passed. Final format check and focused suites passed after formatting: `enumeration::tests` (11) and `hook_callback::tests` (5).
+- Risks / surprises: workspace tests/build/Clippy/boundaries ran before the whitespace-only rustfmt pass; focused suites and format check were rerun afterward. Native/VM acceptance remains open; no commit/merge/DONE is implied.

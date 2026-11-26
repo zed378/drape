@@ -10,6 +10,15 @@ Current status is in [`../TASKS/PROGRESS.md`](../TASKS/PROGRESS.md), not here.
 
 | Date | Task | Record | Hook |
 |---|---|---|---|
+| 2026-11-26 | R1-01 | [ConfigStore contract, save gate and fake](./records/2026-11-26-R1-01-config-store-contract.md) | Saves bound to their load baseline; architect review ACCEPT after three fixes; 126 workspace tests, six mutations; partial REVIEW. |
+| 2026-11-26 | Review | [Cross-review of the uncommitted continuation](./records/2026-11-26-claude-cross-review.md) | Gates pass (110 tests); open findings on icon fallback, worker shutdown, desktop root guard, gesture buttons and task state. |
+| 2026-11-26 | R0-06 / R0-08 | [Icon worker and deferred callback read](./records/2026-11-26-parallel-r0-06-r0-08-worker-callback.md) | Bounded serial icon worker with raw DIB output; callback reads data only after the hook code check; 110 workspace tests; partial REVIEW. |
+| 2026-11-26 | R0-06 / R0-08 | [Parallel native-slice follow-up](./records/2026-11-26-parallel-r0-06-r0-08-follow-up.md) | Bounded metadata/callback adapters: 107 workspace tests, 7 boundary tests, final format and focused suites pass; native evidence remains pending. |
+| 2026-11-26 | R1-01 / R0-08 | [Autonomous parallel continuation](./records/2026-11-25-autonomous-continuation.md) | Fake and pure hook-state validation: 88 tests, architecture mutations, 89.27% Core coverage; native safety gates remain open. |
+| 2026-11-25 | R0-06 / R1-01 | [Passive enumeration and persistence contracts](./records/2026-11-25-enumeration-persistence-contracts.md) | Disjoint Windows metadata probe and root-confined filesystem interfaces; exclusive QA queue and explicit native/persistence limits. |
+| 2026-11-25 | R0-06 / R1-01 / R1-02 | [Icon cache and snapshot validation continuation](./records/2026-11-25-icon-cache-validation-continuation.md) | Bounded owned-pixel LRU cache, independent snapshot review and source-grounded legacy fixture prerequisites; exclusive QA queue. |
+| 2026-11-25 | R0-06 / R1-01 | [Shell and snapshot parallel continuation](./records/2026-11-25-shell-snapshot-parallel-continuation.md) | Disjoint read-only native probe and immutable Snapshot owners; sequential QA pending. |
+| 2026-11-25 | R1-01 / R1-02 | [Post-merge parallel continuation](./records/2026-11-25-post-merge-parallel-continuation.md) | Capability fake/tests and persistence spec; final locked gates, 40 workspace tests and 6 architecture tests pass; partial REVIEW. |
 | 2026-11-25 | Integration | [Owner-authorized main integration](./records/2026-11-25-main-integration.md) | Commit/merge/push of reviewed Rust subsets; full native/integration acceptance remains pending. |
 | 2026-11-25 | R1-03 | [Pure layout and recovery](./records/2026-11-25-R1-03-layout.md) | Immutable stored position, explicit monitor fallback and pure snap; QA evidence and integration limits. |
 | 2026-11-25 | R0-04 | [Slint handle diagnostic](./records/2026-11-25-R0-04-handle-diagnostic.md) | Isolated read-only borrowed-handle probe; full host strategies and Windows matrix pending. |
@@ -39,6 +48,7 @@ Full text in [`DECISIONS.md`](./DECISIONS.md). Part II (2026-10-10) says what ch
 
 | ID | Date | Decision | Status |
 |---|---|---|---|
+| ADR-030 | 2026-11-25 | Root-confined filesystem tokens and explicit config mutation uncertainty | Interface design; native implementation/acceptance pending |
 | ADR-029 | 2026-11-25 | Parallel local continuation; one sequential validation owner | Accepted owner-authorised execution policy |
 | ADR-028 | 2026-11-25 | Isolate compiler-generated Slint unsafe glue; hand-written UI/Core forbid unsafe | Implementation decision; review pending |
 | ADR-027 | 2026-11-25 | Owner-authorised R0-02 continuation, reproducible toolchain/Slint baseline and fail-closed recovery route | Local implementation checks passed; review/merge pending |
@@ -73,6 +83,9 @@ Full text in [`DECISIONS.md`](./DECISIONS.md). Part II (2026-10-10) says what ch
 
 | Task | Spec |
 |---|---|
+| R0-05 | [Native icon state and independent recovery](./specs/R0-05-native-icon-recovery.md) - written before implementation; native state/readback and Guard protocol evidence remain pending. |
+| R0-08 | [Minimal hook and transient state](./specs/R0-08-minimal-hook.md) - pure subset; native acceptance pending. |
+| R1-02 | [Durable config and schema compatibility](./specs/R1-02-durable-config.md) - written before implementation. |
 | R0-04 | [Slint desktop-host diagnostic](./specs/R0-04-slint-desktop-host.md) — written before probe code; full native strategies/matrix pending. |
 | R0-02 | [Rust workspace baseline](./specs/R0-02-rust-workspace.md) ? written before workspace source. |
 | P1-03 | [Config store](./specs/P1-03-config-store.md) — retrospective; implementation already existed. |

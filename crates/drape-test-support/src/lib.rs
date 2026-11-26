@@ -1,6 +1,10 @@
 //! Deterministic test adapters; no access to real desktop state.
 #![forbid(unsafe_code)]
 
+pub mod config_fs;
+pub mod config_store;
+
+use drape_core::PlatformCapabilities;
 use drape_core::domain::IconBitmap;
 use drape_core::ports::{
     Cancellation, DesktopEntry, DesktopItemSource, DesktopLocations, DesktopSnapshot, IconProvider,
@@ -9,6 +13,20 @@ use drape_core::ports::{
 use std::cell::RefCell;
 use std::collections::VecDeque;
 use std::ffi::OsString;
+
+/// Explicit capability data for tests; the default keeps every feature disabled.
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
+pub struct FakePlatformCapabilities(PlatformCapabilities);
+
+impl FakePlatformCapabilities {
+    pub fn new(capabilities: PlatformCapabilities) -> Self {
+        Self(capabilities)
+    }
+
+    pub fn capabilities(&self) -> PlatformCapabilities {
+        self.0
+    }
+}
 
 /// Caller-controlled clock, including pre-epoch and repeated timestamps.
 pub struct FixedClock(pub drape_core::TimestampMillis);

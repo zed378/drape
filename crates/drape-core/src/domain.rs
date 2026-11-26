@@ -544,6 +544,119 @@ impl Drape {
     }
 }
 
+/// Immutable position, style and membership for one Drape in a saved layout.
+///
+/// The original bounds and item order are retained unchanged. Monitor resolution,
+/// file existence checks and restoring references belong to consuming services.
+#[derive(Debug, Clone, PartialEq)]
+pub struct DrapeSnapshot {
+    drape_id: Guid,
+    bounds: Bounds,
+    style: Style,
+    items: Vec<DrapeItem>,
+}
+
+impl DrapeSnapshot {
+    /// Rejects duplicate item identities or adapter-supplied path keys.
+    pub fn new(
+        drape_id: Guid,
+        bounds: Bounds,
+        style: Style,
+        items: Vec<DrapeItem>,
+    ) -> Result<Self, DomainError> {
+        let mut ids = HashSet::new();
+        let mut paths = HashSet::new();
+        for item in &items {
+            if !ids.insert(item.id) {
+                return Err(DomainError::Duplicate("item id"));
+            }
+            if !paths.insert(&item.path_key) {
+                return Err(DomainError::Duplicate("membership"));
+            }
+        }
+        Ok(Self {
+            drape_id,
+            bounds,
+            style,
+            items,
+        })
+    }
+
+    pub fn drape_id(&self) -> Guid {
+        self.drape_id
+    }
+    pub fn bounds(&self) -> &Bounds {
+        &self.bounds
+    }
+    pub fn style(&self) -> &Style {
+        &self.style
+    }
+    pub fn items(&self) -> &[DrapeItem] {
+        &self.items
+    }
+}
+
+/// Validated passive layout value with caller-supplied identity and creation time.
+///
+/// This is not a wire document or a restore operation. Saving, previewing and
+/// applying a snapshot must preserve this original value and perform their own
+/// validation and user confirmation at the appropriate boundary.
+#[derive(Debug, Clone, PartialEq)]
+pub struct LayoutSnapshot {
+    id: Guid,
+    name: String,
+    created_at: TimestampMillis,
+    drapes: Vec<DrapeSnapshot>,
+}
+
+impl LayoutSnapshot {
+    /// Rejects blank names and duplicate Drape/item identities or memberships.
+    /// An empty saved layout is valid; no default Drape or timestamp is generated.
+    pub fn new(
+        id: Guid,
+        name: String,
+        created_at: TimestampMillis,
+        drapes: Vec<DrapeSnapshot>,
+    ) -> Result<Self, DomainError> {
+        nonblank(&name, "snapshot name")?;
+        let mut drape_ids = HashSet::new();
+        let mut item_ids = HashSet::new();
+        let mut paths = HashSet::new();
+        for drape in &drapes {
+            if !drape_ids.insert(drape.drape_id) {
+                return Err(DomainError::Duplicate("Drape id"));
+            }
+            for item in &drape.items {
+                if !item_ids.insert(item.id) {
+                    return Err(DomainError::Duplicate("item id"));
+                }
+                if !paths.insert(&item.path_key) {
+                    return Err(DomainError::Duplicate("membership"));
+                }
+            }
+        }
+        Ok(Self {
+            id,
+            name,
+            created_at,
+            drapes,
+        })
+    }
+
+    pub fn id(&self) -> Guid {
+        self.id
+    }
+    pub fn name(&self) -> &str {
+        &self.name
+    }
+    pub fn created_at(&self) -> TimestampMillis {
+        self.created_at
+    }
+    pub fn drapes(&self) -> &[DrapeSnapshot] {
+        &self.drapes
+    }
+}
+
 /// Report every reference-only repair; callers retain original input/backup and notify users.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Repair {

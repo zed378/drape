@@ -136,3 +136,219 @@ pub trait IconProvider {
         cancellation: &Cancellation,
     ) -> Result<IconResponse, PortError>;
 }
+
+/// Redacted persistence failures. Missing, inaccessible and oversized inputs must
+/// not all become an empty configuration. No variant contains a user pathname.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum FileSystemError {
+    NotFound,
+    AccessDenied,
+    TooLarge,
+    AlreadyExists,
+    Conflict,
+    InvalidToken,
+    Unsupported,
+    Unavailable,
+    Cancelled,
+}
+
+/// Owned bytes from one stable, bounded observation, paired with an opaque
+/// revision. The revision detects replacement/change; it is not just a timestamp.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ConfigRead<Revision> {
+    pub bytes: Vec<u8>,
+    pub revision: Revision,
+}
+
+/// Select initial creation explicitly; absence never authorizes overwriting an
+/// unexpected destination. Replacement preserves the expected previous bytes in
+/// a newly, exclusively named backup before reporting success.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum ConfigCommit<Revision> {
+    CreateNew,
+    Replace {
+        expected_revision: Revision,
+        backup_id: Guid,
+    },
+}
+
+/// Namespace replacement and storage durability are distinct observations.
+/// Unconfirmed durability never means that an already committed save was undone.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum CommitDurability {
+    Confirmed,
+    Unconfirmed(FileSystemError),
+}
+
+/// Successful namespace commit. Cleanup/pruning is a separate subsequent step;
+/// its failure must not be returned as failure to commit these bytes.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ConfigCommitReceipt<File, Revision> {
+    pub revision: Revision,
+    pub backup: Option<File>,
+    pub durability: CommitDurability,
+}
+
+/// A platform error alone does not establish whether replacement occurred.
+/// Indeterminate results retain all evidence and prohibit pruning, automatic
+/// retry and a clean-success claim until the adapter reconciles the namespace.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum ConfigCommitOutcome<File, Revision> {
+    Committed(ConfigCommitReceipt<File, Revision>),
+    /// Destination and existing backups are unchanged; owned temp may remain.
+    NotCommitted(FileSystemError),
+    /// No outcome is inferred and no artefact may be discarded automatically.
+    Indeterminate(FileSystemError),
+}
+
+/// Quarantine is also a namespace mutation; an error cannot imply that moving
+/// the source failed. Unknown outcomes stop recovery and preserve all evidence.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum QuarantineOutcome<File> {
+    Moved(File),
+    /// Current config and existing quarantine entries are unchanged.
+    NotMoved(FileSystemError),
+    /// No backup recovery, overwrite or automatic retry until reconciliation.
+    Indeterminate(FileSystemError),
+}
+
+/// Cleanup applies only to the caller's exclusively created temporary artefact.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum TemporaryCleanup {
+    Removed,
+    AlreadyAbsent,
+}
+
+/// Root-confined configuration storage, selected and injected by App.
+///
+/// This port cannot address Desktop items, recovery journals or arbitrary paths.
+/// File tokens refer only to current config and recognized app-managed backups /
+/// quarantine entries. Tokens and revisions are opaque, root/adapter-bound and
+/// validated on every call; native handles must never be exposed through them.
+/// Existing legacy backup filenames remain discoverable without renaming them.
+/// Symlinks/reparse escapes and foreign, stale or wrong-kind tokens are rejected.
+///
+/// All calls are synchronous on a selected persistence worker, never Slint's
+/// event-loop thread. No blanket Send/Sync bound is imposed. A writer excludes
+/// cooperating Drape processes using the same config root; it is not an atomic
+/// compare-and-swap against arbitrary external writers. Adapters must document
+/// external-mutation residual windows, detect conflicts where possible, and
+/// reject unsupported stronger guarantees before mutation. The application still
+/// coordinates its own single-instance lifetime. Shutdown stops admission, cancels reads and
+/// precommit work, waits for in-flight native calls, resolves commit outcome,
+/// cleans only owned temporary files, then releases the writer. None of this may
+/// block the independent desktop-restoration path.
+///
+/// Cancellation is cooperative before mutation. Commit has no cancellation
+/// parameter: once begun it must report its actual outcome even if the request
+/// becomes stale. Cancellation after Committed never reports NotCommitted.
+/// Dropping resources is best effort, not a process-kill durability guarantee.
+/// Numeric byte/list limits are supplied explicitly, not silently defaulted here.
+pub trait FileSystem {
+    type File: Clone;
+    type Revision: Clone;
+    type Writer;
+    type Temporary;
+
+    /// A logical token for config.json; obtaining it does not create a file.
+    fn current_config(&self) -> Self::File;
+
+    /// Non-blocking exclusive writer acquisition; contention returns Conflict.
+    fn acquire_writer(&mut self) -> Result<Self::Writer, FileSystemError>;
+
+    /// Return all bytes from a stable revision without exceeding byte_limit.
+    /// Check the bound while reading even if metadata advertised a smaller size.
+    /// An oversize result preserves the file and is never a partial success.
+    fn read_config(
+        &self,
+        file: &Self::File,
+        byte_limit: std::num::NonZeroUsize,
+        cancellation: &Cancellation,
+    ) -> Result<ConfigRead<Self::Revision>, FileSystemError>;
+
+    /// Enumerate only recognized managed backups, newest first with a stable
+    /// adapter-defined tie-break. Bound scanning/retention before allocation;
+    /// TooLarge reports incomplete enumeration, never a truncated successful list.
+    fn list_backups(
+        &self,
+        entry_limit: std::num::NonZeroUsize,
+        cancellation: &Cancellation,
+    ) -> Result<Vec<Self::File>, FileSystemError>;
+
+    /// Exclusively create an empty same-directory temporary file. A collision is
+    /// AlreadyExists, never reuse/truncate. The caller supplies the unique ID.
+    fn create_temporary(
+        &mut self,
+        writer: &Self::Writer,
+        temporary_id: Guid,
+    ) -> Result<Self::Temporary, FileSystemError>;
+
+    /// Write the complete byte slice. Failure may leave a partial owned temp but
+    /// cannot touch the destination/backups. Only a complete successful write,
+    /// followed by successful sync_temporary, makes a temp eligible for commit.
+    /// The adapter enforces this state, including after failed/repeated writes.
+    fn write_temporary(
+        &mut self,
+        writer: &Self::Writer,
+        temporary: &mut Self::Temporary,
+        bytes: &[u8],
+        cancellation: &Cancellation,
+    ) -> Result<(), FileSystemError>;
+
+    /// Flush application buffers and sync the owned file. A separate failure
+    /// point from write, preserving the previously committed destination.
+    fn sync_temporary(
+        &mut self,
+        writer: &Self::Writer,
+        temporary: &mut Self::Temporary,
+        cancellation: &Cancellation,
+    ) -> Result<(), FileSystemError>;
+
+    /// Atomically publish a fully written/synced temp, checking writer ownership
+    /// and expected revision under cooperating-writer exclusion. A separate
+    /// revision check is not atomic CAS against arbitrary external editors.
+    /// Replacement is allowed
+    /// only after the coordinator validated the previous document. Backup-name
+    /// collisions never overwrite existing backups. A successful commit consumes
+    /// the temp's eligibility; replay is rejected. Unsupported guarantees must
+    /// fail before mutation. Filesystem power-loss limits remain explicit.
+    fn commit_temporary(
+        &mut self,
+        writer: &Self::Writer,
+        temporary: &mut Self::Temporary,
+        mode: ConfigCommit<Self::Revision>,
+    ) -> ConfigCommitOutcome<Self::File, Self::Revision>;
+
+    /// Preserve only the expected current config under a new quarantine identity,
+    /// without overwriting another entry. NotMoved guarantees unchanged source;
+    /// Indeterminate preserves evidence and stops recovery until reconciliation.
+    /// Backup recovery cannot fall through either fault into replacing config.
+    fn quarantine_current(
+        &mut self,
+        writer: &Self::Writer,
+        expected_revision: &Self::Revision,
+        quarantine_id: Guid,
+    ) -> QuarantineOutcome<Self::File>;
+
+    /// Remove only a recognized backup whose revision still matches. The
+    /// coordinator invokes this solely after a confirmed successful commit and
+    /// successful bounded validation/listing of the backups it will retain.
+    fn remove_backup(
+        &mut self,
+        writer: &Self::Writer,
+        backup: &Self::File,
+        expected_revision: &Self::Revision,
+    ) -> Result<(), FileSystemError>;
+
+    /// Idempotent cleanup of this writer's temp only; foreign replacements must
+    /// never be removed. Failed cleanup remains visible without undoing commit.
+    fn cleanup_temporary(
+        &mut self,
+        writer: &Self::Writer,
+        temporary: &mut Self::Temporary,
+    ) -> Result<TemporaryCleanup, FileSystemError>;
+
+    /// Release writer ownership after all calls/cleanup finish. Failure is
+    /// reported separately from commit; adapters retain best-effort Drop cleanup.
+    fn release_writer(&mut self, writer: Self::Writer) -> Result<(), FileSystemError>;
+}

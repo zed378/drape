@@ -14,36 +14,39 @@ Legacy P1-04 partial UI and P0-03–P0-07 VM-pending harnesses are superseded as
 
 | ID | Work | Owner | Started |
 |---|---|---|---|
-| — | No active implementation; final QA/document checks | qa | 2026-11-25 |
+| R0-05 | Recovery protocol spec drafting | orchestrator | 2026-11-26 |
 
 ## Review
 
 | ID | Work | Owner | Status |
 |---|---|---|---|
+| R0-06 | Bounded STA icon worker and raw-DIB handoff (partial) | shell-enumeration | 23 enumeration/icon/cache/path tests; 50 shell tests, 110 workspace tests, locked build/format/Clippy and 7 boundary tests pass; pixel semantics, provider/UI integration and VM matrix pending |
+| R0-08 | Deferred callback-data read and panic-safe forwarding (partial) | hook-consumer | 27 hook tests; 50 shell tests, 110 workspace tests, locked build/format/Clippy and 7 boundary tests pass; native WH_MOUSE_LL integration and VM matrix pending |
+| R1-01 | Domain models, neutral ports, snapshot, filesystem fake, ConfigStore contract and fake (partial) | core-engineer | [ConfigStore record](../MEMORY/records/2026-11-26-R1-01-config-store-contract.md): architect review ACCEPT, 126 workspace tests, 7 boundary tests; native port contracts and R1-02 dependency decision pending |
+| R1-02 | Durable config specification only | architect | Spec now maps reviewed filesystem declarations; parser limits, aliases, lossless wire layer and R1-01 full prerequisite acceptance pending |
 | R0-04 | Slint native-handle diagnostic (partial spike) | shell-engineer-windows | Isolated locked Release/format/Clippy and 2 CLI tests pass; architect/QA static review passed; full native hosting and Windows matrix pending |
-| R0-03 | Rust CI and quality gates | release-engineer | QA/static review passed locally; final workspace gates, 86.75% Core coverage and current advisory/licence/source audit pass; hosted Actions and merge pending |
+| R0-03 | Rust CI and quality gates | release-engineer | QA/static review and local gates passed; integrated on main; hosted Actions pending |
 | R1-03 | Pure layout, snap and monitor recovery | core-engineer | 14 new tests, no-drift mutation and integrated gates pass; persistence/native integration and full prerequisites pending |
-| R1-01 | Domain models and neutral read-only ports (partial) | core-engineer | Architect-reviewed subset; 18 targeted Core/test-support tests pass; remaining contracts and integrated gates pending |
 | R0-01 | Rust + Slint documentation baseline | architect | Specialist documentation review complete; merge pending |
 | R0-02 | Rust workspace, contracts and dependency/licence baseline | architect | Local release/format/Clippy, 8 Rust and 6 architecture tests pass; independent implementation review/merge pending |
 
 [Original change record](../MEMORY/records/2026-11-25-R0-01-rust-slint-documentation.md). The owner explicitly requested specialist agents on 2026-11-25; architecture, Windows/security and QA/release/UI reviewers have disjoint document ownership. They review one task, not three new implementation tasks.
 
-Testing policy for this owner-authorised continuation: one active dedicated QA agent runs a sequential validation queue for both implementation owners. Implementation agents do not execute verification commands. R0-02 remains REVIEW; dependent local work is explicitly authorised by the owner continuation request, with independent baseline review queued before acceptance. Existing branch feat/R0-03-rust-ci and uncommitted baseline are preserved; no merge or DONE status is implied.
+Testing policy for this owner-authorised continuation: one active dedicated QA agent runs a sequential validation queue. Implementation agents do not execute verification commands. The reviewed baseline is integrated on main; R0-02 retains REVIEW until its task-specific independent acceptance is recorded. No commit or DONE status is implied for this continuation.
 
-Current continuation: `layout` owns the new pure layout module/tests; `host_spike` owns an isolated read-only Slint native-handle diagnostic/spec; `qa` is the sole sequential verification owner. Root owns shared task/continuity files. See the [ownership record](../MEMORY/records/2026-11-25-parallel-layout-host-continuation.md). R1-03 uses only the reviewed R1-01 data subset; complete dependent acceptance remains pending. No desktop-host strategy or native-icon mutation is authorized by the diagnostic harness.
+Current continuation: R0-06 adds a bounded STA icon worker that intentionally returns raw DIB data pending verified pixel semantics; R0-08 defers callback-data reads for negative hook codes and contains adapter panics while forwarding. Both passed sequential QA and remain partial pending native integration and VM evidence. R1-01 remains partial: the ConfigStore contract is now [added and reviewed](../MEMORY/records/2026-11-26-R1-01-config-store-contract.md), and R1-02 implementation remains blocked on full R1-01 acceptance or an architect decision narrowing that dependency. A [cross-review](../MEMORY/records/2026-11-26-claude-cross-review.md) lists open findings. R0-05's recovery protocol spec is written; native API and VM evidence remain open. See the [current parallel continuation record](../MEMORY/records/2026-11-26-parallel-r0-06-r0-08-worker-callback.md), the [earlier bounded-adapter record](../MEMORY/records/2026-11-26-parallel-r0-06-r0-08-follow-up.md) and [prior continuation evidence](../MEMORY/records/2026-11-25-autonomous-continuation.md).
 
 ## Next work
 
-R0-02 remains REVIEW; see its [record](../MEMORY/records/2026-11-25-R0-02-rust-workspace.md). Current shared work preserves feat/R0-03-rust-ci. R0-03 is locally reviewed; R1-03 pure layout and R0-04 diagnostic are reviewed subsets with integration/native evidence pending. R0-05–R0-09 experiments retain explicit dependencies. R0-10 and R1-06 remain BLOCKED on new evidence. No old DONE status satisfies these dependencies.
+R0-02 remains REVIEW; see its [record](../MEMORY/records/2026-11-25-R0-02-rust-workspace.md). R0-03 is integrated on main with hosted Actions pending. R1-01's domain/port/fake and bounded R0-06/R0-08 adapters remain partial REVIEW and do not satisfy full migration/native acceptance. R1-02 still needs lossless wire/alias compatibility and input-limit evidence before ConfigStore implementation acceptance. R0-06 PathKey/source and worker/UI/native integration, R0-08 native hook integration, R1-03 persistence/native integration and R0-04 full host acceptance remain pending. R0-10 and R1-06 remain BLOCKED on new evidence. No old DONE status satisfies these dependencies.
 
 ## Phase state
 
 | Work | Status |
 |---|---|
 | R0 documentation | REVIEW: R0-01 reviewed baseline, merge pending |
-| R0 Rust foundation/spikes | R0-02/R0-03 REVIEW; R0-04 diagnostic subset REVIEW; R0-05–R0-09 TODO; R0-10 BLOCKED |
-| R1 Rust core/UI/parity | R1-01 partial REVIEW; R1-03 pure subset REVIEW; R1-02/R1-04/R1-05 TODO; R1-06 BLOCKED |
+| R0 Rust foundation/spikes | R0-02/R0-03 REVIEW; R0-04/R0-06/R0-08 partial REVIEW; R0-05 WIP; R0-07/R0-09 TODO; R0-10 BLOCKED |
+| R1 Rust core/UI/parity | R1-01 partial REVIEW; R1-02 spec REVIEW (implementation waits on R1-01); R1-03 pure subset REVIEW; R1-04/R1-05 TODO; R1-06 BLOCKED |
 | P2–P5 Windows product phases | TODO, wait for Rust foundation/core |
 | P6 other platforms | Post-v1, unverified Rust/Slint support |
 

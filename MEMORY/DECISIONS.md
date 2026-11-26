@@ -716,3 +716,24 @@ Decision: release-engineer continues R0-03 and core-engineer starts R1-01 agains
 Rationale: this carries out authorised parallel work without overlapping test processes or falsely marking prerequisites DONE. Disjoint implementation ownership prevents file conflicts.
 
 Alternatives/costs: serial implementation wastes the expressly requested parallel capacity; concurrent testers violate the owner instruction. Local dependent work risks rework if baseline review finds defects, and the shared branch requires later task-scoped commit preparation. Tasks remain REVIEW or WIP until their actual acceptance evidence exists; merging remains separate.
+
+
+## ADR-030: Express configuration commit uncertainty without discarding evidence
+
+Date: 2026-11-25. Status: interface design decision; independent QA review and native adapter evidence pending.
+
+Authority: owner-authorised parallel implementation continuation under ADR-027 and ADR-029. This refines the approved config-persistence contract only; it changes no schema, data location, product scope or desktop-recovery protocol.
+
+Decision: the platform-free `FileSystem` port in `crates/drape-core/src/ports.rs` uses adapter/root-bound file, revision, writer and temporary tokens rather than arbitrary caller paths. Reads and backup discovery are explicitly bounded; missing, access-denied and oversize inputs stay distinct. Exclusive create, complete write and sync are separate operations. Initial publication cannot overwrite an unexpected destination; replacement checks the observed revision and preserves the previous validated bytes in a collision-safe backup. Only owned temporaries and recognized managed backups can be removed.
+
+A commit reports `NotCommitted`, `Committed` or `Indeterminate`. The first guarantees that the destination and existing backups remain unchanged. The second acknowledges actual namespace publication and reports storage-durability confirmation separately from subsequent cleanup. The third represents an adapter fault whose publication result has not been established: preserve config, backup and temporary evidence, stop further saves and forbid automatic retry/prune/cleanup until reconciliation. It never satisfies successful durability acceptance. The existing requirement to recover the last successfully committed valid configuration remains; the eventual native adapter must demonstrate it at supported failure points, rather than infer it from a generic OS error.
+
+Quarantine uses the same verified-moved / verified-unchanged / indeterminate distinction. An indeterminate move stops backup recovery, overwrite and automatic retry until reconciliation establishes source/quarantine identities. Writer exclusion applies to cooperating Drape processes: checking a revision and then replacing is not atomic compare-and-swap against arbitrary external editors. Native adapters document those residual windows, detect conflicts where possible and reject unsupported stronger guarantees before mutation.
+
+Cancellation is observed before mutation. Once commit begins, the adapter must establish/report its actual result; cancellation after publication cannot become a false claim that the save did not happen. Shutdown stops new work and waits for completion on the persistence worker, independently of desktop restoration. No parser defaults, asynchronous runtime, JSON dependency or ConfigStore service implementation is selected here.
+
+Alternatives considered: a single `Result<(), Error>` hides whether bytes were published before a later sync/cleanup failure and invites unsafe retries. Treating every platform error as proof that the namespace is unchanged is an unverified native guarantee. Treating indeterminate state as success, deleting temporary evidence or retrying blindly could destroy the only recoverable bytes. Waiting for the complete parser/native adapter before writing the port would unnecessarily prevent deterministic failure-injection work.
+
+Costs and limitations: implementers must validate opaque token provenance, revision consistency and temporary eligibility, and consumers must handle an explicit stopped-save fault state. Indeterminate publication requires later native reconciliation design and tests; no real filesystem or process-failure experiment is claimed. Numeric parser budgets, alias-conflict handling and lossless wire representation remain prerequisites. Native acceptance, supported Windows builds and power-loss limits are not established by interface compilation or an in-memory fake.
+
+Architecture-check maintenance in the same continuation recognizes the already pinned Windows binding only as a direct dependency of `drape-shell-windows` and its enumerated transitive packages in Guard's closure. It does not allow direct native dependencies in Core, UI, Infrastructure or Guard. Actual-metadata mutation tests retain those boundaries; no broad `windows-*` exception is introduced.

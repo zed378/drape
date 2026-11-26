@@ -5,6 +5,21 @@ pub fn capabilities() -> drape_core::PlatformCapabilities {
     drape_core::PlatformCapabilities::default()
 }
 
+pub mod icons;
+
+pub mod hook_state;
+
+pub mod hook_callback;
+
+#[cfg(windows)]
+pub mod shell_items;
+
+#[cfg(windows)]
+pub mod enumeration;
+
+#[cfg(windows)]
+pub mod icon_worker;
+
 /// Minimal renderer-independent entry point reserved for R0-05.
 #[cfg(feature = "recovery")]
 pub mod recovery {

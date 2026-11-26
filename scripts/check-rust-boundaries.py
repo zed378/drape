@@ -12,10 +12,19 @@ ALLOWED = {
     "drape-core": set(),
     "drape-infrastructure": {"drape-core"},
     "drape-ui": {"drape-core", "slint", "slint-build"},
-    "drape-shell-windows": {"drape-core"},
+    "drape-shell-windows": {"drape-core", "windows"},
     "drape-test-support": {"drape-core"},
     "drape-guard": {"drape-core", "drape-shell-windows"},
     "drape-app": {"drape-core", "drape-infrastructure", "drape-shell-windows", "drape-ui"},
+}
+# The pinned windows 0.61.3 binding's reviewed transitive closure, not a general
+# windows-* allowance. Direct native dependencies remain forbidden in Guard and
+# every shared crate. Adding another package requires review of actual metadata.
+GUARD_NATIVE_CLOSURE = {
+    "windows", "windows-collections", "windows-core", "windows-future",
+    "windows-implement", "windows-interface", "windows-link", "windows-numerics",
+    "windows-result", "windows-strings", "windows-threading",
+    "proc-macro2", "quote", "syn", "unicode-ident",
 }
 
 
@@ -49,7 +58,7 @@ def violations(graph):
             pending.extend(dep["pkg"] for dep in nodes[key]["deps"])
     for key in seen:
         name = packages[key]["name"]
-        if name not in ALLOWED["drape-guard"] | {"drape-guard"}:
+        if name not in ALLOWED["drape-guard"] | {"drape-guard"} | GUARD_NATIVE_CLOSURE:
             failures.append(f"Guard closure: {name}")
     for node in nodes.values():
         name = packages[node["id"]]["name"]
@@ -114,6 +123,14 @@ class CargoBoundaries(unittest.TestCase):
         failures = violations(self.mutation_graph("drape-infrastructure",
             '\n[build-dependencies]\ndrape-shell-windows.workspace = true\n'))
         self.assertIn("drape-infrastructure: forbidden dependency drape-shell-windows", failures)
+
+    def test_native_binding_dependency_is_rejected_in_shared_crates(self):
+        for crate in ("drape-core", "drape-ui", "drape-infrastructure", "drape-guard"):
+            with self.subTest(crate=crate):
+                failures = violations(self.mutation_graph(crate,
+                    '\n[target.\'cfg(windows)\'.dependencies]\n'
+                    'windows = { version = "=0.61.3", default-features = false }\n'))
+                self.assertIn(f"{crate}: forbidden dependency windows", failures)
 
 
 if __name__ == "__main__":
