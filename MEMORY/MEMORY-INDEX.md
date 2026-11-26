@@ -11,6 +11,7 @@ Current status is in [`../TASKS/PROGRESS.md`](../TASKS/PROGRESS.md), not here.
 | Date | Task | Record | Hook |
 |---|---|---|---|
 | 2026-11-26 | R1-02 | [Lossless schema-1 persistence service](./records/2026-11-26-R1-02-persistence-service.md) | Parallel small Codex tasks; 181 workspace tests, 8 mutations, two review rounds; fake filesystem only; partial REVIEW. |
+| 2026-11-26 | R0-05 | [Spec revision rounds](./records/2026-11-26-R0-05-spec-revision.md) | Four drafts; safety ACCEPT, Core REJECT with five open findings; ADR-032 applied; spec not accepted. |
 | 2026-11-26 | R0-05 | [Recovery spec review](./records/2026-11-26-R0-05-spec-review.md) | Five open safety findings and a proposed Core state table; ACCEPT WITH CHANGES. |
 | 2026-11-26 | R1-01 | [ConfigStore contract, save gate and fake](./records/2026-11-26-R1-01-config-store-contract.md) | Saves bound to their load baseline; architect review ACCEPT after three fixes; 126 workspace tests, six mutations; partial REVIEW. |
 | 2026-11-26 | Review | [Cross-review of the uncommitted continuation](./records/2026-11-26-claude-cross-review.md) | Gates pass (110 tests); open findings on icon fallback, worker shutdown, desktop root guard, gesture buttons and task state. |
@@ -50,6 +51,7 @@ Full text in [`DECISIONS.md`](./DECISIONS.md). Part II (2026-10-10) says what ch
 
 | ID | Date | Decision | Status |
 |---|---|---|---|
+| ADR-032 | 2026-11-26 | Restore after an unmonitored gap only when Drape's hide was verified | Accepted owner decision; evidence pending |
 | ADR-031 | 2026-11-26 | Lossless schema-1 persistence in Infrastructure with bounded `serde_json` | Implemented against the fake; native adapter pending |
 | ADR-030 | 2026-11-25 | Root-confined filesystem tokens and explicit config mutation uncertainty | Interface design; native implementation/acceptance pending |
 | ADR-029 | 2026-11-25 | Parallel local continuation; one sequential validation owner | Accepted owner-authorised execution policy |
@@ -86,7 +88,7 @@ Full text in [`DECISIONS.md`](./DECISIONS.md). Part II (2026-10-10) says what ch
 
 | Task | Spec |
 |---|---|
-| R0-05 | [Native icon state and independent recovery](./specs/R0-05-native-icon-recovery.md) - written before implementation; native state/readback and Guard protocol evidence remain pending. |
+| R0-05 | [Native icon state and independent recovery](./specs/R0-05-native-icon-recovery.md) - revised draft, not accepted; written before implementation; native state/readback and Guard protocol evidence remain pending. |
 | R0-08 | [Minimal hook and transient state](./specs/R0-08-minimal-hook.md) - pure subset; native acceptance pending. |
 | R1-02 | [Durable config and schema compatibility](./specs/R1-02-durable-config.md) - written before implementation. |
 | R0-04 | [Slint desktop-host diagnostic](./specs/R0-04-slint-desktop-host.md) — written before probe code; full native strategies/matrix pending. |

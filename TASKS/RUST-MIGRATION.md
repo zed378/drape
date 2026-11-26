@@ -58,7 +58,7 @@ Acceptance: strategies A/B/C tested with actual Slint windows and the public API
 
 | Field | Value |
 |---|---|
-| Status | WIP — orchestrator, 2026-11-26; recovery protocol spec written before implementation; native decision evidence remains required |
+| Status | WIP, orchestrator, 2026-11-26; spec revised under ADR-032, Core review findings open ([record](../MEMORY/records/2026-11-26-R0-05-spec-revision.md)); native decision evidence remains required |
 | Priority / role | P0 / shell-engineer-windows |
 | Depends on | R0-02 |
 | Spec refs | PLATFORM/00 section 3; ARCHITECTURE/00,03; SECURITY/00 |

@@ -749,3 +749,19 @@ Decision: `drape-infrastructure` parses with `serde_json` 1.0.154, already locke
 Alternatives considered: serializing domain structs directly loses unknown values and precision. Typed wire structs with flattened extension maps keep unknown properties but still rewrite accepted spellings and timestamp precision. A hand-written JSON parser adds untested code at the trust boundary.
 
 Costs and limitations: the whole document is held twice in memory during a save. Comparing field by field needs a mapping that must be kept in step with the domain model; the re-read check turns a missed field into a refused save rather than silent loss. `preserve_order` and `arbitrary_precision` apply wherever Cargo unifies this `serde_json` build. Numbers beyond `f64` in known fields are read as invalid.
+
+## ADR-032: Restore after an unmonitored gap only a verified hide
+
+Date: 2026-11-26. Status: accepted owner decision; implementation and native evidence pending.
+
+Authority: the owner answered the R0-05 question raised during the [spec review](./records/2026-11-26-R0-05-spec-review.md): restore if verified.
+
+Decision: when no process monitored the desktop without a gap, for example after both App and Guard died or after a reboot, Drape shows the icons again only if the durable recovery record proves that its own hide was verified, no user change or supersession is recorded, and the icons are currently hidden. When the record shows only an intent or an unverified hide, Drape does not change visibility; it reports the ambiguity and gives manual guidance. Recovery by a process that monitored without a gap is unaffected.
+
+Rationale: a verified hide is the strongest ownership evidence available after a gap, and leaving a desktop hidden is a real loss for the user. An unverified command does not establish that Drape caused the current state.
+
+Alternatives considered: restoring on intent alone never strands the desktop but may override a user's choice on weak evidence. Never restoring automatically cannot override a choice but leaves icons hidden after every double failure.
+
+This applies to every recovery entry, including standalone restore and uninstall. The Security document's uninstall line was reworded to match it and the standing rule that exit paths restore owned changes.
+
+Costs and limitations: a user who hid the icons themselves during the gap will see them shown. A crash between the hide command and its verification can leave icons hidden until the user restores them manually.

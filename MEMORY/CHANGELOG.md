@@ -8,6 +8,11 @@ Format loosely follows Keep a Changelog. Dates are absolute. There is no release
 
 ## Unreleased
 
+### 2026-11-26 - R0-05 recovery specification revision ([record](./records/2026-11-26-R0-05-spec-revision.md))
+
+- **Changed:** closed state machine, record validation matrix and restart rules for icon recovery; uninstall wording aligned with [ADR-032](./DECISIONS.md).
+- **Open:** five Core review findings, owner questions Q-24 to Q-26 and all native evidence. The spec is not accepted.
+
 ### 2026-11-26 - R1-02 persistence service ([record](./records/2026-11-26-R1-02-persistence-service.md))
 
 - **Added:** lossless schema-1 load and save with bounded parsing, quarantine, backup recovery and pruning, verified against the filesystem fake; `PathKeys` port.

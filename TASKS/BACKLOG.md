@@ -10,7 +10,7 @@ Every item either has a task, a trigger, or an owner question attached; items wi
 
 ## Open Questions — need an owner decision
 
-**Q-19–Q-23 are open as of 2026-11-25.** Rust + Slint is accepted by ADR-025. Earlier Q-01–Q-18 answers remain dated history except where superseded below; packaging and support assumptions need Rust-specific verification.
+**Q-19–Q-26 are open as of 2026-11-26.** Rust + Slint is accepted by ADR-025. Earlier Q-01–Q-18 answers remain dated history except where superseded below; packaging and support assumptions need Rust-specific verification.
 
 | # | Question | Default assumption | Impact if different | Decider | Status |
 |---|---|---|---|---|---|
@@ -37,6 +37,9 @@ Every item either has a task, a trigger, or an owner question attached; items wi
 | Q-21 | Which Slint backend/renderer and supported native-handle/drop/UIA integration meet the Windows matrix? | Minimal eligible native deployment without WebView/Qt; leave icons visible if safe hosting cannot be established | Host/lifetime/accessibility/drag-drop/rendering | Architect after R0-04/R0-07 evidence | Open technical decision; R0-10 records result |
 | Q-22 | Can the existing Velopack preference package/update native Rust App + Guard within requirements? | Keep channels, evaluate actual Rust integration/footprint/rollback/uninstall before selecting implementation | Packaging, runtime size, code signing, recovery | Release engineer / architect in P5-03; owner for material scope changes | Open validation; replacement needs ADR |
 | Q-23 | How do pinned panels, tabs and portal projections map to durable identity, membership and schema? | Preserve feature scope; keep single-owner membership distinct from read-only folder projections; no invented schema fields or language-only version bump | P4-01/P4-04/P4-07 specs, future config migrations, snapshots/import compatibility | Architect and core/UI owners; owner decides material behaviour/scope changes | Open specification prerequisite before these features are implemented |
+| Q-24 | Which explicit product action supplies consent to rearm icon hiding after recovery? | No timed or automatic rearm; hiding stays suspended | Settings/tray design and recovery flow | Owner | Open; [R0-05 spec](../MEMORY/specs/R0-05-native-icon-recovery.md) |
+| Q-25 | Are the measured read-to-command race, detection limits, recovery latency and retry bounds acceptable? | Production hiding stays disabled until native evidence and policy are reviewed | Whether native icon hiding ships | Owner | Open; needs the R0-05 spike |
+| Q-26 | Approve the version 1 recovery record namespace and treatment of legacy records? | Preserve unsupported and legacy bytes read-only; manual recovery may be needed | Upgrade path from the legacy app | Owner / architect | Open; [R0-05 spec](../MEMORY/specs/R0-05-native-icon-recovery.md) |
 
 
 ## Deferrals

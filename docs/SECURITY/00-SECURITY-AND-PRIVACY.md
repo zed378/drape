@@ -67,7 +67,7 @@ If automatic telemetry or crash reporting is ever added: opt-in, a clear field l
 ## User Data Rights
 
 - Export config (anonymisation optional); treat nested unknown fields, snapshots, paths and diagnostic text as potentially identifying too. A scrubbed export is not guaranteed anonymous unless its supported field policy has been tested. Deleting/resetting app data requires explicit confirmation and must first complete/retain pending desktop recovery; never remove the only recovery record while icons remain hidden.
-- Uninstall offers data deletion and **always** restores desktop icons.
+- Uninstall offers data deletion and **always** attempts to restore every Drape-owned icon change. When ownership cannot be established ([ADR-032](../../MEMORY/DECISIONS.md)), it keeps the recovery evidence and reports pending manual recovery instead of claiming success.
 
 ## Security Release Checklist
 

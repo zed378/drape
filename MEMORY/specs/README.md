@@ -13,7 +13,7 @@ Rust native-handle diagnostic spec: [R0-04 Slint desktop-host boundary](./R0-04-
 
 Rust hook spec: [R0-08 minimal hook and transient state](./R0-08-minimal-hook.md). The bounded pure queue/recognizer subset is under review; native hook and VM acceptance remain pending.
 
-Rust recovery spec: [R0-05 native icon state and independent recovery](./R0-05-native-icon-recovery.md). Written before implementation; native state/readback and Guard protocol evidence remain pending.
+Rust recovery spec: [R0-05 native icon state and independent recovery](./R0-05-native-icon-recovery.md). Revised draft with open review findings, not accepted. Written before implementation; native state/readback and Guard protocol evidence remain pending.
 
 Rust persistence spec: [R1-02 durable config](./R1-02-durable-config.md). Written before implementation; implementation waits for R1-01 acceptance.
 

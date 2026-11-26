@@ -14,7 +14,7 @@ Legacy P1-04 partial UI and P0-03–P0-07 VM-pending harnesses are superseded as
 
 | ID | Work | Owner | Started |
 |---|---|---|---|
-| R0-05 | Recovery protocol spec drafting | orchestrator | 2026-11-26 |
+| R0-05 | Recovery spec revision: five [Core findings open](../MEMORY/records/2026-11-26-R0-05-spec-revision.md); spec not accepted | orchestrator | 2026-11-26 |
 
 ## Review
 
@@ -34,7 +34,7 @@ Legacy P1-04 partial UI and P0-03–P0-07 VM-pending harnesses are superseded as
 
 Testing policy for this owner-authorised continuation: one active dedicated QA agent runs a sequential validation queue. Implementation agents do not execute verification commands. The reviewed baseline is integrated on main; R0-02 retains REVIEW until its task-specific independent acceptance is recorded. No commit or DONE status is implied for this continuation.
 
-Current continuation: R0-06 adds a bounded STA icon worker that intentionally returns raw DIB data pending verified pixel semantics; R0-08 defers callback-data reads for negative hook codes and contains adapter panics while forwarding. Both passed sequential QA and remain partial pending native integration and VM evidence. R1-01 remains partial: the ConfigStore contract is [added and reviewed](../MEMORY/records/2026-11-26-R1-01-config-store-contract.md). R1-02 started under [ADR-031](../MEMORY/DECISIONS.md) and its [service](../MEMORY/records/2026-11-26-R1-02-persistence-service.md) is in REVIEW against the fake. A [cross-review](../MEMORY/records/2026-11-26-claude-cross-review.md) lists open findings. R0-05's recovery protocol spec is written and has [open review findings](../MEMORY/records/2026-11-26-R0-05-spec-review.md); native API and VM evidence remain open. See the [current parallel continuation record](../MEMORY/records/2026-11-26-parallel-r0-06-r0-08-worker-callback.md), the [earlier bounded-adapter record](../MEMORY/records/2026-11-26-parallel-r0-06-r0-08-follow-up.md) and [prior continuation evidence](../MEMORY/records/2026-11-25-autonomous-continuation.md).
+Current continuation: R0-06 adds a bounded STA icon worker that intentionally returns raw DIB data pending verified pixel semantics; R0-08 defers callback-data reads for negative hook codes and contains adapter panics while forwarding. Both passed sequential QA and remain partial pending native integration and VM evidence. R1-01 remains partial: the ConfigStore contract is [added and reviewed](../MEMORY/records/2026-11-26-R1-01-config-store-contract.md). R1-02 started under [ADR-031](../MEMORY/DECISIONS.md) and its [service](../MEMORY/records/2026-11-26-R1-02-persistence-service.md) is in REVIEW against the fake. A [cross-review](../MEMORY/records/2026-11-26-claude-cross-review.md) lists open findings. R0-05's recovery spec was [revised](../MEMORY/records/2026-11-26-R0-05-spec-revision.md) under ADR-032 and is not yet accepted; native API and VM evidence remain open. See the [current parallel continuation record](../MEMORY/records/2026-11-26-parallel-r0-06-r0-08-worker-callback.md), the [earlier bounded-adapter record](../MEMORY/records/2026-11-26-parallel-r0-06-r0-08-follow-up.md) and [prior continuation evidence](../MEMORY/records/2026-11-25-autonomous-continuation.md).
 
 ## Next work
 
@@ -52,7 +52,7 @@ R0-02 remains REVIEW; see its [record](../MEMORY/records/2026-11-25-R0-02-rust-w
 
 ## Open decisions
 
-Q-19 blur MVP priority; Q-20 measured RAM/size budgets; Q-21 backend/renderer/native integration; Q-22 Rust packaging/updater compatibility. See [BACKLOG](./BACKLOG.md). Windows minimum, MIT/Drape name, no default network and opt-in updates remain unchanged.
+Q-24 to Q-26 recovery rearm, race acceptance and record compatibility; Q-19 blur MVP priority; Q-20 measured RAM/size budgets; Q-21 backend/renderer/native integration; Q-22 Rust packaging/updater compatibility. See [BACKLOG](./BACKLOG.md). Windows minimum, MIT/Drape name, no default network and opt-in updates remain unchanged.
 
 ## Historical completion ledger (C# / earlier documentation only)
 
